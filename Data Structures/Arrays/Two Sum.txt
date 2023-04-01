@@ -6,14 +6,14 @@ You may assume that each input would have exactly one solution, and you may not 
 
 You can return the answer in any order.
 
-
-class Solution(object):
-    def twoSum(self, nums, target):
-        d={}
-        for curIndex in range(0,len(nums)):
-            temp=nums[curIndex]
-            remainder=target-temp
-            if remainder in d:
-                remIndex = d[remainder]
-                return [remIndex,curIndex]
-            d[temp]=curIndex
+#i, j where i is index and j is value #https://www.geeksforgeeks.org/enumerate-in-python/
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        
+        d = {}
+        for i, j in enumerate(nums):
+            r = target - j
+            if r in d: return [d[r], i]
+            d[j] = i
+            
+          
