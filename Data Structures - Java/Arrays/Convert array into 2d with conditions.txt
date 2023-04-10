@@ -1,0 +1,34 @@
+You are given an integer array nums. You need to create a 2D array from nums satisfying the following conditions:
+
+The 2D array should contain only the elements of the array nums.
+Each row in the 2D array contains distinct integers.
+The number of rows in the 2D array should be minimal.
+
+Return the resulting array. If there are multiple answers, return any of them.
+
+    def findMatrix(nums):
+        d={}
+        result=[]
+        for i in nums:
+            if i not in d:
+                d[i]=1
+            else:
+                d[i]+=1
+        keyChar = max(zip(d.values(), d.keys()))[1]
+        keyValue = max(zip(d.values(), d.keys()))[0]
+        for i in range(keyValue):
+            t=[]
+            result.append(t)
+
+        while d:
+            keyChar = max(zip(d.values(), d.keys()))[1]
+            keyValue = max(zip(d.values(), d.keys()))[0]
+            #print(keyChar,keyValue)
+            for j in range(keyValue):
+                result[j].append(keyChar)
+                print(j)
+            del d[keyChar]
+            # print(result)
+            # print(d)
+            # print('hey')
+        return result        
