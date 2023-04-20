@@ -1,0 +1,2 @@
+#Aggresive Cows / Magnetic Force Between Two Balls
+Morty has m balls and needs to distribute the balls into the baskets such that the minimum magnetic force between any two balls is maximum.

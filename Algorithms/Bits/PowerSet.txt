@@ -1,0 +1,19 @@
+
+https://www.geeksforgeeks.org/power-set/
+https://www.youtube.com/watch?v=b7AYbpM5YrE
+
+import math;
+def printPowerSet(set,set_size):
+    # with set_size n is (2**n -1)
+    power_set_size = (int) (math.pow(2, set_size));
+    counter = 0;
+    j = 0;
+
+    for counter in range(0, power_set_size): eg: 1 to 7 or 000 001 ... 111
+        for j in range(0, set_size): eg: a, b, c 's indexes
+            if((counter & (1 << j)) > 0): # here we check which letter should be taken by checking if bit is set
+                print(set[j], end = "");
+        print("");
+
+set = ['a', 'b', 'c'];
+printPowerSet(set, 3);

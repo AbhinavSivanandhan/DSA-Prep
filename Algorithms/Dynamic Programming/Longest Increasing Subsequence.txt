@@ -1,0 +1,29 @@
+Longest increasing subsequence (remember, this means it needn't be continuous)
+
+Brute force solution for subsequence problems, generate all subsequences using: Powersets or recursion ( T - O(2^N) S - O(N) )
+
+1) Brute force solution:
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        pow_set_size = int(math.pow(2,len(nums)))
+        s=[]
+        maxlen=0
+        maxseq=[]
+        for i in range(0,pow_set_size):
+            s=[]
+            for j in range(0,len(nums)):
+                if(i & (1<<j) > 0):
+                    index=len(nums)-1-j
+                    s.insert(0,nums[index])
+          #  print(s)
+            if len(s)>maxlen:
+                if all(s[iter]<s[iter+1] for iter in range(0,len(s)-1)):
+                    maxlen=len(s)
+                    maxseq=s
+        print(maxseq)
+        return maxlen
+
+
+
+
+
