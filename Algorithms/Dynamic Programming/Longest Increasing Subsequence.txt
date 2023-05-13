@@ -1,8 +1,9 @@
 Longest increasing subsequence (remember, this means it needn't be continuous)
+https://leetcode.com/problems/longest-increasing-subsequence/submissions/949481478/
 
 Brute force solution for subsequence problems, generate all subsequences using: Powersets or recursion ( T - O(2^N) S - O(N) )
 
-1) Brute force solution:
+1) Brute force solution using powersets:
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
         pow_set_size = int(math.pow(2,len(nums)))
@@ -22,6 +23,33 @@ class Solution:
                     maxseq=s
         print(maxseq)
         return maxlen
+
+2) Brute force solution using recursion
+
+class Solution:
+    def lis(self, ind, prev_index, arr, n):
+        if ind==n:
+            return 0
+        l=0+self.lis(ind+1, prev_index,arr,n) #not including current index
+        if prev_index==-1 or arr[ind]>arr[prev_index]:
+            l = max(l, 1+self.lis(ind+1,ind, arr, n)) #including current index
+        return l
+
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        n=len(nums)
+        return self.lis(0, -1, nums, n)
+
+3) Optimal solution using dynamic programming:
+
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        LIS = [1] * len(nums)
+        for i in range(len(nums) - 1, -1, -1):
+            for j in range(i + 1, len(nums)):
+                if nums[i] < nums[j]:
+                    LIS[i] = max(LIS[i], 1 + LIS[j])
+        return max(LIS)
+
 
 
 
