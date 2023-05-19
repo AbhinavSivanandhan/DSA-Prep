@@ -1,0 +1,15 @@
+https://leetcode.com/contest/biweekly-contest-104/problems/power-of-heroes/
+the sum of the power of all non-empty groups of a set of numbers
+
+Soln:
+https://www.youtube.com/watch?v=e_z5_nr5KdA
+
+def sumOfPower(nums):
+    ans, t, base = 0, 0, 10**9 + 7
+    for c in sorted(nums):
+        ans = (ans + (t + c) * c * c) % base
+        t = (2 * t + c) % base
+        print(c, ans, t)
+    return ans
+    
+print(sumOfPower([2,1,4]))
