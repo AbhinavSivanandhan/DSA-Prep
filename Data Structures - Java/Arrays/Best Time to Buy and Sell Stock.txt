@@ -1,0 +1,33 @@
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        maxrange=0
+        minv=float(inf)
+        maxv=float(-inf)
+        for i in range(0,len(prices)):
+            if maxv==float(-inf) and minv==float('inf'):
+                minv=prices[i]
+            elif minv!=prices[i] and maxv==float('-inf'):
+                if minv<prices[i]:
+                    maxv=prices[i]
+                else:
+                    minv=prices[i]
+            else:
+                if prices[i]>maxv:
+                    maxv=prices[i]
+                if prices[i]<minv:
+                    minv=prices[i]
+                    maxv=float('-inf')
+            if maxrange<(maxv-minv):
+                maxrange=maxv-minv
+        return maxrange
+                
+            
+
+            
+                

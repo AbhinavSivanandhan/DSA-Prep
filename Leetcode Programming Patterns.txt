@@ -1,0 +1,33 @@
+https://www.linkedin.com/posts/ashishps1_7-leetcode-articles-i-wish-id-read-sooner-activity-7067002527166181377-xoG5/?utm_source=share&utm_medium=member_android
+
+7 Leetcode articles I wish I’d read sooner.
+
+This would have saved me from solving 1500+ problems:
+
+Dynamic Programming Patterns: https://lnkd.in/gbpRU46g
+
+Substring Problem Patterns: https://lnkd.in/gdGtE72g
+
+Backtracking Problem Patterns: https://lnkd.in/gVkQX5vA
+
+Two Pointers Patterns: https://lnkd.in/gBfWgHYe
+
+Binary Search Patterns: https://lnkd.in/gKEm_qUK
+
+Sliding Window Patterns: https://lnkd.in/gjatQ5pK
+
+Graph Patterns: https://lnkd.in/gKE6w7Jb
+
+1. Greedy Algorithm Patterns: https://leetcode.com/discuss/general-discussion/669996/greedy-for-beginners-problems-sample-solutions
+
+2. Tree Traversal Techniques: https://leetcode.com/discuss/general-discussion/1056151/tree-traversal-preorder-inorder-postorder-with-sample-solutions
+
+3. Union-Find (Disjoint Set Union): https://leetcode.com/discuss/general-discussion/1108832/union-find-for-beginners-problems-sample-solutions
+
+4. Topological Sorting: https://leetcode.com/discuss/general-discussion/1146551/topological-sorting-in-depth-explanation-problems-sample-solutions
+
+5. Bit Manipulation: https://leetcode.com/discuss/general-discussion/1139479/bit-manipulation-in-depth-explanation-problems-sample-solutions
+
+6. Math and Number Theory: https://leetcode.com/discuss/general-discussion/1162606/math-number-theory-for-beginners-problems-sample-solutions
+
+7. System Design: https://leetcode.com/discuss/general-discussion/1084618/system-design-for-beginners-problems-sample-solutions
