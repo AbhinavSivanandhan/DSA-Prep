@@ -1,0 +1,43 @@
+Maximum sub array:
+Given an integer array nums, find the subarray with the largest sum, and return its sum.
+
+
+if 0 is allowed(not accepted in leetcode, this is just reference):
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        sumarr=[0]*(len(nums)+1) #we use array 1 to n+1, 0 is blank
+        maxsum=0
+        for i in range(0,len(nums)):
+            if nums[i]<0:
+                if sumarr[i]+nums[i]>0:
+                    sumarr[i+1]=sumarr[i]+nums[i]
+                else:
+                    sumarr[i+1]=0
+            else:
+                sumarr[i+1]=sumarr[i]+nums[i]
+            if sumarr[i+1]>maxsum:
+                maxsum=sumarr[i+1]
+        return maxsum
+
+
+if 0 is not allowed:(leetcode soln)
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        sumarr=[0]*(len(nums)+1) #we use array 1 to n+1, 0 is blank
+        maxsum=float('-inf')
+        for i in range(0,len(nums)):
+            if nums[i]<0:
+                if sumarr[i]+nums[i]>0:
+                    sumarr[i+1]=sumarr[i]+nums[i]
+                else:
+                    sumarr[i+1]=nums[i]
+            else:
+                if sumarr[i]+nums[i]>nums[i]:
+                    sumarr[i+1]=sumarr[i]+nums[i]
+                else:
+                    sumarr[i+1]=nums[i]
+            if sumarr[i+1]>maxsum:
+                maxsum=sumarr[i+1]
+        return maxsum
+
+
