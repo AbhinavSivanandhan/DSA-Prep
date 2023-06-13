@@ -40,4 +40,5 @@ class Solution:
                 maxsum=sumarr[i+1]
         return maxsum
 
+Note: don't waste space with a full array to track previous sums. just use one variable to store the previous value
 
