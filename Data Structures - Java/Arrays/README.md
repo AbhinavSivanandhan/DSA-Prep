@@ -7,3 +7,4 @@
 #Maximum subarray (blind75)
 #Maximum product subarray (blind75)
 #Find minimum in rotated sorted array (blind75)
+#Search in a Rotated Sorted Array (blind75)
