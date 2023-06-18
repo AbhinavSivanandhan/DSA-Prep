@@ -1,0 +1,5 @@
+Find two numbers in array that have minimum difference(if asked for absolute value, put it in an abs() function)
+
+def closestPair(arr):
+    nums.sort()
+    return min(nums[i+1]-nums[i] for i in range(len(nums)-1))
