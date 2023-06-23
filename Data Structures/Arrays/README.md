@@ -9,3 +9,5 @@
 #Find minimum in rotated sorted array (blind75)
 #Search in a Rotated Sorted Array (blind75)
 #closest pair - two nums with minimum difference in the array
+#3 sum (blind75)
+#container with most water (blind75)

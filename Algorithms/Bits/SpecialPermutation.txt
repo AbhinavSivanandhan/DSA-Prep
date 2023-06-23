@@ -1,0 +1,18 @@
+You are given a 0-indexed integer array nums containing n distinct positive integers. A permutation of nums is called special if:
+
+For all indexes 0 <= i < n - 1, either nums[i] % nums[i+1] == 0 or nums[i+1] % nums[i] == 0.
+Return the total number of special permutations. As the answer could be large, return it modulo 109 + 7.
+
+
+class Solution:
+    def specialPerm(self, nums: List[int]) -> int:
+        n, MOD = len(nums), 10**9 + 7
+        @cache
+        def dfs(prev, mask):
+            if mask == (1 << n) - 1: return 1
+            count = 0
+            for i in range(n):
+                if not (mask & (1 << i)) and (nums[i] % prev == 0 or prev % nums[i] == 0):
+                    count += dfs(nums[i], mask | (1 << i))
+            return count % MOD
+        return dfs(1, 0)
