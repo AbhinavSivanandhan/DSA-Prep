@@ -1,0 +1,33 @@
+Transpose a 2D matrix
+
+def transposeMatrix(matrix):
+    tmatrix=[]
+    for j in range(len(matrix[0])):
+        l=[]
+        for i in range(len(matrix)):
+            l.append(matrix[i][j])
+        tmatrix.append(l)
+    return tmatrix
+
+Alt solution:
+
+def transposeMatrix(matrix):
+    return [list(t) for t in list(zip(*matrix))] 
+
+Consider the following matrix as the input:
+
+csharp
+Copy code
+[
+  [1, 2, 3],
+  [4, 5, 6]
+]
+The zip(*matrix) expression transposes the matrix by taking each column of the original matrix and grouping them together. Here's how it works step by step:
+
+The * operator is used to unpack the rows of the matrix as separate arguments to the zip function. It is equivalent to passing each row as a separate argument. So, instead of zip(matrix), we have zip([1, 2, 3], [4, 5, 6]).
+
+The zip function takes these separate row arguments and pairs up the corresponding elements from each row. It returns an iterator of tuples where each tuple contains the elements from the same position in each row. In our example, the resulting iterator is:
+
+[(1, 4), (2, 5), (3, 6)]
+
+Finally, the list comprehension [list(t) for t in ...] is used to convert each tuple into a list
