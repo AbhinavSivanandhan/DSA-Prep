@@ -10,3 +10,4 @@ Number of 1's(Ones) - just sum them in from str(bin(n)) (blind75)
 
 Counting Bits - (blind75)
 
+Reverse Bits - (blind75)
