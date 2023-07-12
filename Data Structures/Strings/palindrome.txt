@@ -1,2 +1,31 @@
 #Palindrome
 
+Given an integer x, return true if x is a palindrome, and false otherwise.
+Try without using strings
+
+Answer1:
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        if x < 0:
+            return False
+        res = 0
+        temp = x
+        while temp:
+            temp, n = divmod(temp, 10)
+            res = (res * 10) + n   
+        return res == x
+
+Answer2:
+
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        x=str(x)
+        n=len(x)//2
+        n+=1
+        m=len(x)-1
+        for i in range(0,n):
+            if x[i]==x[m-i]:
+                continue
+            else:
+                return False
+        return True
