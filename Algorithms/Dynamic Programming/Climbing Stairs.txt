@@ -1,0 +1,32 @@
+You are climbing a staircase. It takes n steps to reach the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+Answer:
+https://leetcode.com/problems/climbing-stairs/solutions/1792723/python-in-depth-walkthrough-explanation-dp-top-down-bottom-up/
+
+While the above works well enough, we can optimize our approach even further by making a simple but important observation: we are only utilizing the last 2 subproblem answers when solving each subproblem. If you look at the recurrence again, you can see that the only pieces information we use are ways(n−1)ways(n - 1)ways(n−1) and ways(n−2)ways(n - 2)ways(n−2). Since we're computing from bottom-up, once we compute those answers, the smaller subproblems (such as ways(n−3)ways(n - 3)ways(n−3)) are not needed anymore. Thus, instead of keeping the entire dp array, we can save some space and just maintain 2 variables that track our last 2 subproblem answers!
+
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 2:
+            return n
+        ways = 0
+		# base cases
+        two_below_curr = 1  # 2 steps below 3 - ways to take 1 step: 1
+        one_below_curr = 2  # 1 step below 3 - ways to take 2 steps: 2
+        for i in range(3, n + 1):
+            # compute number of ways for i
+            ways = one_below_curr + two_below_curr
+            # step up to i + 1   
+            # 1 step below becomes 2 steps below
+            # current number of ways becomes 1 step below
+            two_below_curr, one_below_curr = one_below_curr, ways
+    
+        return ways
+        
+Complexity
+
+Time: As before, we are computing each subproblem once and each subproblem requires constant amount of work (just the addition of the previous 2 number of ways). That's O(n) time complexity.
+Space: O(1) since we are maintaining 3 extra variables only!
+And that's it! We went from a TLE solution to an elegant and optimized version.
