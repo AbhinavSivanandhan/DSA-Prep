@@ -13,7 +13,7 @@ Note that the grouping (1 11 06) is invalid because "06" cannot be mapped into '
 
 Given a string s containing only digits, return the number of ways to decode it.
 
-Solution:
+Solution1:
 # Time Complexity: O(N)
 # Space Complexity: O(N)
 # This solution can be further space-optimized to be O(1). Let's think about it :D
@@ -47,3 +47,14 @@ class Solution:
                 if 10 <= x <= 26:
                     dp[i] += dp[i - 2]
         return dp[n]
+
+Solution2:
+
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        dp = [1] * (len(s) + 1)             # DP Array of size (n+1) initialized to 1
+        if s[0] == "0": dp[1] = 0           # Check s[0] is valid encoding
+
+        for i in range(2, len(s) + 1):
+            dp[i] = (dp[i - 1] if 1 <= int(s[i - 1]) <= 26 else 0) + (dp[i - 2] if 10 <= int(s[i - 2] + s[i - 1]) <= 26 else 0)
+        return dp[-1]
