@@ -32,3 +32,34 @@ class Solution:
         
         # Return the optimal number of coins to create the amount
         return minCoins[amount]
+
+Combination Sum 4:
+Problem:
+Given an array of distinct integers nums and a target integer target, return the number of possible combinations that add up to target.
+
+Soln:
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        numnums = len(nums)
+        
+        # Values in this array equal the number of nums needed to achieve the cost of the index
+        minnums = [target + 1] * (target + 1)
+        minnums[0] = 0
+        
+        # Loop through every needed target
+        for i in range(target + 1):
+            # Loop through every coin value
+            for coin in nums:
+                # Check that the coin is not bigger than the current target
+                if coin <= i:
+                    # minnums[i]: number of nums needed to make target i
+                    # minnums[i-coin]: number of nums needed to make the target before adding 
+                    #                   the current coin to it (+1 to add the current coin)
+                    minnums[i] = min(minnums[i], minnums[i-coin] + 1)
+        
+        # Check if any combination of nums was found to create the target
+        if minnums[target] == target + 1:
+            return -1
+        
+        # Return the optimal number of nums to create the target
+        return minnums[target]
