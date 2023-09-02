@@ -1,0 +1,46 @@
+Problem:
+Find if there is a cycle in the linkedlist
+
+MySolution1(Use a dictionary):
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        temp=head
+        d={}
+        while temp:
+            if temp not in d:
+                d[temp]=1
+            else:
+                return True
+            temp=temp.next
+        return False
+
+MySolution 2(Floyd's cycle detection algorithm) - use two pointers:
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        if not head:
+            return False
+        temp = head
+        twotemp = head
+        while temp and twotemp:
+            temp = temp.next
+            if twotemp.next:
+                twotemp = twotemp.next.next
+            else:
+                return False  # If twotemp reaches the end, there's no cycle
+            if temp == twotemp:
+                return True
+        return False
+
