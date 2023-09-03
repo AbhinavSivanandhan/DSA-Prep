@@ -1,0 +1,46 @@
+Problem: Merge two LinkedLists:
+
+
+Easy Solution:
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        if not list1:
+            return list2
+        if not list2:
+            return list1
+        else:
+            temp  = ListNode()
+            if list1.val > list2.val:
+                temp = list2
+                temp.next = self.mergeTwoLists(list1,list2.next)
+            else:
+                temp = list1
+                temp.next = self.mergeTwoLists(list1.next,list2)
+            return temp
+
+Easy solution 2:
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        cur = dummy = ListNode()
+        while list1 and list2:               
+            if list1.val < list2.val:
+                cur.next = list1
+                list1, cur = list1.next, list1
+            else:
+                cur.next = list2
+                list2, cur = list2.next, list2
+                
+        if list1 or list2:
+            cur.next = list1 if list1 else list2
+            
+        return dummy.next
