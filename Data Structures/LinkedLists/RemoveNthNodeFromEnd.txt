@@ -32,3 +32,33 @@ class Solution:
 
 Solution 2 : Use two pointers, traverse one by distance of which it is from the end
 
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        temp=head
+        tempforward=head
+        prev=None
+        for i in range(1,n):
+            if tempforward:
+                tempforward=tempforward.next
+            # else:
+            #     return "Not Possible"
+        
+        # temp=head
+        while tempforward:
+            if tempforward.next==None:
+                if prev:
+                    prev.next=temp.next
+                else:
+                    head=head.next
+                break#no need
+            prev=temp
+            temp=temp.next
+            tempforward=tempforward.next
+        return head
+
+        
