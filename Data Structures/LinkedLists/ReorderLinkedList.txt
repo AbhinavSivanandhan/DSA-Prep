@@ -1,0 +1,39 @@
+Problem:
+You are given the head of a singly linked-list. The list can be represented as:
+
+L0 → L1 → … → Ln - 1 → Ln
+Reorder the list to be on the following form:
+
+L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+
+
+Solution:
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        temp=head
+        store=[]
+        while temp:
+            store.append(temp)
+            temp=temp.next
+        i=0
+        dummy=ListNode()
+        while len(store)>0:
+            if i%2==0:
+                cur=store.pop(0)
+            else:
+                cur=store.pop()
+            dummy.next=cur
+            if len(store)>0:
+                dummy=dummy.next
+            else:
+                dummy=dummy.next
+                dummy.next=None
+            i+=1
+        return dummy.next
+
