@@ -37,3 +37,42 @@ class Solution:
             i+=1
         return dummy.next
 
+Solution (optimal):
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        if not head or not head.next or not head.next.next:
+            return
+        #find half, reverse second half. then merge
+        half=head
+        full=head
+        while full and full.next:
+            full=full.next.next
+            half=half.next
+        
+        head2=half.next
+        half.next=None
+        
+        #reverse
+        cur=head2
+        prev=None
+        while cur:
+            temp=cur.next
+            cur.next=prev
+            prev=cur
+            cur=temp
+        
+        #merge the two halves
+        cur1=head
+        cur2=prev
+
+        while cur2:
+            temp1, temp2 =cur1.next, cur2.next
+            cur1.next=cur2
+            cur2.next=temp1
+            cur1, cur2 = temp1, temp2
