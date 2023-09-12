@@ -1,0 +1,16 @@
+Question:
+
+
+Solution:
+
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        d=[[0]*n]*m
+        for i in reversed(range(0,m)):
+            for j in reversed(range(0,n)):
+                if i==m-1 or j==n-1:
+                    d[i][j]=1
+                else:
+                    d[i][j]=d[i+1][j]+d[i][j+1]
+        print(d)
+        return d[0][0]
