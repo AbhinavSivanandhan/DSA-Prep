@@ -1,0 +1,39 @@
+Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+
+
+Solution:
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    from collections import OrderedDict
+    od=OrderedDict()
+    import collections
+
+    def convert_ordereddict_to_list_of_lists(self, ordered_dict):
+        list_of_lists = []
+        for _, value in ordered_dict.items():
+            list_of_lists.append(value)
+        return list_of_lists
+    def levelOrderTraversal(self, root, depth):
+        if root:
+            if depth not in self.od:
+                self.od[depth]=[]
+                self.od[depth].append(root.val)
+            else:
+                self.od[depth].append(root.val)
+            self.levelOrderTraversal(root.left,depth+1)
+            self.levelOrderTraversal(root.right,depth+1)
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        self.od={}
+        depth=0
+        # from collections import OrderedDict
+        # od=orderedDict()
+        self.levelOrderTraversal(root, depth)
+        print(self.od)
+        ordered_dict = self.od
+        result = self.convert_ordereddict_to_list_of_lists(ordered_dict)
+        return result
