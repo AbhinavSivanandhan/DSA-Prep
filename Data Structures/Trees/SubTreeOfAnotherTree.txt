@@ -1,0 +1,44 @@
+Problem:
+Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+
+A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
+
+Solution:
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+        def Traverse(self, p, q):
+            if p and q:
+                if p.val==q.val:
+                    pass
+                else:
+                    return
+                print(p.val, q.val)
+                return self.Traverse(p.left, q.left) and self.Traverse(p.right, q.right)
+            elif p:
+                return False
+            elif q:
+                return False
+            else:
+                return True
+        def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+            return self.Traverse(p,q)
+        def printInorder(self,root, subRoot):
+            if root:
+                
+                if self.isSameTree(root,subRoot)==True:
+                    return True
+                else:
+                    return self.printInorder(root.left, subRoot) or self.printInorder(root.right, subRoot)
+        def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+            if self.printInorder(root, subRoot) == True:
+                return True
+            else:
+                print(self.printInorder(root, subRoot))
+                return False
+        
