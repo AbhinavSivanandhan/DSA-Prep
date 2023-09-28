@@ -2,10 +2,37 @@ Problem:
 A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
 Given a string s, return true if it is a palindrome, or false otherwise.
 
-Solution:
+Solution1:
 
 class Solution:
     def isPalindrome(self, s: str) -> bool:
         s = [char.lower() for char in s if char.isalnum()]
         return s == s[::-1]
         
+Solution 2:
+
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        ptr1, ptr2 = 0, len(s)-1
+        while ptr1 < ptr2:
+            while ptr1 < ptr2 and not s[ptr1].isalnum():
+                ptr1 += 1
+            while ptr1 < ptr2 and not s[ptr2].isalnum():
+                ptr2 -= 1
+            
+            if s[ptr1].lower() != s[ptr2].lower():
+                return False
+            ptr1 += 1
+            ptr2 -= 1
+        return True
+
+Overall decent solution:(to analyse)
+
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        sen = ""
+        for c in s:
+            if c.isalnum():
+                sen += c
+        sen = sen.lower()
+        return sen == sen[::-1]
