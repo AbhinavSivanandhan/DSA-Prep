@@ -1,0 +1,11 @@
+Find all substrings of a given string. Note that the Powerset example would be the first preference, but this is easy too.
+
+Solution:
+def findSubstrings(s):
+  from collections import Counter
+  sl=[]
+  for i in range(0,len(s)):
+    for j in range(i+1,len(s)+1):
+      print(s[i:j])
+      
+findSubstrings('abcde')

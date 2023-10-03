@@ -1,0 +1,30 @@
+Problem:
+
+Solution:
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        charset=set()
+        l=0
+        ans=0
+
+        for r in range(len(s)):
+            while s[r] in charset:
+                charset.remove(s[l])
+                l+=1
+            charset.add(s[r])
+            ans=max(ans,r-l+1)
+        return ans
+
+Basic Solution(TLE error, time complexity is too high because of brute force solution):
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        from collections import Counter
+        maxlen=0
+        for i in range(0,len(s)):
+            for j in range(i+1,len(s)+1):
+                d=Counter(s[i:j])
+                d=d.values()
+                if max(d)==1 and maxlen<len(s[i:j]):
+                    maxlen=len(s[i:j])
+        return maxlen
+          
