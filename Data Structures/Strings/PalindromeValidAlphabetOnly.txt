@@ -26,7 +26,7 @@ class Solution:
             ptr2 -= 1
         return True
 
-Overall decent solution:(to analyse)
+Overall decent solution:(to analyse later)
 
 class Solution:
     def isPalindrome(self, s: str) -> bool:
