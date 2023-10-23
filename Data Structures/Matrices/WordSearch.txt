@@ -1,0 +1,35 @@
+Problem:
+Word Search
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+Solution(in progress):
+class Solution:
+    def existHelper(self, d, word):
+        if len(word)==0:
+            return True
+        elif len(word)==1:
+            if word[0] in d:
+                return True
+            else:
+                return False
+        elif word[0] in d:
+            for pos in d[word[0]]:
+                
+        else:
+            return False
+
+
+
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        d={}
+        word=list(word)
+        for i in range(0,len(board)):
+            for j in range(0,len(board[0])):
+                if board[i][j] in d:
+                    d[board[i][j]].append([i,j])
+                else:
+                    d[board[i][j]]=[[i,j]]
+        return self.existHelper(d, word)
+        #logic is to recursively check, 0 letters say yes, 1 letter search and check then say true AND check rest of strong, continue that way.
+        #also, no need to check every time, just check using dict with indices for each letter
