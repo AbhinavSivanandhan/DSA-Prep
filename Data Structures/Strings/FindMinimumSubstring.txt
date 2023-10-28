@@ -1,0 +1,39 @@
+Problem:
+Given two strings s and t of lengths m and n respectively, return the minimum window 
+substring
+ of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+Solution(In Progress):
+from collections import Counter
+import copy
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        td=Counter(t)
+        tallyA= {key: 0 for key in td.keys()}
+        tallyB = copy.deepcopy(td) #using for efficient checking, del if unused
+        l=0
+        minLen=float('inf')
+        result=""
+        for r in range(len(s)):
+            print('#',r,'#')
+            if s[r] in td:
+                tallyA[s[r]]+=1
+                print(s[r])
+            if tallyA==td:
+                if (r-l+1)<minLen:
+                    minLen=r-l+1
+                    result=s[l:r+1]
+                print(minLen)
+            while tallyA == td and l<r:
+                l+=1
+                if (r-l+1)<minLen:
+                    minLen=r-l+1
+                    result=s[l:r+1]
+                if s[l] in td:
+                    tallyA[s[l]]-=1
+            print('bye')
+        print(minLen, result)
+        return result
+
