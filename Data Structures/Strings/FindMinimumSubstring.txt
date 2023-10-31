@@ -5,35 +5,46 @@ substring
 
 The testcases will be generated such that the answer is unique.
 
-Solution(In Progress):
+Solution(TLE):
 from collections import Counter
 import copy
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
         td=Counter(t)
         tallyA= {key: 0 for key in td.keys()}
-        tallyB = copy.deepcopy(td) #using for efficient checking, del if unused
         l=0
         minLen=float('inf')
         result=""
+        def compare_dicts(dict1, dict2):
+            for key, value1 in dict1.items():
+                if key in dict2:
+                    value2 = dict2[key]
+                    if value1 < value2:
+                        return False
+          #  print('match found!',dict1,dict2)
+            return True
         for r in range(len(s)):
-            print('#',r,'#')
+            l=0
             if s[r] in td:
                 tallyA[s[r]]+=1
-                print(s[r])
-            if tallyA==td:
+          #  print(s[l:r+1],tallyA,td)
+            if compare_dicts(tallyA, td):
                 if (r-l+1)<minLen:
                     minLen=r-l+1
                     result=s[l:r+1]
+            #        print(s[l:r+1],tallyA, td)
+
                 print(minLen)
-            while tallyA == td and l<r:
+            #tocheckvariationsof l for same r. we preserve tallyA and take new tally, tallyB
+            tallyB = copy.deepcopy(tallyA)
+
+            while l<r:
+                if s[l] in td:
+                    tallyB[s[l]]=tallyB[s[l]]-1
                 l+=1
-                if (r-l+1)<minLen:
+                if (r-l+1)<minLen and compare_dicts(tallyB, td):
                     minLen=r-l+1
                     result=s[l:r+1]
-                if s[l] in td:
-                    tallyA[s[l]]-=1
-            print('bye')
-        print(minLen, result)
+                   # print(s[l:r+1],tallyB, td)
         return result
 
