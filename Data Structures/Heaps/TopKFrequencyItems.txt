@@ -1,0 +1,37 @@
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+Example 2:
+
+Input: nums = [1], k = 1
+Output: [1]
+
+Solution:
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        Dict,l={},[]
+        for i in nums:
+            if i in Dict:Dict[i]+=1
+            else:Dict[i]=1
+
+        idx=sorted(Dict.values(),reverse=True)[k-1]
+        print(sorted(Dict.values(),reverse=True))
+        print(idx) #freq of number above which we need to add to list that is returned
+        for i in Dict:
+            if Dict[i]<idx:continue
+            else:l.append(i)
+        return l
+
+Explanation:
+This Python code defines a class Solution with a method topKFrequent that takes a list of integers nums and an integer k as input. The goal of this method is to find the k most frequent elements in the input list nums and return them in a list. It uses a dictionary (Dict) to count the frequency of each unique element in the nums list. Here's a step-by-step explanation of how it works:
+Dict is initialized as an empty dictionary, and l is initialized as an empty list. Dict will be used to store the frequency of each unique element in nums, and l will store the k most frequent elements.
+A for loop iterates through each element i in the nums list. For each element, it checks if i is already a key in the Dict. If i is already in the dictionary, it increments the value associated with i by 1 to count its frequency. If i is not in the dictionary, it adds i as a key with a value of 1 to indicate that it has occurred once.
+After counting the frequencies of all elements in nums, the code sorts the values in the Dict dictionary in descending order using the sorted function with the reverse=True parameter. This means that the most frequent elements will appear first in the sorted list.
+The idx variable is assigned the k-th value in the sorted list of frequencies. This represents the frequency of the k-th most frequent element in the nums list.
+The code then enters another loop, iterating through the keys (unique elements) in the Dict. For each element i, it checks if the frequency of i (found in Dict[i]) is less than idx. If it's less, the element is skipped, and the loop continues to the next element. If the frequency of i is greater than or equal to idx, it means this element is among the k most frequent elements, so it is appended to the l list.
+Finally, the l list containing the k most frequent elements is returned as the output of the topKFrequent method.
