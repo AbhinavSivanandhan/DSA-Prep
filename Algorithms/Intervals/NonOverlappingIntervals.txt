@@ -1,9 +1,12 @@
 Problem:
 Given an array of intervals intervals where intervals[i] = [starti, endi], return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.
 
+<<<<<<< Updated upstream
 Functional Programming:-read
 https://leetcode.com/problems/non-overlapping-intervals/solutions/3788183/python-short-1-liner-functional-programming/
 
+=======
+>>>>>>> Stashed changes
 Solution:
 class Solution:
     def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
