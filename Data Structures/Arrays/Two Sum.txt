@@ -7,6 +7,10 @@ You may assume that each input would have exactly one solution, and you may not 
 You can return the answer in any order.
 
 #i, j where i is index and j is value #https://www.geeksforgeeks.org/enumerate-in-python/
+
+Time Complexity: O(n)
+Space Complexity: O(n)
+
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         
