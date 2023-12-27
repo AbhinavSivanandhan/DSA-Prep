@@ -2,7 +2,13 @@ Problem:
 Given two strings s and t, return true if t is an anagram of s, and false otherwise.
 An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
 
-Solution:
+Original(preferred) Solution:
+
+Explanation: Uses a dictionary to count character frequencies in both strings and checks if all character frequencies are zero.
+Time-complexity: O(n), where n is the length of the longer of the two input strings.
+Space-complexity: O(n), where n is the length of the longer of the two input strings.
+Additional Note: Efficient for cases with a significant number of unique characters, especially in long strings.
+
 class Solution:
     def isAnagram(self, s: str, t: str) -> bool:
         count = defaultdict(int)
@@ -21,3 +27,14 @@ class Solution:
                 return False
         
         return True
+
+Alternate, less efficient solution(despite similar time-complexity):
+
+Explanation: Checks if the sorted versions of the two strings are equal.
+Time-complexity: O(n log n), where n is the length of the longer of the two input strings.
+Space-complexity: O(n), where n is the length of the longer of the two input strings.
+Additional Note: Simpler but potentially less efficient due to sorting overhead, especially for long strings.
+
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        return sorted(s) == sorted(t)
