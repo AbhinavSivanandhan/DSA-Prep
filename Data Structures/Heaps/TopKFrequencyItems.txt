@@ -11,6 +11,10 @@ Example 2:
 Input: nums = [1], k = 1
 Output: [1]
 
+Time Complexity: O(N * log(N) + N), where N is the number of elements in the nums list. The dominant factor is the sorting operation, and then iterating through the dictionary. Sorting takes O(N * log(N)) time, and iterating through the dictionary takes O(N) time.
+
+Space Complexity: O(N), where N is the number of elements in the nums list. The space is used to store the dictionary (Dict) and the list (l). In the worst case, the dictionary could have all unique elements, leading to O(N) space complexity.
+
 Solution:
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
