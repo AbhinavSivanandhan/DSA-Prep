@@ -1,6 +1,5 @@
 Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
 
- 
 
 Example 1:
 
@@ -11,7 +10,97 @@ Example 2:
 Input: nums = [1], k = 1
 Output: [1]
 
-Solution:
+Time Complexity: O(N * log(N) + N), where N is the number of elements in the nums list. The dominant factor is the sorting operation, and then iterating through the dictionary. Sorting takes O(N * log(N)) time, and iterating through the dictionary takes O(N) time.
+
+Space Complexity: O(N), where N is the number of elements in the nums list. The space is used to store the dictionary (Dict) and the list (l). In the worst case, the dictionary could have all unique elements, leading to O(N) space complexity.
+
+Best Solution:
+
+Time complexity: O(n + (n+k)*log(n))
+
+Constructing the Counter (dic) takes O(n) time.
+Creating the max heap (heapmax) takes O(n * log(n)) time.
+Popping k elements from the heap takes O(k * log(n)) time.
+
+Space Complexity: O(n)
+
+The Counter (dic) uses O(n) space.
+The max heap (heapmax) uses O(n) space.
+
+Code:
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        dic=Counter(nums)
+        heapmax=[[-freq,num] for num,freq in dic.items()]
+        heapq.heapify(heapmax)
+        list1=[]
+        for i in range(k):
+            poping=heapq.heappop(heapmax)
+            list1.append(poping[1])
+        return list1
+        
+Explanation:
+Now, using the example list [1, 1, 1, 2, 2, 3]:
+
+dic = Counter(nums):
+
+dic becomes {1: 3, 2: 2, 3: 1}.
+heapmax = [[-freq, num] for num, freq in dic.items()]:
+
+heapmax becomes [[ -3, 1], [-2, 2], [-1, 3]].
+heapq.heapify(heapmax):
+
+heapmax is heapified, becoming [[-3, 1], [-2, 2], [-1, 3]].
+list1 = []:
+
+Initializes an empty list list1.
+for i in range(k)::
+
+Iterates three times for k = 3.
+poping = heapq.heappop(heapmax):
+
+First iteration: Pops [-3, 1] from the heap (heapmax). The number 1 has the highest frequency.
+Second iteration: Pops [-2, 2] from the heap. The number 2 has the second-highest frequency.
+Third iteration: Pops [-1, 3] from the heap. The number 3 has the third-highest frequency.
+list1.append(poping[1]):
+
+Appends 1, 2, and 3 to list1.
+return list1:
+
+Returns [1, 2, 3], which are the top 3 frequent elements in the example list.
+
+Let's visualize the heap after each step of the provided code using the example list [1, 1, 1, 2, 2, 3]:
+
+Initial Heap (heapmax):
+    [-3, 1]
+   /   \
+ [-2, 2] [-1, 3]
+After heapq.heapify(heapmax):
+    [-3, 1]
+   /   \
+ [-2, 2] [-1, 3]
+After the first iteration (poping = heapq.heappop(heapmax)):
+    [-2, 2]
+   /   \
+ [-1, 3]
+After the second iteration (poping = heapq.heappop(heapmax)):
+
+    [-1, 3]
+   /
+ [-2, 2]
+After the third iteration (poping = heapq.heappop(heapmax)):
+
+    [-1, 3]
+In each step, the heap maintains the heap property, and the top element is popped. The numbers in the heap represent the frequency and the original element, respectively. The final result is [1, 2, 3], which corresponds to the top k frequent elements in the example list.
+
+
+
+
+
+
+
+Original Solution:
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         Dict,l={},[]
@@ -35,3 +124,66 @@ After counting the frequencies of all elements in nums, the code sorts the value
 The idx variable is assigned the k-th value in the sorted list of frequencies. This represents the frequency of the k-th most frequent element in the nums list.
 The code then enters another loop, iterating through the keys (unique elements) in the Dict. For each element i, it checks if the frequency of i (found in Dict[i]) is less than idx. If it's less, the element is skipped, and the loop continues to the next element. If the frequency of i is greater than or equal to idx, it means this element is among the k most frequent elements, so it is appended to the l list.
 Finally, the l list containing the k most frequent elements is returned as the output of the topKFrequent method.
+
+Alternate Solution:
+
+Time Complexity: O(n)
+Space Complexity: O(n)
+
+The time complexity is O(n) because the code iterates through the input list once, and the space complexity is also O(n) due to the creation of the Counter and the buckets list.
+
+Code:
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        cnt = Counter(nums)
+        buckets = [[] for _ in range(len(nums) + 1)]
+        for val, freq in cnt.items():
+            buckets[freq].append(val)
+        
+        return list(chain(*buckets[::-1]))[:k]
+
+
+explain how '[1, 1, 1, 2, 2, 3]' gets modified across these 5 steps:
+
+Let's step through each part of the code and see how the input list [1, 1, 1, 2, 2, 3] is modified:
+
+cnt = Counter(nums):
+
+The Counter is created, resulting in cnt with the following key-value pairs: {1: 3, 2: 2, 3: 1}.
+buckets = [[] for _ in range(len(nums) + 1)]:
+
+The buckets list is initialized as a list of empty lists with a length of len(nums) + 1. For the input list [1, 1, 1, 2, 2, 3], it will be a list with 7 empty lists.
+for val, freq in cnt.items(): buckets[freq].append(val):
+
+Iterating through the items of cnt, the values are appended to the sublists within buckets based on their frequencies:
+buckets[3] receives 1.
+buckets[2] receives 2.
+buckets[1] receives 3.
+After this step, the buckets list looks like this: [[], [3], [2], [1], [], [], []].
+
+return list(chain(*buckets[::-1])):
+
+Reversing the buckets list: [[], [], [], [1], [2], [3], []].
+The chain(*buckets[::-1]) operation flattens this list of lists into a single iterable: [1, 2, 3].
+[:k]:
+
+Slicing the result to include only the first k elements, where k is the parameter passed to the function.
+For example, if k = 2, the final result is [1, 2].
+In summary, the input list [1, 1, 1, 2, 2, 3] is transformed into the final result based on the top k frequent elements, as specified by the code.
+
+
+chain(*buckets[::-1]) explaining more:
+
+Certainly, let's break down the chain(*buckets[::-1]) part in more detail:
+
+buckets[::-1]: This part reverses the list of buckets. In the context of the example with the input list [1, 1, 1, 2, 2, 3], after reversing, buckets[::-1] becomes [[], [], [], [1], [2], [3], []].
+
+*buckets[::-1]: The * operator is used for unpacking. It takes each element of the reversed buckets list and treats them as individual arguments to the chain function. So, *buckets[::-1] effectively becomes [], [], [], [1], [2], [3], [].
+
+chain(*buckets[::-1]): The chain function from the itertools module is designed to concatenate iterables. It takes multiple iterables as arguments and returns a single iterable that produces items from the first iterable until it is exhausted, then it continues with the next iterable, and so on. In this case, it takes the unpacked reversed buckets and produces a single iterable.
+
+So, chain(*buckets[::-1]) effectively flattens the reversed buckets into a single iterable. In our example, it produces an iterable [1, 2, 3].
+
+list(chain(*buckets[::-1])): Converts the iterable obtained from chain into a list. In the example, this results in the list [1, 2, 3].
+
+In summary, the chain(*buckets[::-1]) part efficiently flattens the reversed list of buckets into a single iterable, which is then converted into a list. This is a concise way to concatenate sublists and achieve a flattened result.
