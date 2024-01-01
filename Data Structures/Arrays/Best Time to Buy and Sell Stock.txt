@@ -4,6 +4,28 @@ You want to maximize your profit by choosing a single day to buy one stock and c
 
 Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
 
+New Solution:
+Time Complexity: O(n)
+Space Complexity: O(1)
+
+Code:
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        sell, profit, temp=0, 0, 0
+        for i in range(len(prices)-1,-1,-1):
+            if prices[i]>sell:
+                sell=prices[i]
+            elif prices[i]<sell:
+                temp=sell-prices[i]
+                profit=max(profit,temp)
+        return profit
+                
+        
+Old Solution:
+Time complexity: O(n), where n is the length of the input list 'prices'.
+Space complexity: O(1), as the algorithm uses a constant amount of space regardless of the input size.
+
+Code:
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
         maxrange=0
