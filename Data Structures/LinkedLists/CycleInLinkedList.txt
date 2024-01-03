@@ -23,6 +23,12 @@ class Solution:
 
 MySolution 2(Floyd's cycle detection algorithm) - use two pointers:
 
+Time Complexity:
+The time complexity of this algorithm is O(n), where 'n' is the number of nodes in the linked list. In the worst case, the algorithm will iterate through the entire linked list once. The slow pointer (temp) moves one step at a time, and the fast pointer (twotemp) moves two steps at a time. If there is a cycle, the fast pointer will eventually catch up with the slow pointer, detecting the cycle. The loop continues until either the fast pointer reaches the end (no cycle) or the two pointers meet within the loop.
+
+Space Complexity:
+The space complexity is O(1). The algorithm uses only a constant amount of extra space regardless of the size of the linked list. It employs two pointers (temp and twotemp) to traverse the list and detect a cycle. No additional data structures are used, and the space requirements remain constant.
+
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
