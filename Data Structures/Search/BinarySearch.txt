@@ -1,0 +1,37 @@
+Problem:
+Binary Search
+Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
+You must write an algorithm with O(log n) runtime complexity.
+Solution:
+
+Time Complexity: O(log n)
+Space Complexity: O(1)
+
+Explanation:
+Time Complexity:
+The time complexity of this binary search algorithm is O(log n), where 'n' is the number of elements in the input array nums. In each iteration of the while loop, the search space is effectively halved, as the algorithm eliminates either the left or right half based on the comparison of the middle element with the target. This is the characteristic time complexity of a binary search.
+
+Space Complexity:
+The space complexity is O(1), which means it uses constant space regardless of the size of the input array. The algorithm only uses a constant number of variables (left, right, mid, target), and the space required for these variables remains the same regardless of the size of the input array. There is no additional space used that scales with the input size.
+
+Code:
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        left = 0
+        right = len(nums) - 1
+        if len(nums) == 1 and nums[0] == target:
+            return 0
+        
+        while left <= right:
+            mid = (left + right)//2
+        
+            if nums[mid] == target:
+                return mid
+        
+            elif nums[mid] > target:
+                right = mid - 1
+        
+            else:
+                left = mid + 1
+        
+        return -1
