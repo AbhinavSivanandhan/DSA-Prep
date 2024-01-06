@@ -2,6 +2,10 @@ Question: Reverse a linkedlist
 Given the head of a singly linked list, reverse the list, and return the reversed list.
 
 Solution:
+The time complexity of the algorithm is O(n), where n is the number of nodes in the linked list.
+
+The space complexity of the algorithm is O(1), indicating constant space usage.
+Code:
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
