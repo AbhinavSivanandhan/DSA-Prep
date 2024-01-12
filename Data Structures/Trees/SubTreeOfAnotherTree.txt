@@ -33,6 +33,42 @@ class Solution:
         return False
 
 
+Solution 2: Merkle hashing
+https://leetcode.com/problems/subtree-of-another-tree/solutions/102741/python-straightforward-with-explanation-o-st-and-o-s-t-approaches/
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSubtree(self, s, t):
+        from hashlib import sha256
+        def hash_(x):
+            S = sha256()
+            S.update(x.encode('utf-8'))  # Encode the string before hashing
+            return S.hexdigest()
+            
+        def merkle(node):
+            if not node:
+                return '#'
+            m_left = merkle(node.left)
+            m_right = merkle(node.right)
+            node.merkle = hash_(m_left + str(node.val) + m_right)
+            return node.merkle
+            
+        merkle(s)
+        merkle(t)
+        def dfs(node):
+            if not node:
+                return False
+            return (node.merkle == t.merkle or 
+                    dfs(node.left) or dfs(node.right))
+                        
+        return dfs(s)
+
+Solution 1(unnecessary)(eytzinger values solution):
+https://leetcode.com/problems/subtree-of-another-tree/solutions/4183750/unique-o-s-t-solution-using-eytzinger-layout/
 My Solution:
 
 # Definition for a binary tree node.
