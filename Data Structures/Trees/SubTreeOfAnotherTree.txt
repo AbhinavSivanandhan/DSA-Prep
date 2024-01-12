@@ -3,7 +3,73 @@ Given the roots of two binary trees root and subRoot, return true if there is a 
 
 A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
 
-Solution:
+Solution 3 : Neetcode solution(easy and efficient):
+
+Time Complexity: O(m * n), where m is the number of nodes in tree s and n is the number of nodes in tree t.
+Space Complexity: O(max(m, n)), where m is the height of tree s and n is the height of tree t.
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSubtree(self, s: TreeNode, t: TreeNode) -> bool:
+        if not t:
+            return True
+        if not s:
+            return False
+
+        if self.sameTree(s, t):
+            return True
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t)
+
+    def sameTree(self, s, t):
+        if not s and not t:
+            return True
+        if s and t and s.val == t.val:
+            return self.sameTree(s.left, t.left) and self.sameTree(s.right, t.right)
+        return False
+
+
+Solution 2: Merkle hashing
+https://leetcode.com/problems/subtree-of-another-tree/solutions/102741/python-straightforward-with-explanation-o-st-and-o-s-t-approaches/
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSubtree(self, s, t):
+        from hashlib import sha256
+        def hash_(x):
+            S = sha256()
+            S.update(x.encode('utf-8'))  # Encode the string before hashing
+            return S.hexdigest()
+            
+        def merkle(node):
+            if not node:
+                return '#'
+            m_left = merkle(node.left)
+            m_right = merkle(node.right)
+            node.merkle = hash_(m_left + str(node.val) + m_right)
+            return node.merkle
+            
+        merkle(s)
+        merkle(t)
+        def dfs(node):
+            if not node:
+                return False
+            return (node.merkle == t.merkle or 
+                    dfs(node.left) or dfs(node.right))
+                        
+        return dfs(s)
+
+Solution 1(unnecessary)(eytzinger values solution):
+https://leetcode.com/problems/subtree-of-another-tree/solutions/4183750/unique-o-s-t-solution-using-eytzinger-layout/
+My Solution:
 
 # Definition for a binary tree node.
 # class TreeNode:
