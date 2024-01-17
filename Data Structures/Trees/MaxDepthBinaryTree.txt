@@ -3,13 +3,51 @@ Maximum Depth of Binary Tree
 Given the root of a binary tree, return its maximum depth.
 A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
 
-Solution:
+Recursive solution(easy):
+
+Time complexity: O(n)
+Space complexity: O(h)
+
+Explanation:
+
+The time complexity remains O(n) because, similar to the previous implementation, in the worst case, the algorithm needs to visit all nodes of the binary tree once.
+The space complexity is O(h), where 'h' is the height of the binary tree. The recursive calls consume space on the call stack, and in the worst case, the maximum depth of the call stack is equal to the height of the tree.
+
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
 #         self.val = val
 #         self.left = left
 #         self.right = right
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode], n=0) -> int:
+        if root == None:
+            return n
+        if root:
+            n+=1
+            return max(self.maxDepth(root.left, n), self.maxDepth(root.right, n))
+
+Allternate solution:
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        return max(self.maxDepth(root.left), self.maxDepth(root.right))+ 1 if root else 0
+
+Alternate Solution2:
+Time complexity: O(n)
+Space complexity: O(h)
+
+Explanation:
+
+The time complexity is O(n) because in the worst case, the algorithm needs to visit all nodes of the binary tree once, where 'n' is the number of nodes.
+The space complexity is O(h), where 'h' is the height of the binary tree. This is because the recursive calls in the traversal consume space on the call stack, and in the worst case, the maximum depth of the call stack is equal to the height of the tree.
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
 class Solution:
     def Traverse(self, root, count):
         if root:
@@ -22,3 +60,47 @@ class Solution:
     def maxDepth(self, root: Optional[TreeNode]) -> int:
         count=0
         return self.Traverse(root,count)
+
+Alternate iterative solution:
+Time complexity: O(n)
+Space complexity: O(n)
+
+Explanation:
+
+Time complexity is linear (O(n)) because, in the worst case, the algorithm may need to visit each of the 'n' nodes in the tree once.
+Space complexity is also O(n) as the deque (queue) may contain up to 'n' nodes at a time, representing the maximum space required during the traversal.
+
+Note:
+Deque (double-ended queue) is a versatile data structure that provides constant-time (O(1)) operations for adding or removing elements from both ends of the queue.
+
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        # Check if the tree is empty (root is None)
+        if root is None:
+            return 0
+        
+        # Initialize depth to 0 and create a queue with the root node
+        depth = 0
+        q = deque([root])
+        
+        # Perform a BFS traversal
+        while q:
+            # Get the number of nodes at the current level
+            n = len(q)
+            
+            # Process nodes at the current level
+            for i in range(n):
+                # Dequeue a node
+                node = q.popleft()
+                
+                # Enqueue its left and right children if they exist
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+            
+            # Increment depth after processing each level
+            depth += 1
+        
+        # Return the final depth, representing the maximum depth of the binary tree
+        return depth
