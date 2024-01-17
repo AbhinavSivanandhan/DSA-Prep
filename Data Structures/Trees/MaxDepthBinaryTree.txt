@@ -4,12 +4,21 @@ Given the root of a binary tree, return its maximum depth.
 A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
 
 Solution:
+Time complexity: O(n)
+Space complexity: O(h)
+
+Explanation:
+
+The time complexity is O(n) because in the worst case, the algorithm needs to visit all nodes of the binary tree once, where 'n' is the number of nodes.
+The space complexity is O(h), where 'h' is the height of the binary tree. This is because the recursive calls in the traversal consume space on the call stack, and in the worst case, the maximum depth of the call stack is equal to the height of the tree.
+
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
 #         self.val = val
 #         self.left = left
 #         self.right = right
+
 class Solution:
     def Traverse(self, root, count):
         if root:
