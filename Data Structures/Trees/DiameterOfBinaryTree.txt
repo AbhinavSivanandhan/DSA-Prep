@@ -1,0 +1,60 @@
+Given the root of a binary tree, return the length of the diameter of the tree.
+
+The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+
+The length of a path between two nodes is represented by the number of edges between them.
+
+Solution 1:
+
+Time Complexity: O(N) - The algorithm uses a depth-first search (DFS) approach to traverse each node once, where N is the number of nodes in the tree.
+
+Space Complexity: O(H) - The space required on the call stack is proportional to the height of the tree. In the worst case, for a skewed tree, the height H could be equal to the number of nodes N, resulting in O(N) space complexity. For a balanced binary tree, the space complexity is O(log N) where log N is the height of the tree.
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def path_length(self, root: TreeNode):
+        if root:
+            left_path = self.path_length(root.left)
+            right_path = self.path_length(root.right)
+            path = left_path + right_path
+            if path > self.diameter:
+                self.diameter = path    
+            return max(left_path, right_path)+1
+        return 0
+        
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        self.diameter = 0
+        self.path_length(root)
+        return self.diameter
+
+Solution 2:
+
+The time complexity of the provided solution for finding the diameter of a binary tree is O(N), where N is the number of nodes in the tree. This is because the algorithm uses a depth-first search (DFS) approach to traverse each node once.
+
+The space complexity is O(H), where H is the height of the binary tree. This is due to the recursive nature of the depth-first search, and the space required on the call stack is proportional to the height of the tree. In the worst case, for a skewed tree, the height H could be equal to the number of nodes N, resulting in O(N) space complexity. However, for a balanced binary tree, the space complexity is O(log N) where log N is the height of the tree.
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        self.ans = 0  # variable to store the maximum diameter found so far
+        
+        def dfs(node):
+            if not node:
+                return 0
+            left = dfs(node.left)
+            right = dfs(node.right)
+            self.ans = max(self.ans, left + right)  # update ans if new diameter is found
+            return max(left, right) + 1  # return the maximum height of the node
+            
+        dfs(root)
+        return self.ans
