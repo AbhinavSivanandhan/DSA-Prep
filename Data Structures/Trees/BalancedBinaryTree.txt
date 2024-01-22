@@ -1,0 +1,44 @@
+Given a binary tree, determine if it is height-balanced .
+
+Solution:
+
+For the maxDepth function:
+
+Time Complexity: O(N) - The algorithm visits each node exactly once, where N is the number of nodes in the binary tree.
+
+Space Complexity: O(H) - The space required on the call stack is proportional to the height of the tree. In the worst case, for a skewed tree, the height H could be equal to the number of nodes N, resulting in O(N) space complexity. For a balanced binary tree, the space complexity is O(log N) where log N is the height of the tree.
+
+For the isBalanced function:
+
+Time Complexity: O(N log N) - In the worst case, the function makes a call to maxDepth for each node in the tree, and for each call to maxDepth, it takes O(log N) time.
+
+Space Complexity: O(H) - Similar to the maxDepth function, the space required on the call stack is proportional to the height of the tree. In the worst case, for a skewed tree, the height H could be equal to the number of nodes N, resulting in O(N) space complexity. For a balanced binary tree, the space complexity is O(log N) where log N is the height of the tree.
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0
+        left_depth = self.maxDepth(root.left)
+        right_depth = self.maxDepth(root.right)
+        return 1 + max(left_depth, right_depth)
+
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        if root is None:
+            return True
+
+        left_depth = self.maxDepth(root.left)
+        right_depth = self.maxDepth(root.right)
+
+        if abs(left_depth - right_depth) <= 1:
+            # Check if both left and right subtrees are balanced
+            return self.isBalanced(root.left) and self.isBalanced(root.right)
+        else:
+            return False
+
+        
