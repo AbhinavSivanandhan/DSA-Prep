@@ -1,6 +1,11 @@
 Problem:
 Given the root of a binary tree, invert the tree, and return its root.
 
+The invertTree function inverts a binary tree by swapping the left and right children of every node.
+
+Time Complexity: O(n), where n is the number of nodes in the tree. This is because each node in the tree is visited exactly once.
+Space Complexity: O(h), where h is the height of the tree. This space is used on the call stack for recursive calls. In the worst case (a completely unbalanced tree), this could be O(n), but it's O(log n) for a balanced tree.
+
 Solution:
 
 # Definition for a binary tree node.
