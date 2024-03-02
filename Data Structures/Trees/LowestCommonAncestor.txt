@@ -1,6 +1,11 @@
 Problem:
 Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
 
+The lowestCommonAncestor function finds the lowest (i.e., deepest) common ancestor of two nodes in a binary search tree.
+
+Time Complexity: O(h), where h is the height of the tree. This is because the algorithm traverses the tree from the root to the lowest common ancestor, without revisiting any nodes.
+Space Complexity: O(1), since the function uses only a few variables and iterates without additional space like a call stack or extra data structures.
+
 Solution:
 # Definition for a binary tree node.
 # class TreeNode:
