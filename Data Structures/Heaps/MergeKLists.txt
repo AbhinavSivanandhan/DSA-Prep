@@ -1,8 +1,15 @@
+ref: https://chat.openai.com/c/c0cc151c-0719-4a1c-992b-a307e58c3ad9
+
+Solution 1:
+
+The time complexity of this code is O(N log k), where N is the total number of nodes across all lists and k is the number of lists. This accounts for the repeated merging process, which combines two lists at a time, reducing the number of lists by approximately half in each iteration of the while loop, leading to a log k number of iterations. Each merge operation involves traversing through the nodes of the lists being merged, contributing to the N factor in the time complexity.
+
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
+
 class Solution:
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
         if not lists or len(lists) == 0:
@@ -30,3 +37,35 @@ class Solution:
             node=node.next
         node.next=l1 or l2
         return dummy.next
+
+
+Solution 2(heap):
+
+The time complexity of this code is O(N log k), where N is the total number of nodes across all lists and k is the number of lists. This accounts for the time to insert or remove each node into the heap (log k for each operation) across all N nodes.
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        head = ListNode(None)
+        curr = head
+        h = []
+        for i in range(len(lists)):
+            if lists[i]:
+                heapq.heappush(h, (lists[i].val, i))
+                lists[i] = lists[i].next
+        
+        while h:
+            val, i = heapq.heappop(h)
+            curr.next = ListNode(val)
+            curr = curr.next
+            if lists[i]:
+                heapq.heappush(h, (lists[i].val, i))
+                lists[i] = lists[i].next
+        
+        return head.next
+
+
