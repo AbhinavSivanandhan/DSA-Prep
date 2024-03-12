@@ -1,0 +1,74 @@
+https://www.geeksforgeeks.org/order-statistic-tree-using-fenwick-tree-bit/
+Given an array of integers with limited range (0 to 1000000). We need to implement an Order statistic tree using fenwick tree. 
+It should support four operations: Insert, Delete, Select and Rank. Here n denotes the size of Fenwick tree and q denotes number of queries. 
+
+Each query should be one of the following 4 operations. 
+
+insertElement(x) – Insert element x into Fenwick tree, with O(log n) worst case time complexity
+deleteElement(x) – Delete element x from fenwick tree, with O(log n) worse case time complexity
+findKthSmallest(k) – Find the k-th smallest element stored in the tree, with O(log n * log n) worst case time complexity
+findRank(x) – Find the rank of element x in the tree, i.e. its index in the sorted list of elements of the tree, with O(log n) time complexity
+
+from typing import List
+
+# Maximum value of elements
+MAX_VAL = 1000001
+
+def update(i: int, add: int, BIT: List[int]) -> None:
+	"""Updates element at index 'i' of BIT."""
+	while i > 0 and i < len(BIT):
+		BIT[i] += add
+		i = i + (i & (-i))
+
+def sum(i: int, BIT: List[int]) -> int:
+	"""Returns cumulative sum of all elements of fenwick tree/BIT from start upto
+	and including element at index 'i'."""
+	ans = 0
+	while i > 0:
+		ans += BIT[i]
+		i = i - (i & (-i))
+
+	return ans
+
+def find_kth_smallest(k: int, BIT: List[int]) -> int:
+	"""Returns lower bound for k in BIT."""
+	# Do binary search in BIT[] for given value k.
+	l = 0
+	h = len(BIT)
+	while l < h:
+		mid = (l + h) // 2
+		if k <= sum(mid, BIT):
+			h = mid
+		else:
+			l = mid+1
+
+	return l
+
+def insert_element(x: int, BIT: List[int]) -> None:
+	"""Insert x into BIT. We basically increment rank of all elements greater than x."""
+	update(x, 1, BIT)
+
+def delete_element(x: int, BIT: List[int]) -> None:
+	"""Delete x from BIT. We basically decreases rank of all elements greater than x."""
+	update(x, -1, BIT)
+
+def find_rank(x: int, BIT: List[int]) -> int:
+	"""Returns rank of element. We basically return sum of elements from start to index x."""
+	return sum(x, BIT)
+
+# Driver code
+BIT = [0] * MAX_VAL
+insert_element(20, BIT)
+insert_element(50, BIT)
+insert_element(30, BIT)
+insert_element(40, BIT)
+
+print(f"2nd Smallest element is {find_kth_smallest(2, BIT)}")
+
+print(f"Rank of 40 is {find_rank(40, BIT)}")
+
+delete_element(40, BIT)
+
+print(f"Rank of 50 is {find_rank(50, BIT)}")
+
+#This code is contributed by Shivam Tiwari

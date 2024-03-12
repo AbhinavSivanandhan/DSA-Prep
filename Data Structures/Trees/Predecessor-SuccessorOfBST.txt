@@ -4,7 +4,6 @@ https://www.geeksforgeeks.org/inorder-predecessor-successor-given-key-bst/
 
 # A BST node
 class Node:
-
 	# Constructor to create a new node
 	def __init__(self, key):
 		self.key = key
