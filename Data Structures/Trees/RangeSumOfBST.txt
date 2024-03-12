@@ -1,0 +1,28 @@
+Given the root node of a binary search tree and two integers low and high, return the sum of values of all nodes with a value in the inclusive range [low, high].
+https://leetcode.com/problems/range-sum-of-bst/description/
+
+Time Complexity: O(N) where N is the total number of nodes. Because it traverses all the nodes at least once.
+Auxiliary Space: O(1) if no recursion stack space is considered. Otherwise, O(h) where h is the height of the tree
+
+In the worst case, h can be the same as N (when the tree is a skewed tree)
+In the best case, h can be the same as logN (when the tree is a complete tree)
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+      def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
+        def inOrder(node):
+            if node is None:
+                return 0
+            sum = 0
+            sum += inOrder(node.left)
+            if low <= node.val <= high:
+                sum += node.val
+            sum += inOrder(node.right)
+            return sum
+        
+        return inOrder(root)
