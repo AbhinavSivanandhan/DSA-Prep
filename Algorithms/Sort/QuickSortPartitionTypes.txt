@@ -1,0 +1,211 @@
+Lomuto:
+''' Python3 implementation QuickSort using Lomuto's partition 
+Scheme.'''
+
+''' This function takes last element as pivot, places 
+the pivot element at its correct position in sorted 
+	array, and places all smaller (smaller than pivot) 
+to left of pivot and all greater elements to right 
+of pivot '''
+def partition(arr, low, high): 
+	
+	# pivot 
+	pivot = arr[high] 
+	
+	# Index of smaller element 
+	i = (low - 1) 
+	for j in range(low, high): 
+		
+		# If current element is smaller than or 
+		# equal to pivot 
+		if (arr[j] <= pivot): 
+			
+			# increment index of smaller element 
+			i += 1
+			arr[i], arr[j] = arr[j], arr[i] 
+	arr[i + 1], arr[high] = arr[high], arr[i + 1] 
+	return (i + 1) 
+	
+''' The main function that implements QuickSort 
+arr --> Array to be sorted, 
+low --> Starting index, 
+high --> Ending index '''
+def quickSort(arr, low, high): 
+	if (low < high): 
+		
+		''' pi is partitioning index, arr[p] is now	 
+		at right place '''
+		pi = partition(arr, low, high) 
+		
+		# Separately sort elements before 
+		# partition and after partition 
+		quickSort(arr, low, pi - 1) 
+		quickSort(arr, pi + 1, high) 
+		
+''' Function to print an array '''
+def printArray(arr, size): 
+	
+	for i in range(size): 
+		print(arr[i], end = " ") 
+	print() 
+
+# Driver code 
+
+arr = [10, 7, 8, 9, 1, 5] 
+n = len(arr) 
+quickSort(arr, 0, n - 1) 
+print("Sorted array:") 
+printArray(arr, n) 
+	
+Hoare:
+
+''' Python implementation of QuickSort using Hoare's 
+partition scheme. '''
+
+''' This function takes first element as pivot, and places 
+	all the elements smaller than the pivot on the left side 
+	and all the elements greater than the pivot on 
+	the right side. It returns the index of the last element 
+	on the smaller side '''
+
+
+def partition(arr, low, high): 
+
+	pivot = arr[low] 
+	i = low - 1
+	j = high + 1
+
+	while (True): 
+
+		# Find leftmost element greater than 
+		# or equal to pivot 
+		i += 1
+		while (arr[i] < pivot): 
+			i += 1
+
+		# Find rightmost element smaller than 
+		# or equal to pivot 
+		j -= 1
+		while (arr[j] > pivot): 
+			j -= 1
+
+		# If two pointers met. 
+		if (i >= j): 
+			return j 
+
+		arr[i], arr[j] = arr[j], arr[i] 
+
+
+''' The main function that implements QuickSort 
+arr --> Array to be sorted, 
+low --> Starting index, 
+high --> Ending index '''
+
+
+def quickSort(arr, low, high): 
+	''' pi is partitioning index, arr[p] is now 
+	at right place '''
+	if (low < high): 
+
+		pi = partition(arr, low, high) 
+
+		# Separately sort elements before 
+		# partition and after partition 
+		quickSort(arr, low, pi) 
+		quickSort(arr, pi + 1, high) 
+
+
+''' Function to print an array '''
+
+
+def printArray(arr, n): 
+	for i in range(n): 
+		print(arr[i], end=" ") 
+	print() 
+
+
+# Driver code 
+arr = [10, 7, 8, 9, 1, 5] 
+n = len(arr) 
+quickSort(arr, 0, n - 1) 
+print("Sorted array:") 
+printArray(arr, n) 
+
+Randomised:
+
+# Python implementation QuickSort using 
+# Lomuto's partition Scheme.
+import random
+
+'''
+The function which implements QuickSort.
+arr :- array to be sorted.
+start :- starting index of the array.
+stop :- ending index of the array.
+'''
+def quicksort(arr, start , stop):
+	if(start < stop):
+		
+		# pivotindex is the index where 
+		# the pivot lies in the array
+		pivotindex = partitionrand(arr,\
+							start, stop)
+		
+		# At this stage the array is 
+		# partially sorted around the pivot. 
+		# Separately sorting the 
+		# left half of the array and the
+		# right half of the array.
+		quicksort(arr , start , pivotindex-1)
+		quicksort(arr, pivotindex + 1, stop)
+
+# This function generates random pivot,
+# swaps the first element with the pivot 
+# and calls the partition function.
+def partitionrand(arr , start, stop):
+
+	# Generating a random number between the 
+	# starting index of the array and the
+	# ending index of the array.
+	randpivot = random.randrange(start, stop)
+
+	# Swapping the starting element of
+	# the array and the pivot
+	arr[start], arr[randpivot] = \
+		arr[randpivot], arr[start]
+	return partition(arr, start, stop)
+
+'''
+This function takes the first element as pivot, 
+places the pivot element at the correct position 
+in the sorted array. All the elements are re-arranged 
+according to the pivot, the elements smaller than the
+pivot is places on the left and the elements
+greater than the pivot is placed to the right of pivot.
+'''
+def partition(arr,start,stop):
+	pivot = start # pivot
+	
+	# a variable to memorize where the 
+	i = start + 1
+	
+	# partition in the array starts from.
+	for j in range(start + 1, stop + 1):
+		
+		# if the current element is smaller
+		# or equal to pivot, shift it to the
+		# left side of the partition.
+		if arr[j] <= arr[pivot]:
+			arr[i] , arr[j] = arr[j] , arr[i]
+			i = i + 1
+	arr[pivot] , arr[i - 1] =\
+			arr[i - 1] , arr[pivot]
+	pivot = i - 1
+	return (pivot)
+
+# Driver Code
+if __name__ == "__main__":
+	array = [10, 7, 8, 9, 1, 5]
+	quicksort(array, 0, len(array) - 1)
+	print(array)
+
