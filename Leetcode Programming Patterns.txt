@@ -1,6 +1,6 @@
 https://www.linkedin.com/posts/ashishps1_7-leetcode-articles-i-wish-id-read-sooner-activity-7067002527166181377-xoG5/?utm_source=share&utm_medium=member_android
 
-7 Leetcode articles I wish I’d read sooner.
+7 Leetcode articles I wish I’d read sooner.(the links won't work)
 
 This would have saved me from solving 1500+ problems:
 
