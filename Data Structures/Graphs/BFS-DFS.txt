@@ -1,0 +1,105 @@
+BFS:
+
+from collections import deque
+
+def bfs_with_depth(graph, start_node):
+    """
+    Perform Breadth-First Search (BFS) on a graph from a start node and return the depth of each node.
+
+    :param graph: A dictionary representation of a graph where the keys are node labels
+                  and the values are lists of neighbors.
+    :param start_node: The node from which BFS should start.
+    :return: A dictionary with nodes as keys and their depths as values.
+    """
+    visited = set()  # Set to keep track of visited nodes.
+    queue = deque([(start_node, 0)])  # Initialize a queue with the start node and its depth.
+    depths = {}  # Dictionary to store the depth of each node.
+
+    while queue:
+        # Dequeue a node and its depth from the queue.
+        node, depth = queue.popleft()
+        if node not in visited:
+            # Visit the node if it has not been visited.
+            visited.add(node)
+            depths[node] = depth  # Record the depth of the current node.
+            # Add the neighbors of the node to the queue with depth + 1.
+            queue.extend((neighbor, depth + 1) for neighbor in graph[node] if neighbor not in visited)
+
+    return depths
+
+# Example usage:
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+start_node = 'A'
+depths = bfs_with_depth(graph, start_node)
+print("Depth of each node starting from A:", depths)
+
+
+BFS(only for a certain depth):
+from collections import deque
+
+def bfs_with_depth(graph, start_node, max_depth=None):
+    """
+    Perform Breadth-First Search (BFS) on a graph from a start node and return the depth of each node.
+    Only explores nodes up to a specified maximum depth if max_depth is not None.
+
+    :param graph: A dictionary representation of a graph where the keys are node labels
+                  and the values are lists of neighbors.
+    :param start_node: The node from which BFS should start.
+    :param max_depth: The maximum depth to explore. If None, explore the entire graph.
+    :return: A dictionary with nodes as keys and their depths as values.
+    """
+    visited = set()  # Set to keep track of visited nodes.
+    queue = deque([(start_node, 0)])  # Initialize a queue with the start node and its depth.
+    depths = {}  # Dictionary to store the depth of each node.
+
+    while queue:
+        node, depth = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            depths[node] = depth  # Record the depth of the current node.
+            # If max_depth is defined and the current depth is equal to max_depth, do not add its neighbors.
+            if max_depth is None or depth < max_depth:
+                queue.extend((neighbor, depth + 1) for neighbor in graph[node] if neighbor not in visited)
+
+    return depths
+
+# Example usage:
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+start_node = 'A'
+# Specify max_depth as desired, e.g., 2. Use None to explore the entire graph.
+max_depth = 2
+depths = bfs_with_depth(graph, start_node, max_depth)
+print(f"Depth of each node starting from A, up to depth {max_depth}:", depths)
+
+DFS:
+def dfs_all(graph):
+    visited = set()  # Keep track of all visited nodes
+    for node in graph:
+        if node not in visited:
+            dfs(graph, node, visited)  # Perform DFS from each unvisited node
+    return visited
+
+def dfs(graph, node, visited):
+    if node not in visited:
+        visited.add(node)
+        print(node)  # Process the node
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                dfs(graph, neighbor, visited)
+
