@@ -86,3 +86,20 @@ start_node = 'A'
 max_depth = 2
 depths = bfs_with_depth(graph, start_node, max_depth)
 print(f"Depth of each node starting from A, up to depth {max_depth}:", depths)
+
+DFS:
+def dfs_all(graph):
+    visited = set()  # Keep track of all visited nodes
+    for node in graph:
+        if node not in visited:
+            dfs(graph, node, visited)  # Perform DFS from each unvisited node
+    return visited
+
+def dfs(graph, node, visited):
+    if node not in visited:
+        visited.add(node)
+        print(node)  # Process the node
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                dfs(graph, neighbor, visited)
+
