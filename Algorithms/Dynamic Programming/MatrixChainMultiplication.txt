@@ -1,0 +1,28 @@
+import numpy as np
+
+# Number of matrices
+n = 6
+
+# Dimensions of the matrices
+# A1 is 15x3, A2 is 3x7, A3 is 7x27, A4 is 27x10, A5 is 10x5, A6 is 5x60
+p = [15, 3, 7, 27, 10, 5, 60]  # Dimension of matrix Ai is p[i-1] x p[i]
+
+# Initialize matrices for dynamic programming
+M = np.zeros((n, n))  # Minimum cost of multiplying matrices
+S = np.zeros((n, n), dtype=int)  # Index of the matrix that achieves the minimum cost
+
+# Main loop for the dynamic programming algorithm
+for chain_length in range(2, n+1):
+    for i in range(1, n - chain_length + 2):
+        j = i + chain_length - 1
+        M[i-1][j-1] = float('inf')
+        for k in range(i, j):
+            cost = M[i-1][k-1] + M[k][j-1] + p[i-1]*p[k]*p[j]
+            if cost < M[i-1][j-1]:
+                M[i-1][j-1] = cost
+                S[i-1][j-1] = k
+
+# The optimal cost is now in M[0][n-1]
+optimal_cost = M[0][n-1]
+
+optimal_cost
