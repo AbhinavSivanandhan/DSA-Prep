@@ -1,0 +1,60 @@
+https://chatgpt.com/c/e0d7ed33-837a-4d58-9f74-2be8df93b0de
+
+Initialize dp array of size n+1 to 0
+
+For i from 1 to n:
+    If i - 1 >= 0:
+        immediate_revenue = dp[i-1] + C[0] - p - h
+        dp[i] = max(dp[i], immediate_revenue)
+    
+    For j from 1 to y:
+        If i - (j + 1) >= 0:
+            rest_revenue = dp[i-(j+1)] + C[j] - p - h
+            dp[i] = max(dp[i], rest_revenue)
+
+Return dp[n]
+
+
+Code:
+def max_revenue_with_full_debug(n, y, C, p, h):
+    # Initialize dp array
+    dp = [0] * (n + 1)
+    print(f"Initial dp array: {dp}")
+
+    # Fill dp array
+    for i in range(1, n + 1):
+        print(f"\nYear {i}:")
+
+        # Case 1: Planting immediately
+        if i - 1 >= 0:
+            immediate_revenue = dp[i-1] + C[0] - p - h
+            print(f"  Calculating immediate planting revenue: dp[{i-1}] ({dp[i-1]}) + C0 ({C[0]}) - p ({p}) - h ({h}) = {immediate_revenue}")
+            print(f"  Comparing: current dp[{i}] ({dp[i]}) vs immediate revenue ({immediate_revenue})")
+            dp[i] = max(dp[i], immediate_revenue)
+            print(f"  Immediate planting: dp[{i}] = {dp[i]}")
+
+        # Cases for resting 1 to y years
+        for j in range(1, y + 1):
+            if i - (j + 1) >= 0:
+                rest_revenue = dp[i-(j+1)] + C[j] - p - h
+                print(f"  Calculating revenue after resting {j} years: dp[{i-(j+1)}] ({dp[i-(j+1)]}) + C{j} ({C[j]}) - p ({p}) - h ({h}) = {rest_revenue}")
+                print(f"  Comparing: current dp[{i}] ({dp[i]}) vs resting {j} years revenue ({rest_revenue})")
+                dp[i] = max(dp[i], rest_revenue)
+                print(f"  Resting {j} years: dp[{i}] = {dp[i]}")
+
+        print(f"  dp array after year {i}: {dp}")
+
+    print(f"\nFinal dp array: {dp}")
+    return dp[n]
+
+# Example usage with full debug
+n = 5
+y = 2
+C = [2, 10, 15]  # C0, C1, C2
+p = 3
+h = 2
+
+max_revenue_value_with_full_debug = max_revenue_with_full_debug(n, y, C, p, h)
+print(f"\nMaximum revenue after {n} years is: {max_revenue_value_with_full_debug}")
+
+
