@@ -1,3 +1,12 @@
 https://leetcode.com/problems/maximum-points-inside-the-square/description/
 Best solution:
 https://leetcode.com/problems/maximum-points-inside-the-square/solutions/5143742/o-n/
+
+class Solution:
+    def maxPointsInsideSquare(self, points: List[List[int]], s: str) -> int:
+        min_sz, second_min_sz = defaultdict(lambda: float('inf')), inf 
+        for sz, tag in zip([max(abs(x), abs(y)) for x, y in points], s):
+            if min_sz[tag] > sz:
+                min_sz[tag], sz = sz, min_sz[tag]
+            second_min_sz = min(second_min_sz, sz)
+        return sum([sz < second_min_sz for sz in min_sz.values()])
