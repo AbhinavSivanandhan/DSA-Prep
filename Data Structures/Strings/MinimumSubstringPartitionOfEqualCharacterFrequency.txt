@@ -1,0 +1,20 @@
+https://leetcode.com/problems/minimum-substring-partition-of-equal-character-frequency/
+
+from collections import defaultdict
+
+class Solution:
+    def minimumSubstringsInPartition(self, s):
+        l = len(s)
+        dp = [0]+[l]*l
+        print(dp)
+
+        for i in range(l):
+            print(range(l))
+            count = defaultdict(int)
+            print(range(i,l))
+            for j in range(i,l):
+                count[s[j]] += 1
+                if len(set(count.values())) == 1: # if substring is balanced
+                    dp[j+1] = min(dp[j+1],dp[i]+1) # find the minimum number of balanced substrings until index j
+
+        return dp[-1]
