@@ -24,3 +24,16 @@ class Solution:
                     dp[i][j] = max(dp[i-1][j], dp[i][j-1])
             
         return dp[-1][-1]
+
+
+1. **Initialize DP Table**: Create a 2D list `dp` filled with zeros, with dimensions `(len(text1) + 1) x (len(text2) + 1)`. This table will store the lengths of the longest common subsequences between prefixes of `text1` and `text2`.
+
+2. **Pad Texts**: Add a space character at the beginning of both `text1` and `text2`. This helps align the indices for dynamic programming.
+
+3. **Dynamic Programming Loop**: Iterate through each character of `text1` and `text2` (skipping the first characters which are spaces):
+   - If characters at the same positions are equal, increment the value in `dp` by 1 compared to the diagonal element.
+   - If characters are not equal, take the maximum value between the element above and the element to the left in the `dp` table.
+
+4. **Return Result**: Return the value at the bottom-right corner of the `dp` table, which represents the length of the longest common subsequence between `text1` and `text2`.
+
+This code efficiently finds the length of the longest common subsequence between two strings using dynamic programming. It's a classic algorithmic technique often used in solving string-related problems.
