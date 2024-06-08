@@ -1,5 +1,30 @@
 # Python3 implementation of QuickSort
- 
+Simplest version:
+def quicksort(A, l, h):
+    if l < h:
+        j = partition(A, l, h)
+        quicksort(A, l, j)
+        quicksort(A, j + 1, h)
+
+def partition(A, l, h):
+    pivot = A[l]
+    i = l
+    j = h
+    while i < j:
+        while i < len(A) - 1 and A[i] <= pivot:
+            i += 1
+        while j > 0 and A[j] > pivot:
+            j -= 1
+        if i < j:
+            A[i], A[j] = A[j], A[i]
+    A[l], A[j] = A[j], A[l]
+    return j
+
+# Example usage:
+A = [6, 5, 8, 9, 3, 10, 15, 12, 16, 2]
+quicksort(A, 0, len(A) - 1)
+print(A)
+
  
 # Function to find the partition position
 def partition(array, low, high):
