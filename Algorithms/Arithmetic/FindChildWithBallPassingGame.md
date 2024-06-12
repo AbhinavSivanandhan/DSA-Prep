@@ -20,3 +20,5 @@ class Solution:
                 direction = -direction
         
         return position
+
+![alt text](image.png)
