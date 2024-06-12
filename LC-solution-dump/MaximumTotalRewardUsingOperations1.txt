@@ -1,0 +1,32 @@
+https://leetcode.com/problems/maximum-total-reward-using-operations-i/description/
+
+First Solution:
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        rewardValues.sort()  # Sort the reward values in ascending order
+        ans = {0}  # Start with a set containing only the initial reward 0
+        for r in rewardValues:
+            new_rewards = set()  # Create a set to store new rewards
+            for x in ans:
+                if r > x:
+                    new_rewards.add(x + r)  # Add the new reward to the set if it can be collected
+            ans.update(new_rewards)  # Update the main set with new rewards
+        return max(ans)  # Return the maximum reward collected
+
+
+Second Solution:
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        rewardValues.sort()  # Sort the reward values in ascending order
+        possible = set()  # Initialize an empty set to store possible total rewards
+        
+        for r in rewardValues:
+            dp = possible.copy()  # Create a copy of the current possible rewards
+            for val in possible:
+                if val < r:
+                    dp.add(val + r)  # Add new possible rewards to the set
+            dp.add(r)  # Include the reward itself in the set
+            possible = dp  # Update the possible set with new rewards
+            
+        return max(possible)  # Return the maximum reward collected
+

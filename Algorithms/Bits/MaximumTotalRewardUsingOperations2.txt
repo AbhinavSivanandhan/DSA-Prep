@@ -1,0 +1,115 @@
+
+https://leetcode.com/problems/maximum-total-reward-using-operations-ii/description/
+
+### Third Solution Explanation (reference, under LC contest folder see 1st/easier solution to same problem)
+
+```python
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        rewardValues = sorted(set(rewardValues))
+        # at the beginning, the x is 0, we set the first bit of binary to indicate x is 0.
+        x = 1
+        for num in rewardValues:
+            # for each reward, only the x < reward can be used
+            # so we only keep the x < reward as validX
+            validX = x & ((1 << num) - 1)
+
+            # for each value in validX, we add num to it
+            # for example, if we have x = 5 (binary 100000) and num = 6
+            # then we will have new x = 11, whose binary = 10000000000
+            # == (100000) << 6
+            x |= validX << num
+
+        # return the largest x as the result
+        return x.bit_length() - 1
+```
+
+### Step-by-Step Explanation
+
+1. **Preprocess Reward Values**:
+   ```python
+   rewardValues = sorted(set(rewardValues))
+   ```
+   - Sort the `rewardValues` and remove duplicates by converting it to a set and then back to a sorted list. This ensures we process each unique reward in ascending order.
+
+2. **Initialize x**:
+   ```python
+   x = 1
+   ```
+   - Initialize `x` as 1. The `x` variable uses bits to track which total rewards are achievable. The initial value of 1 means we start with a base value of 0 (since `x` with binary representation `1` indicates `x = 0`).
+
+3. **Iterate Over Reward Values**:
+   ```python
+   for num in rewardValues:
+   ```
+   - Iterate over each reward value in the sorted list.
+
+4. **Calculate Valid x Values**:
+   ```python
+   validX = x & ((1 << num) - 1)
+   ```
+   - For each reward `num`, calculate the `validX` which consists of all achievable `x` values less than `num`.
+   - `(1 << num) - 1` creates a binary mask with `num` bits set to 1. For example, if `num = 6`, then `(1 << 6) - 1` is `111111` in binary.
+   - `x & ((1 << num) - 1)` keeps only the bits in `x` that are less than `num`.
+
+5. **Update x with New Rewards**:
+   ```python
+   x |= validX << num
+   ```
+   - For each value in `validX`, add `num` to it by left-shifting `validX` by `num` bits and combining it with `x` using the bitwise OR (`|`) operator.
+   - This operation essentially marks the new achievable rewards after adding `num`.
+
+6. **Calculate and Return the Result**:
+   ```python
+   return x.bit_length() - 1
+   ```
+   - The method `x.bit_length()` returns the number of bits required to represent `x` in binary.
+   - Subtracting 1 gives the maximum achievable reward since the initial bit represents `x = 0`.
+
+### Example Walkthrough
+
+Let's go through an example with `rewardValues = [1, 6, 4, 3, 2]`.
+
+1. **Initial Preprocessing**:
+   - Sorted and unique `rewardValues`: `[1, 2, 3, 4, 6]`
+   - Initial `x = 1` (binary `0001`)
+
+2. **First Iteration (`num = 1`)**:
+   - `validX = 1 & (2^1 - 1) = 1 & 1 = 1` (binary `0001`)
+   - `x |= 1 << 1` -> `x = 1 | 2` -> `x = 3` (binary `0011`)
+
+3. **Second Iteration (`num = 2`)**:
+   - `validX = 3 & (2^2 - 1) = 3 & 3 = 3` (binary `0011`)
+   - `x |= 3 << 2` -> `x = 3 | 12` -> `x = 15` (binary `1111`)
+
+4. **Third Iteration (`num = 3`)**:
+   - `validX = 15 & (2^3 - 1) = 15 & 7 = 7` (binary `0111`)
+   - `x |= 7 << 3` -> `x = 15 | 56` -> `x = 63` (binary `111111`)
+
+5. **Fourth Iteration (`num = 4`)**:
+   - `validX = 63 & (2^4 - 1) = 63 & 15 = 15` (binary `1111`)
+   - `x |= 15 << 4` -> `x = 63 | 240` -> `x = 255` (binary `11111111`)
+
+6. **Fifth Iteration (`num = 6`)**:
+   - `validX = 255 & (2^6 - 1) = 255 & 63 = 63` (binary `111111`)
+   - `x |= 63 << 6` -> `x = 255 | 4032` -> `x = 4287` (binary `100001011111`)
+
+### Result Calculation
+
+- `x.bit_length() - 1 = 13 - 1 = 12`
+- The maximum achievable reward is `12`.
+
+### Comparison to Previous Solutions
+
+**Similarities**:
+- **Goal**: All solutions aim to maximize the total reward by considering each reward value.
+- **Sorted Rewards**: Sorting is used to process smaller rewards first.
+
+**Differences**:
+- **Bit Manipulation**: This third solution uses bit manipulation to efficiently track achievable rewards, which is different from the set-based approaches in the first two solutions.
+- **Efficiency**: The bit manipulation approach can be more efficient in terms of space and time complexity for large inputs because it uses integer operations instead of set operations.
+- **Clarity**: The bit manipulation approach may be less intuitive than the set-based approaches, but it is a powerful technique for optimizing performance.
+
+### Summary
+
+This third solution leverages bit manipulation to track and update the set of achievable rewards efficiently. By using bitwise operations, it ensures that all combinations of rewards are considered while maintaining optimal performance. This method can be especially useful for large inputs where traditional set operations may be too slow or memory-intensive.
