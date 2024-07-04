@@ -1,0 +1,113 @@
+### Problem Statement
+
+You are taking a road trip to visit Aunt Mary and need to optimize your route to minimize travel expenses. You can only travel a maximum of 500 miles per day without incurring additional costs. If you travel more than 500 miles in a day, you will incur additional costs for coffee. The cost of coffee for traveling \( n \) miles over 500 in a day is \((n/2)\).
+
+Your route includes a series of hotels located at various mile markers, each with a specific cost associated with staying there. You need to decide at which hotels to stop to minimize the total cost of the trip, which includes both the cost of staying at the hotels and any additional coffee costs for traveling more than 500 miles in a day.
+
+The goal is to determine the minimum total cost to travel from the starting point (0 miles) to the final destination (2700 miles) given the locations and costs of the hotels along the route.
+
+### Input
+
+- A list of hotel mile markers: \( h_0, h_1, h_2, \ldots, h_n \), where \( h_0 \) is the starting point (0 miles) and \( h_{n+1} \) is the final destination (2700 miles).
+- A corresponding list of hotel costs: \( c_0, c_1, c_2, \ldots, c_n \), where \( c_0 \) is the cost at the starting point (0) and \( c_{n+1} \) is the cost at the final destination (0).
+
+### Output
+
+- The minimum total cost to travel from the starting point to the final destination, considering both the hotel costs and any additional coffee costs for traveling more than 500 miles in a day.
+
+### Constraints
+
+- You must stop at each hotel in the order given, but you can choose which hotels to stop at and which to skip.
+- You cannot travel more than 500 miles in a day without incurring additional coffee costs.
+- The coffee cost for traveling \( n \) miles over 500 is calculated as \( \max(0, (n - 500) / 2) \).
+
+### Example
+
+Given the following hotel mile markers and costs:
+- Mile markers: \( [0, 400, 850, 926, 1420, 1540, 1950, 2100, 2400, 2700] \)
+- Costs: \( [0, 56, 75, 46, 76, 49, 60, 55, 87, 0] \)
+
+Find the minimum total cost to travel from 0 miles to 2700 miles, considering both hotel costs and additional coffee costs.
+
+---
+
+### Hints Recap for Solving
+
+1. **Understand the Problem Requirements**: Minimize travel costs including hotel stays and coffee for distances over 500 miles.
+2. **Identify the Variables**: Mile markers \( h_i \) and hotel costs \( c_i \).
+3. **Break Down the Costs**: Hotel costs and additional coffee costs.
+4. **Set Up the Recurrence Relation**: Consider costs to reach each hotel based on all previous hotels.
+5. **Initial Conditions**: Start with 0 cost at 0 miles.
+6. **Calculate Coffee Costs**: Formula for coffee cost if distance > 500 miles.
+7. **Dynamic Programming Table**: Use a table to store minimum costs to reach each hotel.
+8. **Fill the Table**: Iterate through hotels to calculate minimum costs.
+9. **Consider All Possible Routes**: Ensure all routes are evaluated.
+10. **Final Calculation**: The minimum cost to reach the final destination is the last value in the table.
+
+To solve this problem, we need to implement a dynamic programming solution that optimizes the cost of traveling to Aunt Mary’s, taking into account the cost of staying at hotels and the cost of coffee for exceeding 500 miles in a day. Let's break down the problem and provide a recursive solution, prove optimal substructure, and then use a recurrence formula to find the minimum cost.
+
+### Problem Breakdown
+1. **Hotels and Costs**: We have hotels at various mile markers, each with a specific cost.
+2. **Travel Distance**: We can only travel up to 500 miles a day without incurring additional costs.
+3. **Cost Calculation**: If we travel more than 500 miles in a day, the cost of coffee is added.
+
+### Variables Definition
+- \( h_i \): Distance of hotel \( i \) from the start.
+- \( c_i \): Cost of staying at hotel \( i \).
+- \( h_0 \): Starting point (0 miles).
+- \( h_{n+1} \): Final destination (2700 miles).
+- \( c_0 \): Cost of starting point (0).
+- \( c_{n+1} \): Cost of final destination (0).
+
+### Cost Calculation
+- **Hotel cost**: \( c_i \).
+- **Coffee cost**: \( \text{cof}(h_i, h_j) = \max(0, (h_j - h_i - 500) / 2) \).
+
+### Recursive Formula
+To find the minimum cost to travel to hotel \( i \):
+\[ \text{cost}(i) = \min_{0 \leq k < i} (\text{cost}(k) + c_i + \text{cof}(h_k, h_i)) \]
+
+### Optimal Substructure
+The problem exhibits optimal substructure because the minimum cost to reach any hotel depends only on the minimum cost to reach previous hotels plus the cost of traveling from those hotels to the current hotel.
+
+### Dynamic Programming Solution
+We can implement the solution using dynamic programming to fill in a table with the minimum costs to reach each hotel.
+
+Here is the Python code to achieve this:
+
+### Explanation
+1. **Define Distances and Costs**: Initialize the distances and costs arrays.
+2. **Coffee Cost Function**: Define a function to calculate the coffee cost.
+3. **Initialize Cost Array**: Create an array to store the minimum cost to reach each hotel, starting with 0 for the starting point.
+4. **Dynamic Programming Table**: Use nested loops to fill the table based on the recurrence relation.
+5. **Output Minimum Cost**: The final value in the `min_cost` array is the minimum cost to reach the destination.
+
+This approach ensures that we consider all possible routes and select the one with the minimum cost, leveraging the optimal substructure property of the problem.
+
+
+Code:
+# Define the distances and costs
+hotels = [0, 400, 850, 926, 1420, 1540, 1950, 2100, 2400, 2700]
+costs = [0, 56, 75, 46, 76, 49, 60, 55, 87, 0]
+
+# Define the coffee cost function
+def cof(h_i, h_j):
+    return max(0, (h_j - h_i - 500) / 2)
+
+# Initialize the cost array with infinity values
+n = len(hotels)
+min_cost = [float('inf')] * n
+min_cost[0] = 0  # Starting point cost is 0
+
+# Fill the cost array using the recurrence relation
+for i in range(1, n):
+    for k in range(i):
+        min_cost[i] = min(min_cost[i], min_cost[k] + costs[i] + cof(hotels[k], hotels[i]))
+
+# The minimum cost to reach the final destination
+print("The minimum cost is $", min_cost[-1])
+
+# Output the cost table for reference
+print("Index\tCost (c_i)\tDistance (h_i)\tCost to Reach (cost(i))")
+for i in range(n):
+    print(f"{i}\t{costs[i]}\t\t{hotels[i]}\t\t{min_cost[i]}")
