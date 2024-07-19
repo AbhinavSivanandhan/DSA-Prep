@@ -19,3 +19,27 @@ class Solution:
                 l += 1
 
         return (r - l + 1)
+
+Brute force:
+from collections import Counter
+class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        def validRepString(i,j):
+            d=Counter(s[i:j+1])
+            repeatingChar=max(zip(d.values(),d.keys()))[1]
+            del d[repeatingChar]
+            count=0
+            for key in d:
+                count+=d[key]
+            if count<=k:
+                return True
+            else:
+                return False
+        i=0
+        result=0
+        for j in range(0,len(s)):
+            while not validRepString(i,j):
+              i+=1
+            result=max(result,len(s[i:j+1]))
+        return result
+        

@@ -1,0 +1,53 @@
+https://leetcode.com/problems/minimum-window-substring/solutions/26808/here-is-a-10-line-template-that-can-solve-most-substring-problems/
+
+1. Use two pointers: start and end to represent a window.
+2. Move end to find a valid window.
+3. When a valid window is found, move start to find a smaller window.
+To check if a window is valid, we use a map to store (char, count) for chars in t. And use counter for the number of chars of t to be found in s. The key part is m[s[end]]--;. We decrease count for each char in s. If it does not exist in t, the count will be negative.
+
+To really understand this algorithm, please see my code which is much clearer, because there is no code like if(map[s[end++]]++>0) counter++;.
+My code in leetcode: see old submission:
+
+
+My new Solution:
+from collections import Counter
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        cur=Counter() #empty
+        td=Counter(t)
+        ad=Counter()
+        resCount=float('inf')
+        result=""
+        i=0
+        for j in range(len(s)):
+            if s[j] in td: #then add to cur
+                if s[j] in cur:
+                    cur[s[j]]+=1
+                else:
+                    cur[s[j]]=1
+                if td[s[j]]>1: #and remove from td #>1 means, more than 1, then fine. if there's 1, subtracting makes 0, so we delete instead
+                    td[s[j]]-=1
+                else:
+                    del td[s[j]]
+                
+            else: # add to ad
+                if s[j] in ad:
+                    ad[s[j]]+=1
+                else:
+                    ad[s[j]]=1
+            if not td: #if td is empty
+                while(s[i] in ad): #s[j] has to be in ad because it is within i, j range. if not, it is in cur and so don't disturb it
+                    if ad[s[i]]>1:
+                        ad[s[i]]-=1
+                    else:
+                        del ad[s[i]]
+                    i+=1
+                    if resCount>j-i+1: #update result if it is minimum window
+                        resCount=j-i+1
+                        result=s[i:j+1]
+                if resCount>j-i+1: #useful code when ad is empty but cur has all t chars
+                    resCount=j-i+1
+                    result=s[i:j+1]
+        return result
+                
+                
