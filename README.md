@@ -2,7 +2,7 @@
 As I revise DSA, goal for this repository is to have a commit every day. 
 
 Goals:
-- Improve DSA in Python
+- Improve DSA in Python, contains JS Questions too
 
 #https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions (in progress in the excel file)
 
