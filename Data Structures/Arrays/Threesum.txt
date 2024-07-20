@@ -2,6 +2,38 @@ Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]]
 
 Notice that the solution set must not contain duplicate triplets.
 
+Optimal solution(Neetcode):
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        nums.sort()
+
+        for i, a in enumerate(nums):
+            # Skip positive integers
+            if a > 0:
+                break
+            #skip duplicates, i>0 condition is just to avoid indexerror due to i-1
+            if i > 0 and a == nums[i - 1]:
+                continue
+
+            l, r = i + 1, len(nums) - 1 # basically the same as for loop i,j type comparison except that we start after 'a'
+            while l < r:
+                threeSum = a + nums[l] + nums[r]
+                if threeSum > 0: #with this, instead of n^2 search like we do for for loops, we do n search
+                    r -= 1
+                elif threeSum < 0:
+                    l += 1
+                else:
+                    res.append([a, nums[l], nums[r]]) #this strategy has avoided duplicates
+                    l += 1
+                    r -= 1
+                    while nums[l] == nums[l - 1] and l < r: #skips duplicates and ensures each triplet is added only once
+                        l += 1
+                        
+        return res
+
+
+My solution:
 class Solution(object):
     def threeSum(self, nums):
         numsd = {value:index for index, value in enumerate(nums)}
@@ -14,6 +46,34 @@ class Solution(object):
                     triplet.sort()
                     result.append(tuple(triplet))
         return list(set(result))
+
+note that this works and doesn't fail the scenario where index value matches with i, because it store only the latest value in the array in numsd in that first for loop.
+so basically earlier duplicate value of triplet will not have its index in numsd and so trilplet will get added. remember that we take the same triplet in consideration multiple times when we have duplicates, so it is fine if it considers it a valid triplet only once in all those considerations
+
+TLE error:
+class Solution(object):
+    def threeSum(self, nums):
+        from collections import defaultdict
+        
+        # Dictionary to store all indices for each value
+        numsd = defaultdict(list)
+        for index, value in enumerate(nums):
+            numsd[value].append(index)
+        
+        result = set()
+        
+        for i in range(len(nums) - 1):
+            for j in range(i + 1, len(nums)):
+                key = -(nums[i] + nums[j])
+                if key in numsd:
+                    # Check all indices where key occurs
+                    for k in numsd[key]:
+                        if k != i and k != j:
+                            triplet = [nums[i], nums[j], key]
+                            triplet.sort()
+                            result.add(tuple(triplet))
+        
+        return [list(triplet) for triplet in result]
 
 cleaner solution:
 def threeSum(self, nums: List[int]) -> List[List[int]]:
