@@ -29,6 +29,21 @@ The time complexity of this algorithm is O(n), where 'n' is the number of nodes 
 Space Complexity:
 The space complexity is O(1). The algorithm uses only a constant amount of extra space regardless of the size of the linked list. It employs two pointers (temp and twotemp) to traverse the list and detect a cycle. No additional data structures are used, and the space requirements remain constant.
 
+My solution1:
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        slow=head
+        fast=head
+        while slow and fast: #this line handles head is None condition also
+            slow=slow.next
+            if fast.next:
+                fast=fast.next.next
+            else:
+                return False
+            if slow==fast:
+                return True
+        return False
+
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
