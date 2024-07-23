@@ -14,7 +14,28 @@ Time Complexity: O(N * log(N) + N), where N is the number of elements in the num
 
 Space Complexity: O(N), where N is the number of elements in the nums list. The space is used to store the dictionary (Dict) and the list (l). In the worst case, the dictionary could have all unique elements, leading to O(N) space complexity.
 
-Best Solution:
+Best Solution: Bucket sort
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        count = {}
+        freq = [[] for i in range(len(nums) + 1)]
+
+        for n in nums:
+            count[n] = 1 + count.get(n, 0)
+        for n, c in count.items():
+            freq[c].append(n)
+
+        res = []
+        for i in range(len(freq) - 1, 0, -1):
+            for n in freq[i]:
+                res.append(n)
+                if len(res) == k:
+                    return res
+
+        # O(n)
+
+
+Second Best Solution:
 
 Time complexity: O(n + (n+k)*log(n))
 
