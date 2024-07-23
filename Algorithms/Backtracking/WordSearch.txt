@@ -1,0 +1,79 @@
+Same as the one in matrices
+Problem:
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+Optimal Solution:
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        ROWS, COLS = len(board), len(board[0])
+        path = set()
+
+        def dfs(r, c, i):
+            if i == len(word):
+                return True
+            if (
+                min(r, c) < 0
+                or r >= ROWS
+                or c >= COLS
+                or word[i] != board[r][c]
+                or (r, c) in path
+            ):
+                return False
+            path.add((r, c))
+            res = (
+                dfs(r + 1, c, i + 1)
+                or dfs(r - 1, c, i + 1)
+                or dfs(r, c + 1, i + 1)
+                or dfs(r, c - 1, i + 1)
+            )
+            path.remove((r, c))
+            return res
+
+        # To prevent TLE,reverse the word if frequency of the first letter is more than the last letter's
+        count = defaultdict(int, sum(map(Counter, board), Counter()))
+        if count[word[0]] > count[word[-1]]:
+            word = word[::-1]
+            
+        for r in range(ROWS):
+            for c in range(COLS):
+                if dfs(r, c, 0):
+                    return True
+        return False
+
+    # O(n * m * 4^n)
+
+
+
+My inefficient code:
+class Solution:
+    def __init__(self):
+        self.flag=False
+    def existHelper(self, board, word, row, col, pointSet):
+        if len(word)==0:
+            self.flag=True
+            return
+        elif row>=len(board) or col>=len(board[0]) or row<0 or col <0 or (row,col) in pointSet:
+            return
+        elif board[row][col]==word[0]:
+            pointSet.add((row,col))
+            set1=pointSet.copy()
+            set2=pointSet.copy()
+            set3=pointSet.copy()
+            set4=pointSet.copy()
+            word=word[1:]
+            self.existHelper(board,word,row-1,col,set1)
+            self.existHelper(board,word,row,col-1,set2)
+            self.existHelper(board,word,row+1,col,set3)
+            self.existHelper(board,word,row,col+1,set4)
+        else:
+            return
+            
+
+
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                self.existHelper(board,word,row,col,set())
+        return self.flag
+        
