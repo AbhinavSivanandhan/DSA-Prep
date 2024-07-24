@@ -10,11 +10,29 @@ Time Complexity:
 The function has a time complexity of O(n), where n is the length of the input list nums. The function iterates through the list twice: once in the forward pass and once in the backward pass. Each pass takes O(n) time.
 
 Space Complexity:
-The space complexity is O(n) as well. The additional space used is for the res list, which is of length n. The rest of the variables used in the function (like i, postfix, etc.) require constant space. Therefore, the overall space complexity is O(n).
+In algorithm analysis, the space complexity of an algorithm is considered 
+𝑂
+(
+1
+)
+O(1) when the extra space used does not grow with the size of the input, aside from the input and output themselves.
 
+In Code 1, the res array is used to store the result, which is required for the output. Since this array is necessary to store the final results and its size depends on the input size 
+𝑛
+n, it is not counted in the extra space complexity. The only additional variable used is postfix, which is a single integer and does not depend on the input size 
+𝑛
+n. Therefore, the extra space complexity is 
+𝑂
+(
+1
+)
+O(1).
+
+code:
 class Solution:
     def productExceptSelf(self, nums: List[int]) -> List[int]:
         res = [1] * (len(nums))
+
         for i in range(1, len(nums)):
             res[i] = res[i-1] * nums[i-1]
         postfix = 1
@@ -22,17 +40,3 @@ class Solution:
             res[i] *= postfix
             postfix *= nums[i]
         return res
-
-
-class Solution:
-    def productExceptSelf(self, nums: List[int]) -> List[int]:
-        length=len(nums)
-        sol=[1]*length
-        pre = 1
-        post = 1
-        for i in range(length):
-            sol[i] *= pre
-            pre = pre*nums[i]
-            sol[length-i-1] *= post
-            post = post*nums[length-i-1]
-        return(sol)
