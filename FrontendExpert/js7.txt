@@ -2,7 +2,7 @@
 //If you're not using Node.js or want to manually promisify a function, you can do so by wrapping the function in a promise.
 function promisify(callback) {
   return function(...args){
-    return new Promise((resolve, reject) => { //arrow function for resolve or reject. also gets rid of 'this' context
+    return new Promise((resolve, reject) => { //arrow function for resolve or reject. arrow function won't create its own this context(outside function) or anything. so later when we use callback.call(this) it will pick correct object on which callback function was originally called(outside by whoever is using promisify)
       function handleErrorAndValue(error, value){
         if (error == null){ //null or undefined are both handled. if so, resolve and send value to .then() of promise
           resolve(value);
