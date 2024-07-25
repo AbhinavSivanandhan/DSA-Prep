@@ -1,0 +1,28 @@
+my own implementation of call, apply, bind methods:
+
+// **`call`** invokes a function with a specified `this` context and arguments passed individually.
+// **`apply`** is similar to `call` but takes an array-like object for arguments.
+// **`bind`** creates a new function with a specified `this` context and optional pre-set arguments, which can be called later.
+Function.prototype.myCall = function (thisContext, ...args) {
+  //a value or method of an object is automatically 'this' binded to the object
+  //thisContext.func = this; //create a property func on thisContext object. but issue will be if object already had a func property or had some logic where they looped through thisContext properties. we don't want our internal logic to show up there
+  //because of above reason, we use a symbol instead. it is unique. and don't appear in property iteration functions. but we'll still delete it after use. 
+  //thisContext.func(...args)
+  const symbol = Symbol();
+  thisContext[symbol] = this;
+  const returnValue = thisContext[symbol](...args);
+  delete thisContext[symbol];
+  return returnValue;
+};
+
+Function.prototype.myApply = function (thisContext, args = []) {
+  //same logic as above. instead of copy pasting, we're reusing the code
+  return this.myCall(thisContext, ...args); //this binding is for the function that called it and it uses myCall except that it changes the way arguments are fed
+};
+
+Function.prototype.myBind = function (thisContext, ...args) {
+  //bind is also the same except it returns a function
+  return (...newArgs) => this.myApply(thisContext, [...args, ...newArgs]);
+  //Creates a new function that, when called, invokes the original function (this) with a specified this context (thisContext) and a combination of pre-set arguments (args) and arguments provided at the time of the call (newArgs). 
+  //As you know bind() first sets some arguments when defining and assigning to a variable. second time, when calling the function using that variable, new args are provided. 
+};
