@@ -26,3 +26,4 @@ Function.prototype.myBind = function (thisContext, ...args) {
   //Creates a new function that, when called, invokes the original function (this) with a specified this context (thisContext) and a combination of pre-set arguments (args) and arguments provided at the time of the call (newArgs). 
   //As you know bind() first sets some arguments when defining and assigning to a variable. second time, when calling the function using that variable, new args are provided. 
 };
+

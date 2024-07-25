@@ -1,0 +1,19 @@
+//In JavaScript, the promisify method is used to convert a function that uses a callback pattern into one that returns a promise.
+//If you're not using Node.js or want to manually promisify a function, you can do so by wrapping the function in a promise.
+function promisify(callback) {
+  return function(...args){
+    return new Promise((resolve, reject) => { //arrow function for resolve or reject. also gets rid of 'this' context
+      function handleErrorAndValue(error, value){
+        if (error == null){ //null or undefined are both handled. if so, resolve and send value to .then() of promise
+          resolve(value);
+        } else{
+          reject(error); //send error to .catch() of promise
+        }
+      }
+      callback.call(this, ...args, handleErrorAndValue); //this way we maintain this binding, pass args, pass error handler
+    });
+  };
+}
+
+// Do not edit the line below.
+exports.promisify = promisify;
