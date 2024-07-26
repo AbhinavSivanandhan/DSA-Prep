@@ -1,0 +1,36 @@
+//this function takes in a function and returns a throttled function, i.e., a function that can be called only once per delay period.
+//so first time it runs immediately but second time onwards, if the delay is there, it waits for delay to be over
+//we can't just return a function because we also need to return a cancel method on it(note that functions are also objects). so store the function in a variable
+function throttle(callback, delay) {
+  let timerID; //let it just be undefined, for avoiding spamming we will use this
+  let lastCalledTime = 0; //stores previous time the throttled function was called
+
+  const throttledFunction = function(...args){
+    const currentTime = Date.now();
+    const timeSinceLastCall = currentTime - lastCalledTime;
+    const delayRemaining = delay - timeSinceLastCall;
+
+    if (delayRemaining <= 0){
+      lastCalledTime = currentTime;
+      callback.apply(this, args); //call callback with this binding
+    } else {
+      // setTimeout( () => {
+      //   lastCalledTime = Date.now(); //sets time to when it is called, after waiting for delayRemaining
+      //   callback.apply(this, args); 
+      // }, delayRemaining); //only wait for rest of the delay period, not entire delay
+    //to avoid spamming of timeouts due to repeated throttle calls
+      clearTimeout(timerID);//assume spam, clear previous setTimeout
+      timerID = setTimeout(()=>{
+        lastCalledTime = Date.now();
+        callback.apply(this, args);
+      }, delayRemaining);
+    }
+  }
+  throttledFunction.cancel = function(){
+    clearTimeout(timerID); //clear any timeouts to prevent that callback from running
+  };
+  return throttledFunction;
+}
+
+// Do not edit the line below.
+exports.throttle = throttle;
