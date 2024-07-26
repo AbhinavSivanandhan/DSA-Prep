@@ -1,0 +1,70 @@
+The `curry` function provided here takes a function (`callback`) as its argument and returns a new curried version of that function. Currying transforms a function so it can be called with fewer arguments than it expects, returning a new function for the remaining arguments. The provided solution does not concern itself with `this` binding, as mentioned in the problem statement.
+
+Here’s a step-by-step explanation with comments:
+
+```javascript
+function curry(callback) {
+  // The main function to return, which is the curried version of `callback`
+  const curriedCallback = (...args) => { // `args` gathers all the arguments passed into an array
+    if (args.length === 0) { // If no arguments are provided, call the `callback` function
+      return callback(); // Handle case where callback is expected to work without arguments
+    }
+
+    // Return a new function that accepts additional arguments
+    return (...otherArgs) => {
+      if (otherArgs.length === 0) { // If the newly provided arguments are empty, call `callback` with collected arguments
+        return callback(...args); // Call `callback` with all previously gathered arguments
+      }
+
+      // If more arguments are provided, recursively call `curriedCallback`
+      // Combine `args` (previously gathered arguments) and `otherArgs` (new arguments)
+      return curriedCallback(...args, ...otherArgs);
+    };
+  };
+
+  return curriedCallback; // Return the curried function
+}
+
+// Do not edit the line below.
+exports.curry = curry;
+```
+
+### Breakdown of the Code
+
+1. **`function curry(callback)`:**
+   - This is the main function that takes another function `callback` as its argument. The purpose of this function is to return a new, curried version of `callback`.
+
+2. **`const curriedCallback = (...args) => { ... }`:**
+   - `curriedCallback` is an arrow function that uses the rest parameter syntax (`...args`) to collect all arguments passed to it into an array named `args`.
+
+3. **Handling No Arguments:**
+   - `if (args.length === 0)`: If `curriedCallback` is called with no arguments (`args.length === 0`), it immediately calls and returns the result of `callback()`. This handles the edge case where the function might be expected to work without arguments.
+
+4. **Returning a New Function:**
+   - `return (...otherArgs) => { ... }`: This inner arrow function is returned by `curriedCallback` when it receives some arguments (`args.length > 0`). It also uses the rest parameter syntax to gather any new arguments into `otherArgs`.
+
+5. **Handling No New Arguments:**
+   - `if (otherArgs.length === 0)`: If the returned function is called without new arguments, it calls `callback(...args)` with all arguments collected so far. This triggers the final execution of the callback with the gathered arguments.
+
+6. **Recursive Currying:**
+   - `return curriedCallback(...args, ...otherArgs);`: If new arguments are provided, it recursively calls `curriedCallback` with all the previously gathered arguments (`args`) combined with the new arguments (`otherArgs`). This continues the currying process, allowing further arguments to be provided in subsequent calls.
+
+7. **Returning the Curried Function:**
+   - Finally, the `curriedCallback` function is returned by the `curry` function, allowing it to be used wherever a curried version of `callback` is needed.
+
+### Example Usage
+
+If you have a function like `sum(a, b, c)`, you can use the `curry` function to create a curried version:
+
+```javascript
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+const curriedSum = curry(sum);
+console.log(curriedSum(1)(2)(3)); // Outputs: 6
+console.log(curriedSum(1, 2)(3)); // Outputs: 6
+console.log(curriedSum(1)(2, 3)); // Outputs: 6
+```
+
+The curried version `curriedSum` allows partial application, meaning you can call it with one argument at a time, in pairs, or all at once, and it will accumulate the arguments until all are provided, then execute the original `sum` function.
