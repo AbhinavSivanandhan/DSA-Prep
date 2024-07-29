@@ -1,0 +1,19 @@
+Description:
+Given an integer array nums, find a 
+subarray that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+solution:
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        # O(n)/O(1) : Time/Memory
+        res = nums[0] #helps avoid a case where array has just a negative 1 or something
+        curMin, curMax = 1, 1 #neutral value. which can keep product as itself. obviously we can't use 0 here
+
+        for n in nums:
+            oldCurMax = curMax #because it gets updated below
+            curMax = max(n * curMax, n * curMin, n) #basically negative smallest number into a negative n could become larger
+            curMin = min(n * oldCurMax, n * curMin, n) #also, when solution just considers n, it breaks away from previous product
+            res = max(res, curMax) 
+        return res
