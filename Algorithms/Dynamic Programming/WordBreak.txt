@@ -3,6 +3,22 @@ Note that the same word in the dictionary may be reused multiple times in the se
 
 https://leetcode.com/problems/word-break/solutions/3454380/python3-dp-bottom-up-with-step-by-step-explanation/
 
+code1:
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+
+        dp = [False] * (len(s) + 1)
+        dp[len(s)] = True #goal is to place a true flag after each word we identify
+        for i in range(len(s) - 1, -1, -1): #start from end. so we place true flag at start. easier to do this than adjust indices if we had placed true flag at 0 and returned n index flag
+            for w in wordDict:
+                if (i + len(w)) <= len(s) and s[i : i + len(w)] == w: #first condition is a quick check to determine whether to check for the word or not
+                    dp[i] = dp[i + len(w)]
+                if dp[i]:
+                    break
+
+        return dp[0]
+        
+code2:
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         dp = [False] * (len(s) + 1)
