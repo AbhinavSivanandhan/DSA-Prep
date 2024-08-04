@@ -19,3 +19,12 @@ class Solution:
             res = (res<<1) + (n&1)
             n>>=1
         return res
+
+Answer 3:
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        res = len(nums)
+
+        for i in range(len(nums)):
+            res += i - nums[i]
+        return res
