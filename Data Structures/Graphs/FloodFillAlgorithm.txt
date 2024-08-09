@@ -11,16 +11,16 @@ Code:
 class Solution:
     def floodFill(self, image: List[List[int]], sr: int, sc: int, color: int) -> List[List[int]]:
         ffcolor=image[sr][sc]
-        def dfs(sr,sc):
+        def bfs(sr,sc):
             nonlocal ffcolor
             if sr<0 or sr>=len(image) or sc<0 or sc>=len(image[0]):
                 return
             if image[sr][sc]!=color and image[sr][sc]==ffcolor: #image[sr][sc]==0 covered here too
                 image[sr][sc]=color
-                dfs(sr-1,sc)
-                dfs(sr+1,sc)
-                dfs(sr,sc-1)
-                dfs(sr,sc+1)
-        dfs(sr,sc)
+                bfs(sr-1,sc)
+                bfs(sr+1,sc)
+                bfs(sr,sc-1)
+                bfs(sr,sc+1)
+        bfs(sr,sc)
         return image
 
