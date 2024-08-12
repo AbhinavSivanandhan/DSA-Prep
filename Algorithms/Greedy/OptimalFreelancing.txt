@@ -1,0 +1,109 @@
+Problem and explanation:
+
+
+The `optimalFreelancing` function aims to maximize the total payment a freelancer can earn given a list of jobs with specified payments and deadlines. Here's a breakdown of the intuition behind the code:
+
+### Problem Understanding
+
+You have a set of freelance jobs. Each job has:
+1. A payment amount.
+2. A deadline by which the job needs to be completed.
+
+The goal is to schedule these jobs in such a way that you maximize the total payment you receive, given that you can only work on one job per day and you can only complete a job before its deadline.
+
+### Code Explanation
+
+1. **Sort Jobs by Payment (Descending Order)**:
+   ```python
+   jobs.sort(key=lambda job: job["payment"], reverse=True)
+   ```
+   - The list of jobs is sorted by payment in descending order. This means you will try to schedule the highest-paying jobs first. The idea is that you want to prioritize high-payment jobs because they contribute more to the total profit.
+
+2. **Initialize the Timeline**:
+   ```python
+   LENGTH_OF_WEEK = 7
+   timeline = [False] * LENGTH_OF_WEEK
+   ```
+   - The `timeline` array represents each day in the week (7 days in total). `False` indicates that the day is available, while `True` means the day is occupied.
+
+3. **Schedule Jobs**:
+   ```python
+   for job in jobs:
+       maxTime = min((job["deadline"]), LENGTH_OF_WEEK)
+       for time in reversed(range(maxTime)):
+           if timeline[time] == False:
+               timeline[time] = True
+               profit += job["payment"]
+               break
+   ```
+   - For each job, determine the latest possible day it can be completed (`maxTime`), which is the smaller of the job's deadline and the number of days in the week.
+   - Try to place the job starting from the latest possible day (`time` from `maxTime - 1` down to `0`) to the earliest possible day, checking if that day is available (`False`).
+   - If you find an available day, mark it as occupied (`True`) and add the job's payment to the total profit.
+   - Stop trying to schedule this job once it has been successfully placed.
+
+4. **Return Total Profit**:
+   ```python
+   return profit
+   ```
+   - After all jobs have been considered, the function returns the total profit earned by scheduling the jobs optimally.
+
+### Intuitive Summary
+
+The idea is to:
+- Focus first on the most lucrative jobs by sorting them by payment.
+- Try to assign each job to the latest possible day before its deadline to maximize the chance of fitting the job into the schedule.
+- By always placing jobs in the latest available slot, you leave earlier slots open for potentially lower-paying jobs that may need to be scheduled earlier.
+
+This approach leverages the greedy algorithm paradigm by making local optimal choices (placing the highest-paying job in the latest possible available slot) with the hope that these choices lead to a globally optimal solution.
+
+examples:
+Certainly! Here are three concise examples:
+
+### Example 1
+**Input:**
+```json
+[
+    {"payment": 100, "deadline": 2},
+    {"payment": 200, "deadline": 1}
+]
+```
+**Output:** `300`
+
+### Example 2
+**Input:**
+```json
+[
+    {"payment": 50, "deadline": 1},
+    {"payment": 150, "deadline": 2},
+    {"payment": 200, "deadline": 2}
+]
+```
+**Output:** `350`
+
+### Example 3
+**Input:**
+```json
+[
+    {"payment": 70, "deadline": 1},
+    {"payment": 60, "deadline": 1},
+    {"payment": 50, "deadline": 1},
+    {"payment": 40, "deadline": 2}
+]
+```
+**Output:** `110`
+
+code:
+def optimalFreelancing(jobs):
+    LENGTH_OF_WEEK = 7
+    profit = 0
+    jobs.sort(key=lambda job: job["payment"], reverse=True)
+    timeline = [False] * LENGTH_OF_WEEK
+    for job in jobs:
+        maxTime = min((job["deadline"]), LENGTH_OF_WEEK)
+        for time in reversed(range(maxTime)):
+            if timeline[time] == False:
+                timeline[time] = True
+                profit += job["payment"]
+                break
+    return profit
+    
