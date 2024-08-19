@@ -10,6 +10,8 @@ Each BinaryTree node has an integer value, a left child node, and a right child 
 Idea:
 the problem asks for two equal subtrees. Instead, you should compare the sum of the subtree with half of the total sum of the original tree.
 Time and space of O(n)
+Note:
+Another problem, split binary tree such that product of sums is maximum. has similar solution
 Code:
 # This is an input class. Do not edit.
 class BinaryTree:
