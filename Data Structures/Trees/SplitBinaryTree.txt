@@ -1,0 +1,56 @@
+Question:
+Split Binary Tree
+
+Write a function that takes in a Binary Tree with at least one node and checks if that Binary Tree can be split into two Binary Trees of equal sum by removing a single edge. If this split is possible, return the new sum of each Binary Tree, otherwise return 0. Note that you do not need to return the edge that was removed.
+
+The sum of a Binary Tree is the sum of all values in that Binary Tree.
+
+Each BinaryTree node has an integer value, a left child node, and a right child node. Children nodes can either be BinaryTree nodes themselves or None / null.
+
+Idea:
+the problem asks for two equal subtrees. Instead, you should compare the sum of the subtree with half of the total sum of the original tree.
+
+Code:
+# This is an input class. Do not edit.
+class BinaryTree:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+class SplitBinaryTree:
+    def __init__(self):
+        self.sumStore = {}
+        self.answer = None
+        self.root = None
+    def sumTree(self, tree):
+        if tree in self.sumStore:
+            return self.sumStore[tree]
+        elif tree:
+            self.sumStore[tree]=self.sumTree(tree.left)+tree.value+self.sumTree(tree.right)
+            return self.sumStore[tree]
+        else:
+            return 0
+    def inOrderHelper(self, tree):
+        if tree:
+            self.inOrderHelper(tree.left)
+            if 2*self.sumTree(tree)==self.sumTree(self.root):
+                self.answer = self.sumTree(tree)
+            self.inOrderHelper(tree.right)
+    def giveAnswer(self):
+        return self.answer
+    def giveStore(self):
+        return self.sumStore
+    def setRoot(self,tree):
+        self.root=tree
+
+
+def splitBinaryTree(tree):
+    parent=None
+    obj = SplitBinaryTree()
+    obj.setRoot(tree)
+    obj.inOrderHelper(tree)
+    print(obj.giveAnswer())
+
+    result=obj.giveAnswer()
+    return result if result else 0
