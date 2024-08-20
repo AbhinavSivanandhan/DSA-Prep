@@ -1,0 +1,105 @@
+Problem:
+Koko loves to eat bananas. There are n piles of bananas, the ith pile has piles[i] bananas. The guards have gone and will come back in h hours.
+
+Koko can decide her bananas-per-hour eating speed of k. Each hour, she chooses some pile of bananas and eats k bananas from that pile. If the pile has less than k bananas, she eats all of them instead and will not eat any more bananas during this hour.
+
+Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
+
+Return the minimum integer k such that she can eat all the bananas within h hours.
+
+ 
+
+Example 1:
+
+Input: piles = [3,6,7,11], h = 8
+Output: 4
+Example 2:
+
+Input: piles = [30,11,23,4,20], h = 5
+Output: 30
+Example 3:
+
+Input: piles = [30,11,23,4,20], h = 6
+Output: 23
+
+Optimal Solution (Use binary search on brute force solution mentioned before: O(log(max(piles))*len(piles))):
+import math
+
+class Solution:
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        start = 1
+        end = max(piles)
+
+        while start <= end:
+            mid = (start + end) // 2
+            k = mid
+            total_hours = 0
+            
+            for i in piles:
+                total_hours += math.ceil(i / k)
+                
+            if total_hours <= h:
+                end = mid - 1
+            else:
+                start = mid + 1
+
+        return start
+
+Explanation and brute force solution below:
+
+### Understanding the Problem:
+
+Koko needs to eat all the bananas within a given number of hours, `h`. Each pile of bananas has a different amount, and Koko can choose her eating speed `k` (bananas per hour). The goal is to find the minimum possible `k` such that she can finish all the bananas within `h` hours.
+
+### Binary Search Approach:
+
+We use binary search to efficiently find the minimum possible `k`. The idea is to search for `k` between 1 and the maximum number of bananas in any pile (`max(piles)`). 
+
+1. **Initialization:**
+   - `start` is initialized to 1 because the minimum possible speed is 1 banana per hour.
+   - `end` is initialized to `max(piles)` because the maximum possible speed would be eating an entire pile in one hour.
+
+2. **Binary Search Loop:**
+   - We calculate `mid`, which is the candidate speed `k` we are testing.
+   - We then simulate how many hours Koko would need to finish all the piles if she eats at speed `k`.
+
+3. **Calculating Total Hours:**
+   - For each pile, we compute the time required to eat that pile at speed `k` using `math.ceil(i / k)`. This ensures that even if there are fewer than `k` bananas left in a pile, it still counts as a full hour.
+   - We accumulate the total hours needed to eat all piles.
+
+4. **Adjusting the Binary Search Range:**
+   - If `total_hours` is less than or equal to `h`, it means Koko can eat all the bananas at speed `k` or even at a slower speed. Therefore, we try to find a smaller `k` by moving `end` to `mid - 1`.
+   - If `total_hours` is greater than `h`, it means the speed `k` is too slow, so we increase the speed by setting `start` to `mid + 1`.
+
+5. **Why We Don’t Store the Answer:**
+   - In the binary search, once we find that `total_hours <= h`, we know that `k` is a potential answer, but instead of storing it, we continue searching for a smaller `k`.
+   - The reason we don't store the answer is that, in the binary search process, the smallest valid `k` will naturally be found at the end when `start` surpasses `end`. At this point, `start` will hold the smallest `k` that satisfies the condition, which is the correct answer.
+
+### Example Walkthrough:
+
+Suppose we have `piles = [3, 6, 7, 11]` and `h = 8`.
+
+- Initially, `start = 1`, and `end = 11` (since the largest pile is 11).
+- We test `k = 6` (midpoint). Koko needs `1 + 1 + 2 + 2 = 6` hours to finish all piles. Since `6 <= 8`, we try to find a smaller `k` by setting `end = 5`.
+- Next, we test `k = 3`. Koko needs `1 + 2 + 3 + 4 = 10` hours, which is too slow, so we set `start = 4`.
+- We then test `k = 4`. Koko needs `1 + 2 + 2 + 3 = 8` hours, which is exactly `h`. We continue to search for a smaller `k`, so we set `end = 3`.
+- Finally, we test `k = 3` again, and since `start > end`, the binary search ends, and `start` gives us the smallest valid `k`, which is `4`.
+
+### Conclusion:
+
+The binary search effectively narrows down the minimum speed `k` by repeatedly checking the midpoints and adjusting the search range. The reason we don't store the answer each time we find a valid `k` is that the binary search inherently ensures that the smallest valid `k` will be found and returned when the loop exits.
+
+
+Brute Solution (TLE) - given array piles: O(max(piles)*len(piles)):
+class Solution:
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        maxPosK=max(piles)
+        for k in range(1,maxPosK+1):
+            tokens=h
+            for i in piles:
+                tokens-=math.ceil(i/k)
+                if tokens<0:
+                    continue
+            if tokens==0:
+                return k
+        return -1 #we never reach here because of the piles.length <= h constraint
