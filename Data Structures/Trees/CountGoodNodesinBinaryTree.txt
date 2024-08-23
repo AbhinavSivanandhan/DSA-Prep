@@ -1,0 +1,55 @@
+Problem:
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def __init__(self):
+        self.goodNodeCount=0
+    def traverse(self, cur, parentVal):
+        if cur:
+            if parentVal is None:
+                newParentVal=cur.val
+            else:
+                newParentVal=max(parentVal,cur.val)
+            self.traverse(cur.left, newParentVal)
+            if parentVal is None:
+                self.goodNodeCount+=1
+            elif parentVal<=cur.val:
+                self.goodNodeCount+=1
+            self.traverse(cur.right, newParentVal)
+
+    def goodNodes(self, root: TreeNode) -> int:
+        temp=root#preserve root pointer
+        self.traverse(temp, None)
+        return self.goodNodeCount
+        
+Code:
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def __init__(self):
+        self.goodNodeCount=0
+    def traverse(self, cur, parentVal):
+        if cur:
+            if parentVal is None:
+                newParentVal=cur.val
+            else:
+                newParentVal=max(parentVal,cur.val)
+            self.traverse(cur.left, newParentVal)
+            if parentVal is None:
+                self.goodNodeCount+=1
+            elif parentVal<=cur.val:
+                self.goodNodeCount+=1
+            self.traverse(cur.right, newParentVal)
+
+    def goodNodes(self, root: TreeNode) -> int:
+        temp=root#preserve root pointer
+        self.traverse(temp, None)
+        return self.goodNodeCount
