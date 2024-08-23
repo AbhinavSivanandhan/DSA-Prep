@@ -1,0 +1,39 @@
+Binary tree right side view
+
+problem:
+Given the root of a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom.
+
+code:
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def __init__(self):
+        self.levels=defaultdict(list)
+        self.maxDepth=0
+    def traverse(self, root, depth):
+        if root:
+            self.maxDepth=max(self.maxDepth, depth)
+            self.levels[depth].append(root.val)
+            self.traverse(root.left,depth+1)
+            self.traverse(root.right,depth+1)
+
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        depth=0
+        results=[]
+        if root:
+            self.traverse(root,depth)
+            for i in range(0,self.maxDepth+1):
+                results.append(self.levels[i])
+        return results
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        temp=root
+        #level order traversal with only last node printed
+        levels=self.levelOrder(temp)
+        result=[]
+        for level in levels:
+            result.append(level[-1])
+        return result
