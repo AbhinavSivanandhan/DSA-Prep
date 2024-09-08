@@ -8,6 +8,15 @@ int get(int key) Return the value of the key if the key exists, otherwise return
 void put(int key, int value) Update the value of the key if the key exists. Otherwise, add the key-value pair to the cache. If the number of keys exceeds the capacity from this operation, evict the least recently used key.
 The functions get and put must each run in O(1) average time complexity.
 
+The time and space complexity for the `LRUCache` class is as follows:
+
+1. **Time Complexity**:
+   - `get(key)`: O(1) — Accessing a node and moving it to the most recently used position are both constant-time operations.
+   - `put(key, value)`: O(1) — Inserting or updating a node and maintaining the cache size are all constant-time operations.
+
+2. **Space Complexity**:
+   - O(capacity) — The cache stores up to `capacity` key-value pairs and corresponding nodes, and space is proportional to the cache's capacity.
+
 Code:
 class Node:
     def __init__(self, key, val):
@@ -52,3 +61,8 @@ class LRUCache:
             lru = self.left.next
             self.remove(lru)
             del self.cache[lru.key]
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
