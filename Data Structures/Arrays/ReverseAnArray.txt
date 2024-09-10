@@ -1,7 +1,7 @@
 Problem:
 Reverse an array
 
-Code:
+Simple two pointer solution (soln1): TC O(n) SC O(1)
 class Solution:
   def reverseArray(self, nums):
     N=len(nums)-1
@@ -21,3 +21,23 @@ output:
 [6, 5, 4, 3, 2, 1]
 [1]
 []
+
+Solution2 (recursion):
+class Solution:
+  def reverseArray(self, nums):
+    def revHelper(nums,i,j):
+      if i>=j:
+        return
+      else:
+        nums[i],nums[j]=nums[j],nums[i]
+        revHelper(nums,i+1,j-1)
+    revHelper(nums,0,len(nums)-1)
+    return nums
+obj = Solution()
+print(obj.reverseArray([1,2,3,4,5]))
+print(obj.reverseArray([1,2,3,4]))
+print(obj.reverseArray([1,2,3,4,5,6]))
+print(obj.reverseArray([1]))
+print(obj.reverseArray([]))
+
+Time and space of O(n)
