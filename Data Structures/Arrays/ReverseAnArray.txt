@@ -1,0 +1,23 @@
+Problem:
+Reverse an array
+
+Code:
+class Solution:
+  def reverseArray(self, nums):
+    N=len(nums)-1
+    for i in range(0,len(nums)//2):
+      nums[i],nums[N-i]=nums[N-i],nums[i]
+    return nums
+obj = Solution()
+print(obj.reverseArray([1,2,3,4,5]))
+print(obj.reverseArray([1,2,3,4]))
+print(obj.reverseArray([1,2,3,4,5,6]))
+print(obj.reverseArray([1]))
+print(obj.reverseArray([]))
+
+output:
+[5, 4, 3, 2, 1]
+[4, 3, 2, 1]
+[6, 5, 4, 3, 2, 1]
+[1]
+[]
