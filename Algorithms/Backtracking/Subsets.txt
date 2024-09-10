@@ -1,0 +1,83 @@
+The code you've provided is a recursive solution to generate all subsets of a given list of integers. This uses the **Depth-First Search (DFS)** approach to explore all possible subsets. Here's a breakdown of the code and an explanation of how it works:
+
+### Code Breakdown:
+
+```python
+from typing import List
+
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        res = []         # To store all the subsets (the result).
+        subset = []      # To store the current subset being constructed.
+
+        def dfs(i):      # Define a recursive function 'dfs' that takes 'i' as an index.
+            if i >= len(nums):            # Base case: if index 'i' is out of bounds,
+                res.append(subset.copy()) # Append a copy of the current subset to 'res'.
+                return                    # Exit the recursive call.
+            
+            # Decision 1: Include nums[i] in the subset.
+            subset.append(nums[i])  # Add nums[i] to the current subset.
+            dfs(i + 1)              # Recur to process the next element.
+            
+            # Backtrack: remove the last element (nums[i]) to explore other options.
+            subset.pop()            # Remove nums[i] from the current subset.
+            
+            # Decision 2: Exclude nums[i] from the subset.
+            dfs(i + 1)              # Recur to process the next element without nums[i].
+
+        dfs(0)       # Start the recursion from index 0.
+        return res   # Return the list of all subsets.
+```
+
+### Step-by-Step Explanation:
+
+1. **Initialization:**
+   - `res = []`: This is an empty list that will eventually hold all the subsets.
+   - `subset = []`: This is a temporary list used to build each subset as the recursion proceeds.
+
+2. **Recursive Function `dfs(i)`:**
+   - `i` is the current index in the list `nums` that you're processing.
+   - The recursive function will make two decisions for each element in `nums`:
+     - Include the current element in the subset.
+     - Exclude the current element from the subset.
+
+3. **Base Case:**
+   - `if i >= len(nums)`: This checks whether the index `i` has reached or exceeded the length of the list `nums`. If true, it means that we have processed all elements.
+   - `res.append(subset.copy())`: At this point, the current subset (which may or may not include the last element) is added to `res`. The `.copy()` is important because it ensures that changes made to `subset` in future recursive calls won't affect the previously added subsets.
+   - `return`: After adding the current subset to `res`, the function returns, stopping further recursive exploration for that branch.
+
+4. **Recursive Decisions:**
+   - `subset.append(nums[i])`: First, we decide to include `nums[i]` in the current subset.
+   - `dfs(i + 1)`: After including `nums[i]`, we recursively call `dfs` to process the next element (i.e., move to `i + 1`).
+   - `subset.pop()`: After processing the current subset that includes `nums[i]`, we "backtrack" by removing `nums[i]` from `subset`. This allows us to explore the option where `nums[i]` is not included.
+   - `dfs(i + 1)`: We make a second recursive call, this time excluding `nums[i]` and moving to the next index `i + 1`.
+
+5. **Initial Call and Result:**
+   - The recursion starts with `dfs(0)` (i.e., processing the first element of `nums`).
+   - When all recursive calls finish, the result list `res` will contain all possible subsets of `nums`.
+
+### Example Walkthrough:
+
+Let's go through a quick example. Assume `nums = [1, 2]`:
+
+- Start with `dfs(0)`:
+  1. Include `1` → `subset = [1]` → call `dfs(1)`.
+     - Include `2` → `subset = [1, 2]` → call `dfs(2)`.
+       - `i >= len(nums)` → add `[1, 2]` to `res`.
+     - Backtrack (remove `2`) → `subset = [1]` → call `dfs(2)`.
+       - `i >= len(nums)` → add `[1]` to `res`.
+  2. Backtrack (remove `1`) → `subset = []` → call `dfs(1)`.
+     - Include `2` → `subset = [2]` → call `dfs(2)`.
+       - `i >= len(nums)` → add `[2]` to `res`.
+     - Backtrack (remove `2`) → `subset = []` → call `dfs(2)`.
+       - `i >= len(nums)` → add `[]` (empty subset) to `res`.
+
+At the end, `res` will contain all subsets: `[[1, 2], [1], [2], []]`.
+
+### Time and Space Complexity:
+
+- **Time Complexity:** \( O(n . 2^n) \)
+  - Since every element can either be included or excluded, we generate \( 2^n \) subsets. copying the subset takes n time.
+  
+- **Space Complexity:** \( O(n . 2^n) \)
+  - The recursion depth can go up to `n` (the length of `nums`), and we need to store \( 2^n \) subsets, each of which can have up to `n` elements. Thus, space complexity is \( O(n . 2^n) \).
