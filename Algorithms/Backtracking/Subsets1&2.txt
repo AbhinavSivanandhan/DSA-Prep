@@ -1,3 +1,5 @@
+SUBSET 1 :
+
 The code you've provided is a recursive solution to generate all subsets of a given list of integers. This uses the **Depth-First Search (DFS)** approach to explore all possible subsets. Here's a breakdown of the code and an explanation of how it works:
 
 ### Code Breakdown:
@@ -82,3 +84,29 @@ At the end, `res` will contain all subsets: `[[1, 2], [1], [2], []]`.
   
 - **Space Complexity:** \( O(n . 2^n) \)
   - The recursion depth can go up to `n` (the length of `nums`), and we need to store \( 2^n \) subsets, each of which can have up to `n` elements. Thus, space complexity is \( O(n . 2^n) \).
+
+SUBSET 2 :
+Same as subset 1, except that we skip (generating subsets in subbranch of subset tree) for duplicate elements
+Find difference in code between subset1 and subset2 (only 3 lines are different):
+
+Code:
+from typing import List
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        nums.sort() #line1
+        res = []
+        subset = []
+        def dfs(i):
+            if i>=len(nums):
+                res.append(subset.copy())
+                return
+            subset.append(nums[i])
+            dfs(i+1)
+            subset.pop()
+            while i+1<len(nums) and nums[i]==nums[i+1]: #line2
+                i+=1 #line3
+            dfs(i+1)
+        dfs(0)
+        return res
+
+Time and space complexity is the same: worst case is when all elements are unique. average case is better than subset1 since we skip generating tree for duplicate elements
