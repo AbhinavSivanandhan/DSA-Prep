@@ -1,0 +1,33 @@
+Problem: Palindrome Linked List
+Given the head of a singly linked list, return true if it is a 
+palindrome or false otherwise.
+
+Code:
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def isPalindrome(self, head: Optional[ListNode]) -> bool:
+        if not head:
+            return head
+
+        # Find the middle of the linked list using the fast and slow pointers
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        # Reverse the second half of the linked list using in-place reversal
+        prev, curr = None, slow
+        while curr:
+            curr.next, prev, curr = prev, curr, curr.next
+        #two heads are head,prev. compare every node unless empty
+        temp1=head
+        temp2=prev
+        while temp1 and temp2:
+            if temp1.val!=temp2.val:
+                return False
+            temp1,temp2=temp1.next,temp2.next
+        return True
