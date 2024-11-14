@@ -4,28 +4,29 @@ There are a total of numCourses courses you have to take, labeled from 0 to numC
 For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
 Return true if you can finish all courses. Otherwise, return false.
 
-Kahn's algorithm(topological sort)
+DFS's algorithm(topological sort)
 
-Solution:
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        preMap = { i:[] for i in range(numCourses)}
+        preMap = {i:[] for i in range(numCourses)}
         for crs, pre in prerequisites:
             preMap[crs].append(pre)
         
-        visitSet = set()
+        visitSet=set()
         def dfs(crs):
             if crs in visitSet:
                 return False
-            if preMap[crs]==[]:
+            if preMap[crs] == []:
                 return True
             visitSet.add(crs)
-            for pre in preMap[crs]:
-                if not dfs(pre): return False
+            for pre in preMap[crs]: #this part of problem is the main logic. essentially a loop schecker
+                if not dfs[pre]:
+                    return False
             visitSet.remove(crs)
-            preMap[crs]=[]
+            preMap[crs] = [] #done with checking for prereqs of this adj list node so remove it so that we don't check again. like striking off in a checklist
             return True
-        for crs in range(numCourses):
-            if not dfs(crs): return False
         
+        for crs in range(numCourses):
+            if not dfs(crs):
+                return False
         return True
