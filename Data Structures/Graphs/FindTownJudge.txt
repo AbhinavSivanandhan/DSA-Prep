@@ -1,0 +1,42 @@
+Problem:
+In a town, there are n people labeled from 1 to n. There is a rumor that one of these people is secretly the town judge.
+
+If the town judge exists, then:
+
+The town judge trusts nobody.
+Everybody (except for the town judge) trusts the town judge.
+There is exactly one person that satisfies properties 1 and 2.
+You are given an array trust where trust[i] = [ai, bi] representing that the person labeled ai trusts the person labeled bi. If a trust relationship does not exist in trust array, then such a trust relationship does not exist.
+
+Return the label of the town judge if the town judge exists and can be identified, or return -1 otherwise.
+
+Approach:
+The approach I used is based on indegree and outdegree counting. Here's a concise hint:
+
+For each person, track how many others trust them (indegree) and how many they trust (outdegree).
+The judge is the person who has an indegree of n-1 and an outdegree of 0.
+If exactly one such person exists, return them as the judge.
+If no such person exists, return -1.
+This method directly identifies the judge by leveraging counting of trust relationships, and avoids unnecessary graph construction or traversal.
+
+Code:
+class Solution:
+    def findJudge(self, n: int, trust: List[List[int]]) -> int:
+        if n == 1:
+            return 1  # If there's only one person, they are trivially the judge
+        
+        # Initialize indegree and outdegree for each person
+        indegree = [0] * (n + 1)  # indegree[i] is how many people trust person i
+        outdegree = [0] * (n + 1)  # outdegree[i] is how many people person i trusts
+        
+        # Process each trust relationship
+        for a, b in trust:
+            outdegree[a] += 1
+            indegree[b] += 1
+        
+        # Find the person who is trusted by everyone (indegree == n-1) and trusts no one (outdegree == 0)
+        for i in range(1, n + 1):
+            if indegree[i] == n - 1 and outdegree[i] == 0:
+                return i
+        
+        return -1  # No judge found
