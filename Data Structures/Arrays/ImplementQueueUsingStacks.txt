@@ -1,0 +1,44 @@
+Two implementation, Naive and Amortised (efficient time just like queue despite using stacks, average time complexity around O(1) or so basically)
+
+need two stacks, one to pop out of and another stores in reverse order for easy pop (that is s2 stack, during this time s1 stack can still store for puh operation as we will pop out of s2 before coming to reverse s1 again
+
+for amortised: 10:12 timestamp in https://www.youtube.com/watch?v=eanwa3ht3YQ&ab_channel=NeetCodeIO
+
+timestamp 10:44 is why only 1 pop operation takes O(n) time, that too if it comes after many push operations. average is still constant
+
+empty: (check both stacks are empty )
+peek: same as pop operation but instead of popping it, just return top/-1 index (-1 index is not indexing operation it is top operation so we aren't violating constraint)
+
+Code:
+class MyQueue:
+
+    def __init__(self):
+        self.s1 = []
+        self.s2 = []
+
+    def push(self, x: int) -> None:
+        self.s1.append(x)
+
+    def pop(self) -> int:
+        if not self.s2:
+            while self.s1:
+                self.s2.append(self.s1.pop())
+        return self.s2.pop()
+
+    def peek(self) -> int:
+        if not self.s2:
+            while self.s1:
+                self.s2.append(self.s1.pop())
+        return self.s2[-1]
+        
+
+    def empty(self) -> bool:
+        return max(len(self.s1),len(self.s2))==0 #which means no element in either
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
