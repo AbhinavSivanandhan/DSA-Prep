@@ -31,3 +31,33 @@ class Solution:
             idx = revealOrder[i]
             result[idx] = sortedList[i]
         return result
+
+Additional notes:
+result represents the final state of the deck:
+
+result is initialized as an empty list of the same length as the deck ([0] * len(deck)).
+By keeping revealOrder intact as a sequence of indices, we can directly map sorted card values to their proper indices in result.
+Mapping sorted cards to positions:
+
+We iterate through the sorted deck (sortedList) and map each card to its corresponding position in result using the revealOrder indices.
+This ensures that every card is placed in the correct position as determined by the reveal order.
+Key Benefit of This Approach:
+By separating the roles:
+
+revealOrder strictly determines the positions.
+result stores the final output.
+This avoids overwriting critical information in revealOrder, ensuring correctness and clarity.
+
+Visual Example:
+Consider deck = [17, 13, 11, 2, 3, 5, 7].
+
+Sorted deck: [2, 3, 5, 7, 11, 13, 17]
+Reveal order (revealOrder): [0, 2, 4, 6, 1, 3, 5]
+Mapping (using result):
+Place 2 (sorted[0]) at position 0 → result = [2, 0, 0, 0, 0, 0, 0]
+Place 3 (sorted[1]) at position 2 → result = [2, 0, 3, 0, 0, 0, 0]
+Place 5 (sorted[2]) at position 4 → result = [2, 0, 3, 0, 5, 0, 0]
+And so on...
+Final result = [2, 13, 3, 11, 5, 17, 7].
+
+By separating the mapping logic, we ensure the indices are correctly used without being lost during the process.
