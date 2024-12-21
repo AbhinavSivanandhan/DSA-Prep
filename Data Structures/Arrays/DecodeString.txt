@@ -1,0 +1,52 @@
+Problem:
+Given an encoded string, return its decoded string.
+
+The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times. Note that k is guaranteed to be a positive integer.
+
+You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, k. For example, there will not be input like 3a or 2[4].
+
+The test cases are generated so that the length of the output will never exceed 105.
+
+Example 1:
+
+Input: s = "3[a]2[bc]"
+Output: "aaabcbc"
+Example 2:
+
+Input: s = "3[a2[c]]"
+Output: "accaccacc"
+Example 3:
+
+Input: s = "2[abc]3[cd]ef"
+Output: "abcabccdcdcdef"
+
+Input: s = "54[fgd2[ghd]]ed
+
+Code:
+class Solution:
+    def decodeString(self, s: str) -> str:
+        # Initialize an empty stack to store characters or substrings
+        stack = []
+
+        # Iterate over each character in the input string
+        for i in range(len(s)):
+            # If the character is not ']', just push it onto the stack
+            if s[i] != ']':
+                stack.append(s[i])
+            else:
+                # When encountering ']', begin to decode the string inside the brackets
+                substr = ""
+                # Pop characters from the stack until we encounter '[' (start of substring)
+                while stack[-1] != '[':
+                    substr = stack.pop() + substr  # Construct the substring in reverse order
+                stack.pop()  # Remove the '[' from the stack
+
+                # Now, extract the multiplier (k) which is a number before the '['
+                k = ""
+                while stack and stack[-1].isdigit():
+                    k = stack.pop() + k  # Build the multiplier number in reverse order(since number is stored by character and can be multiple digit number)
+                # Append the decoded string (multiply the substring 'substr' by the multiplier 'k')
+                stack.append(int(k) * substr)
+
+        # Join all characters/substrings in the stack to get the final decoded string
+        return "".join(stack)
