@@ -1,0 +1,24 @@
+
+Hint: Time complexity is the same as brute force, but see that space complexity can be significatnly reduces using dp for the sums, also even further slightly optimised using a set (SC: O(sum(nums))). 
+We use a set because all we need to check is the unique combinations of sums of different elements and find if there exists a sum(n)/2 in array. if target exists, return true. otherwise false
+
+Implementation has a tricky part: we can't update a set when iterating through it, so we use another one by extending it with values from dp, and adding the new sums too
+
+Code:
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        if sum(nums)%2 != 0: #odd sum, means not possible, efficient edge case
+            return False
+        dp = set() #set to store different sums of values
+        dp.add(0) #sum of 0 always exists regardless of what array is given, base case
+        target = sum(nums)//2 #as we're finding equal partition
+        for i in range(len(nums)):#considering every element in nums array
+            #can't modify a set which is being iterated on so use a copy
+            tempdp = dp.copy()
+            #for every sumvalue in dp
+            for t in dp:
+                if t+nums[i]==target: #check if current elements helps add upto target
+                    return True #found target,therefore subset, so stop
+                tempdp.add(t+nums[i]) #add to set of all sums 
+            dp = tempdp #extend dp with new values we've just got due to current element
+        return False #didn't find target
