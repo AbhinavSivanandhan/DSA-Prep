@@ -1,8 +1,10 @@
 
-Hint: Time complexity is the same as brute force, but see that space complexity can be significatnly reduces using dp for the sums, also even further slightly optimised using a set (SC: O(sum(nums))). 
+Hint for optimal solution: Time complexity is the same as brute force, but see that space complexity can be significatnly reduces using dp for the sums, also even further slightly optimised using a set (SC: O(sum(nums))). 
 We use a set because all we need to check is the unique combinations of sums of different elements and find if there exists a sum(n)/2 in array. if target exists, return true. otherwise false
 
 Implementation has a tricky part: we can't update a set when iterating through it, so we use another one by extending it with values from dp, and adding the new sums too
+
+Hint for common dp solution: O(sum(len(nums)))
 
 Code:
 class Solution:
