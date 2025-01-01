@@ -1,0 +1,124 @@
+Problem:
+You are given an integer array nums. A subsequence of nums is called a square streak if:
+
+The length of the subsequence is at least 2, and
+after sorting the subsequence, each element (except the first element) is the square of the previous number.
+Return the length of the longest square streak in nums, or return -1 if there is no square streak.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
+Code for most intuitive easy solution: 
+TC: O(nlogn) due to sorting unique numbers(worst case n), n for other operations
+SC: O(n) for the set
+
+class Solution:
+    def longestSquareStreak(self, nums: List[int]) -> int:
+        # Sort and convert list to a set for quick lookup
+        num_set=sorted(set(nums))
+        num_set=set(num_set)
+        longest_streak = 0
+        
+        # Check for square streak starting with each number
+        for num in nums:
+            streak_length = 0
+            current = num
+            
+            # Continue as long as we find the square in the set
+            while current in num_set:
+                streak_length += 1
+                current = current * current  # Square the current number
+            
+            # Update longest streak if this one is the longest so far
+            if streak_length >= 2:
+                longest_streak = max(longest_streak, streak_length)
+        
+        # If no streak of at least 2 was found, return -1
+        return longest_streak if longest_streak >= 2 else -1
+
+Optimal code:
+TC: O(nlogn)
+SC: O(n)
+
+class Solution:
+    def longestSquareStreak(self, nums: List[int]) -> int:
+        nums = sorted(set(nums))
+        dp={i:1 for i in nums}
+        longest=1
+        for i in nums:
+            sq= i**2
+            if sq in dp:
+                dp[sq]= dp[i]+1
+                if dp[sq]==5: return dp[sq] #optimise further based on give constraints, optional line
+                longest=max(dp[sq], longest)
+        return longest if longest!=1 else -1
+
+Slightly more complex but somewhat intuitive too:
+Union Find approach: 
+TC : O(nlogn)
+SC: O(n)
+class UnionFind():
+    def __init__(self):
+        # Initialize the UnionFind structure
+        self.rank = {}  # This dictionary stores the size of the sets
+        self.parent = {}  # This dictionary stores the parent of each element
+        self.maxrank = 0  # Keeps track of the largest set (largest square streak)
+
+    def add(self, node):
+        # Add a new element to UnionFind
+        self.parent[node] = node  # Initially, the element is its own parent (it’s a set of one element)
+        self.rank[node] = 1  # The size of the set containing only this element is 1
+
+    def find(self, n1):
+        # Find the root (representative) of the set containing n1
+        if self.parent[n1] != n1:
+            # If n1 is not its own parent, compress the path and recursively find its root
+            self.parent[n1] = self.find(self.parent[n1])
+        return self.parent[n1]  # Return the root of n1's set
+
+    def union(self, n1, n2):
+        # Join the sets containing n1 and n2
+        p1, p2 = self.find(n1), self.find(n2)  # Get the roots (parents) of n1 and n2
+        if p1 == p2:
+            return  # If both elements are already in the same set, do nothing
+        
+        # Union by rank: attach the smaller set to the larger set
+        if self.rank[p1] > self.rank[p2]:
+            self.parent[p2] = p1  # Set p1 as the parent of p2
+            self.rank[p1] += self.rank[p2]  # Update the rank (size) of p1
+            # Track the largest set size
+            if self.rank[p1] > self.maxrank:
+                self.maxrank = self.rank[p1]
+        else:
+            self.parent[p1] = p2  # Set p2 as the parent of p1
+            self.rank[p2] += self.rank[p1]  # Update the rank (size) of p2
+            # Track the largest set size
+            if self.rank[p2] > self.maxrank:
+                self.maxrank = self.rank[p2]
+        
+        # If we find a set with size 5, we return 5 immediately
+        if self.maxrank == 5:
+            return 5
+
+class Solution:
+    def longestSquareStreak(self, nums: List[int]) -> int:
+        nums = set(nums)  # Remove duplicates from the input
+        uf = UnionFind()  # Create an instance of UnionFind to track sets
+        
+        # Iterate through each number in the set of numbers
+        for i in nums:
+            sq = i ** 2  # Calculate the square of the current number
+            
+            if sq in nums:  # If the square of the number is also in the set
+                # Make sure both the number and its square are in the UnionFind structure
+                if i not in uf.parent:
+                    uf.add(i)  # Add i to UnionFind if it's not already there
+                if sq not in uf.parent:
+                    uf.add(sq)  # Add sq to UnionFind if it's not already there
+                
+                # Union the number and its square to link them in the same set
+                if uf.union(i, sq):
+                    return 5  # If the maximum set size becomes 5, return 5 immediately
+        
+        # After processing all numbers, return the largest set size found
+        # If no set with size >= 2 was found, return -1
+        return uf.maxrank if uf.maxrank != 0 else -1
