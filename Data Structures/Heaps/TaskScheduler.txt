@@ -1,0 +1,79 @@
+
+#see highly detailed explanation below this code
+
+Code:
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        count = Counter(tasks)
+        maxHeap = [-cnt for cnt in count.values()]
+        heapq.heapify(maxHeap)
+
+        time = 0
+        q = deque()  # pairs of [-cnt, idleTime]
+        while maxHeap or q:
+            time += 1
+
+            if not maxHeap:
+                time = q[0][1]
+            else:
+                cnt = 1 + heapq.heappop(maxHeap)
+                if cnt:
+                    q.append([cnt, time + n])
+            if q and q[0][1] == time:
+                heapq.heappush(maxHeap, q.popleft()[0])
+        return time
+
+
+Highly detailed code:
+
+from collections import Counter, deque
+import heapq
+from typing import List
+
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        # Count the frequency of each task
+        count = Counter(tasks)
+        print(f"Task frequencies: {count}")
+
+        # Create a max-heap with negative values (maxHeap simulates a priority queue)
+        maxHeap = [-cnt for cnt in count.values()]
+        heapq.heapify(maxHeap)
+        print(f"Initial maxHeap (negative counts for max-heap simulation): {maxHeap}")
+
+        time = 0  # Keeps track of the total time
+        q = deque()  # Queue to store tasks during their cooldown period: [remaining_count, next_available_time]
+
+        # Continue while there are tasks to process (in heap or queue)
+        while maxHeap or q:
+            time += 1  # Time progresses by 1 unit
+            print(f"\nTime {time} begins...")
+
+            # If there are tasks in the maxHeap, process the most frequent one
+            if maxHeap:
+                cnt = 1 + heapq.heappop(maxHeap)  # Decrease task count by 1
+                print(f"Processing a task, remaining count: {-cnt + 1}")
+                if cnt:  # If there are still instances of this task
+                    q.append([cnt, time + n])  # Add it to the cooldown queue
+                    print(f"Task added to cooldown queue. Cooldown until time {time + n}.")
+            else:
+                print("No tasks available to process. CPU is idle.")
+
+            # Check if a task's cooldown has finished
+            if q and q[0][1] == time:  # If the front task in the queue is ready
+                task_ready = q.popleft()
+                heapq.heappush(maxHeap, task_ready[0])  # Push it back to the heap
+                print(f"Task with count {task_ready[0]} is back in the maxHeap.")
+
+            # Print the state of maxHeap and the cooldown queue at the end of the time unit
+            print(f"Current maxHeap: {maxHeap}")
+            print(f"Cooldown queue: {list(q)}")
+
+        print(f"\nTotal time required: {time}")
+        return time
+
+
+tasks = ["A", "A", "A", "B", "B", "B"]
+n = 2
+solution = Solution()
+solution.leastInterval(tasks, n)
