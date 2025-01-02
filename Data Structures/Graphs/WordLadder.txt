@@ -1,0 +1,46 @@
+A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
+
+Every adjacent pair of words differs by a single letter.
+Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
+sk == endWord
+Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.
+
+hint:
+Word ladder is kind of like subsets problem, so once you pick a word, can’t pick it again, but order doesn’t really matter
+
+Time Complexity:
+O(N * M * 26):
+N is the number of words in the dictionary (size of wordList).
+M is the length of each word.
+For each word, we check all possible transformations (26 possibilities for each character), resulting in a time complexity of O(N * M * 26).
+Space Complexity:
+O(N * M):
+The space complexity is dominated by the wordList and the queue used in BFS.
+The queue stores each word along with the transformation length, and the set for the dictionary (wordList) holds all words, both requiring O(N * M) s
+
+Code:
+
+class Solution:
+    def ladderLength(self, start: str, end: str, wordList: List[str]) -> int:
+        if end not in wordList:
+            return 0
+
+        wordList = set(wordList)
+        queue = deque([(start, 1)])  # Each element is a tuple (word, current transformation length)
+
+        while queue:
+            word, length = queue.popleft()
+            
+            if word == end:
+                return length
+            
+            # Try all possible one-letter transformations
+            for i in range(len(word)):
+                for c in 'abcdefghijklmnopqrstuvwxyz':#set of characters possible in wordlist
+                    new_word = word[:i] + c + word[i+1:]
+                    
+                    if new_word in wordList:
+                        wordList.remove(new_word)  # Remove to prevent re-visiting the same word
+                        queue.append((new_word, length + 1))
+
+        return 0  # If no transformation is found
