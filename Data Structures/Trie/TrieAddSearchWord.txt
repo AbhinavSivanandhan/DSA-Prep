@@ -1,4 +1,4 @@
-class TrieNode: #stores children-values(keys) and EOF
+class TrieNode: #stores children-values(keys) and EOW
     def __init__(self):  
         self.children = {}
         self.word = False 
