@@ -15,6 +15,7 @@ The term gcd(a, b) denotes the greatest common divisor of a and b.
 
 The term lcm(a, b) denotes the least common multiple of a and b.
 
+hint: arg unpacking+math libraries
 
 code:
 
