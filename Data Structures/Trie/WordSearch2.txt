@@ -3,6 +3,9 @@ Given an m x n board of characters and a list of strings words, return all words
 
 Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
 
+Hint: Don't make the board a trie, that is brute force and will take w*m*n*(4^mn) time (m,n are board dimensions and w is number of words in word list(so basically see the board positions for every word). this is so inefficient and expensive)
+instead do the reverse, make the word list a trie instead so you can search for one or the other and find them
+
 Solution:
 class TrieNode:
     def __init__(self):
