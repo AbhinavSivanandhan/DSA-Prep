@@ -13,7 +13,7 @@ Note that the grouping (1 11 06) is invalid because "06" cannot be mapped into '
 
 Given a string s containing only digits, return the number of ways to decode it.
 
-Optimal Solution:
+Optimal Solution: time O(n), space O(1)
 class Solution:
     def numDecodings(self, s: str) -> int:
         if not s or s[0] == "0":
@@ -33,7 +33,7 @@ class Solution:
         return curr
 
 
-second-best Solution:
+second-best Solution: time O(n), space O(n)
 
 class Solution:
     def numDecodings(self, s: str) -> int:
