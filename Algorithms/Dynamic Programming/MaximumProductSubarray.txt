@@ -17,3 +17,19 @@ class Solution:
             curMin = min(n * oldCurMax, n * curMin, n) #also, when solution just considers n, it breaks away from previous product
             res = max(res, curMax) 
         return res
+
+alternative explanation:
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        if len(nums)==0:
+            return 0
+        res = nums[0]
+        curMin, curMax = 1, 1 #multiplicative identity
+        for num in nums:
+            tmp = curMax*num #we store curmax as we're about to modify for curmax before it is used in curmin
+            #either break array and star from current num, or num*cur max for max value, or number(negative)*curMin(negative) which will give new max(eg:-2*-14)
+            #do this and find max of thos values and min of those values
+            curMax = max(num, tmp, num*curMin) 
+            curMin = min(num, tmp, num*curMin)
+            res=max(res, curMax) #store current max
+        return res

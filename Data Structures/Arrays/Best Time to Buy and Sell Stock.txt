@@ -8,6 +8,19 @@ New Solution:
 Time Complexity: O(n)
 Space Complexity: O(1)
 
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        maxP = 0
+        minBuy = prices[0] #since constraint is 1 <= prices.length <= 105. if not i would have taken float('inf) as its value
+
+        for sell in prices:
+            maxP = max(maxP, sell - minBuy)
+            minBuy = min(minBuy, sell)
+        return maxP
+
+
+Old Solution2: (same efficiency as above)
+
 Code:
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
