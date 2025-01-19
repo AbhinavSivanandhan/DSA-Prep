@@ -8,6 +8,41 @@ To check if a window is valid, we use a map to store (char, count) for chars in 
 To really understand this algorithm, please see my code which is much clearer, because there is no code like if(map[s[end++]]++>0) counter++;.
 My code in leetcode: see old submission:
 
+Optimal Solution:
+**Time complexity: O(n)**
+
+**Space complexity: O(m)**
+
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if t=="":
+            return ""
+        
+        countT, window = {}, {}
+        for c in t:
+            countT[c] = 1 + countT.get(c,0) #avoids keyerror, alternative way is to use defaultdict, but
+        
+        have, need = 0, len(countT) #basically a dp total tally variable to checking key matches of window, not freq match, avoids checking frequency every time
+        res, resLen = [-1, -1], float('infinity') # as we want to minimise reslen
+        l=0
+        for r in range(len(s)): #sliding window right point, this is linear time solution
+            window[s[r]]=1+window.get(s[r], 0)
+            if s[r] in countT and window[s[r]] == countT[s[r]]: #one freq matched, update total tally 
+                have +=1 #increment only upon match, not for excess chars, so have tally is not corrupted/inflated
+            while have == need: #if total tally matches
+                if (r-l+1) < resLen: #better result obtained, so optimise every time this happens
+                    res = [l,r]
+                    resLen = r-l+1
+                #check if we can optimise more, so increment l pointer to reduce window size
+                window[s[l]]-=1
+                if s[l] in countT and window[s[l]] < countT[s[l]]: #means we just reduced too much, so taly is gone, solution will continue moving window
+                    have-=1
+                l+=1
+        l, r = res #res contains indices that the substring spans
+        return s[l: r+1] if resLen != float('inf') else ""
+                
+
+                    
 
 My new Solution:
 from collections import Counter
