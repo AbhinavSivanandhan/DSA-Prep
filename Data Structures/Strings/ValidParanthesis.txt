@@ -44,6 +44,7 @@ class Solution:
                 return False
         
         return not stack
+        
         #last line basically does
         #if len(stack)==0:
         #    return True
