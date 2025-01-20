@@ -14,7 +14,10 @@ Input: nums = [3,4,5,1,2]
 Output: 1
 Explanation: The original array was [1,2,3,4,5] rotated 3 times.
 
-Solution:
+Simple and optimal+intuitive solution:
+
+
+Optimal Solution:
 class Solution:
     def findMin(self, nums: List[int]) -> int:
         start = 0
@@ -28,3 +31,35 @@ class Solution:
                 end=mid
             
         return nums[start]  
+
+Detailed Expanation of above code:
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        start = 0
+        end = len(nums) - 1
+        minv = float('inf')  # To track the minimum value found so far
+        print(f"Initial Array: {nums}")
+        print(f"Initial Start: {start}, End: {end}, Mid: Not yet calculated\n")
+
+        while mid <= end:  # Loop continues as long as start <= end
+            mid = (start + end) // 2
+            print(f"Start: {start}, Mid: {mid}, End: {end}")
+            print(f"nums[start]: {nums[start]}, nums[mid]: {nums[mid]}, nums[end]: {nums[end]}")
+
+            # Update the minimum value
+            minv = min(minv, nums[mid])
+            print(f"Updated minimum so far: {minv}")
+
+            # Decide which side to search next
+            if nums[mid] > nums[end]:  # Minimum must be in the right half
+                print(f"nums[mid] > nums[end]: Minimum must be in the right half.")
+                start = mid + 1
+                print(f"Updating Start to {start}\n")
+            else:  # Minimum must be in the left half or mid itself
+                print(f"nums[mid] <= nums[end]: Minimum must be in the left half or mid itself.")
+                end = mid - 1
+                print(f"Updating End to {end}\n")
+
+        print(f"Final Start: {start}, End: {end} (Loop ends because start > end)")
+        print(f"Final minimum value: {minv}")
+        return minv

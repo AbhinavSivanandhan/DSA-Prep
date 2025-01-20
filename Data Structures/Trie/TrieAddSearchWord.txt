@@ -1,12 +1,14 @@
 Problem:
 
+**Time complexity:**
 
+**O(n) for addWord(),** 
 
-- **addWord(word)**: Time complexity is **O(L)**, where `L` is the length of the word. Space complexity is **O(L)** for the trie structure.
+**O(n) for search() without wildcards, O(26^n) for search() with wildcards**
 
-- **search(word)**: Time complexity is **O(L * 26^D)**, where `L` is the word length and `D` is the maximum depth of the trie. Space complexity is **O(L)** due to recursion stack.
+**Space complexity: O(t+n)**
 
-- Overall, the space complexity is **O(n * L + L)**, where `n` is the number of words and `L` is the average word length.
+Where n is the length of the string(also max recursion stack depth) and t is the total number of TrieNodes created in the Trie.
 
 Code:
 
@@ -16,7 +18,6 @@ class TrieNode: #stores children-values(keys) and EOW
         self.word = False 
 
 class WordDictionary:
-
     def __init__(self):
         self.root = TrieNode()
 
@@ -31,7 +32,6 @@ class WordDictionary:
     def search(self, word: str) -> bool:
         def dfs(j, root):
             cur = root
-            
             for i in range(j, len(word)):
                 c = word[i]
                 if c==".":
