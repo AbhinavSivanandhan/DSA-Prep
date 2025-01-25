@@ -4,7 +4,9 @@ Return true if you can reach the last index, or false otherwise.
 
 https://www.youtube.com/watch?v=Yan0cv2cLy8
 7:50
-
+Greedy:
+**Time complexity: O(n)**
+**Space complexity: O(1)**
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
         goal = len(nums) - 1
@@ -13,3 +15,31 @@ class Solution:
             if i + nums[i] >= goal:
                 goal = i
         return goal == 0
+
+
+DP (Top-down) - most intuitive :
+
+**Time complexity: O(n^2)**
+**Space complexity: O(n)**
+
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        memo = {}
+
+        def dfs(i):
+            if i in memo: #index marked in cache as dead end (False means deadend)
+                return memo[i]
+            if i == len(nums) - 1: #last index found
+                return True
+            if nums[i] == 0: #current index is a deadend as no way forward
+                return False
+            
+            end = min(len(nums), i + nums[i] + 1) #avoids overshooting and leading to indexerror
+            for j in range(i + 1, end):
+                if dfs(j):
+                    memo[i] = True
+                    return True
+            memo[i] = False #we couldn't reach end(not True), so mark this index as deadend
+            return False #marked False, no return False
+
+        return dfs(0)
