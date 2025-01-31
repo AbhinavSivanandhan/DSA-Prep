@@ -1,0 +1,62 @@
+Description
+Design an algorithm to encode a list of strings to a single string. The encoded string is then decoded back to the original list of strings.
+
+Please implement encode and decode
+
+Example 1:
+
+Input: ["neet","code","love","you"]
+
+Output:["neet","code","love","you"]
+Example 2:
+
+Input: ["we","say",":","yes"]
+
+Output: ["we","say",":","yes"]
+Constraints:
+
+0 <= strs.length < 100
+0 <= strs[i].length < 200
+strs[i] contains only UTF-8 characters.
+
+class Solution:
+    
+    def encode(self, strs: List[str]) -> str:
+        res = ""
+        for s in strs:
+            res += str(len(s)) + "#" + s
+        return res
+
+    def decode(self, s: str) -> List[str]:
+        res = []
+        i = 0
+        
+        while i < len(s):
+            j = i
+            while s[j] != '#':
+                j += 1
+            length = int(s[i:j])
+            i = j + 1
+            j = i + length
+            res.append(s[i:j])
+            i = j
+            
+        return res
+
+Problem is what if the word contains the character we’re using to delimit. so in that case we have to use unique character(s) that will definitely not be in the string
+
+Another constraint is that, there can be no state stored. we can’t store indices on the string we encode or something like that to support. it should stand on its own, be stateless
+
+https://neetcode.io/problems/string-encode-and-decode
+
+Logic is simple, the large string is stores in format: length(str1) # str length(str2) # str etc.
+
+so it is only minimum characters used to delimit. 
+
+how do we ensure that we don’t delimit confused by some character in between? Decode function basically uses the length given before the string to skip indicdes of string, essentially only checking/traversing on the delimitter characters
+
+**Time complexity: O(m) for encode() and decode().**
+
+**Space complexity: O(1) for encode() and decode().**
+
+Where m is the sum of lengths of all the strings and n is the number of strings.
