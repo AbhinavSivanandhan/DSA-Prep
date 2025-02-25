@@ -55,39 +55,48 @@ The test cases are generated such that the number of unique combinations that su
 
 Code1:
 class Solution:
-    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
         res = []
+        candidates.sort()
+
         def dfs(i, cur, total):
             if total == target:
                 res.append(cur.copy())
                 return
-            if i >= len(candidates) or total > target:
+            if total > target or i == len(candidates):
                 return
-
+            #include candidates[i]
             cur.append(candidates[i])
-            dfs(i, cur, total + candidates[i])
+            dfs(i + 1, cur, total + candidates[i])
+	          #exclude candidates[i]
             cur.pop()
-            dfs(i + 1, cur, total)
 
+            
+            while i + 1 < len(candidates) and candidates[i] == candidates[i+1]:
+                i += 1
+            dfs(i + 1, cur, total)
+            
         dfs(0, [], 0)
         return res
 
-Code 2 (very similar to code 1):
+Code 2 (very similar to code 1, but simpler handling of duplicate combinations):
 class Solution:
-    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        res = []
-        cur=[]
-        def dfs(i, total):
+    def combinationSum2(self, candidates, target):
+        res = set()
+        candidates.sort()
+
+        def generate_subsets(i, cur, total):
             if total == target:
-                res.append(cur.copy())
+                res.add(tuple(cur))  
                 return
-            if i >= len(candidates) or total > target:
+            if total > target or i == len(candidates):
                 return
 
             cur.append(candidates[i])
-            dfs(i, total + candidates[i])
+            generate_subsets(i + 1, cur, total + candidates[i])
             cur.pop()
-            dfs(i + 1, total)
 
-        dfs(0, 0)
-        return res
+            generate_subsets(i + 1, cur, total)
+
+        generate_subsets(0, [], 0)
+        return [list(combination) for combination in res]
