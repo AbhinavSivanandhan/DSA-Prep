@@ -90,23 +90,25 @@ Same as subset 1, except that we skip (generating subsets in subbranch of subset
 Find difference in code between subset1 and subset2 (only 3 lines are different):
 
 Code:
-from typing import List
 class Solution:
-    def subsets(self, nums: List[int]) -> List[List[int]]:
-        nums.sort() #line1
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
         res = []
-        subset = []
-        def dfs(i):
-            if i>=len(nums):
-                res.append(subset.copy())
+        nums.sort()
+
+        def backtrack(i, subset):
+            if i == len(nums):
+                res.append(subset[::])
                 return
+
             subset.append(nums[i])
-            dfs(i+1)
+            backtrack(i + 1, subset)
             subset.pop()
-            while i+1<len(nums) and nums[i]==nums[i+1]: #line2
-                i+=1 #line3
-            dfs(i+1)
-        dfs(0)
+
+            while i + 1 < len(nums) and nums[i] == nums[i + 1]:
+                i += 1
+            backtrack(i + 1, subset)
+
+        backtrack(0, [])
         return res
 
 Time and space complexity is the same: worst case is when all elements are unique. average case is better than subset1 since we skip generating tree for duplicate elements
