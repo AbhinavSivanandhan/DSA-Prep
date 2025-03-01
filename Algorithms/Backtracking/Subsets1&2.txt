@@ -112,3 +112,6 @@ class Solution:
         return res
 
 Time and space complexity is the same: worst case is when all elements are unique. average case is better than subset1 since we skip generating tree for duplicate elements
+**Time complexity: O(n∗2n)**
+
+**Space complexity: O(2n)**
