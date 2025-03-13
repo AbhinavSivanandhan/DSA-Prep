@@ -1,9 +1,10 @@
-A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
+**Hash Map - Two passes solution (one to store, one to map)**
 
-Construct a deep copy of the list. The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. None of the pointers in the new list should point to nodes in the original list.
-Return the head of the copied linked list.
+**Time complexity: O(n)**
 
-code:
+**Space complexity: O(n)**
+
+```python
 """
 # Definition for a Node.
 class Node:
@@ -12,32 +13,293 @@ class Node:
         self.next = next
         self.random = random
 """
-
-
-"""
-# Definition for a Node.
-class Node:
-    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
-        self.val = int(x)
-        self.next = next
-        self.random = random
-"""
-
 
 class Solution:
-    def copyRandomList(self, head: "Node") -> "Node":
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
         oldToCopy = {None: None}
 
         cur = head
-        while cur: #create mapping with copy nodes
+        while cur:
             copy = Node(cur.val)
             oldToCopy[cur] = copy
             cur = cur.next
         cur = head
-        while cur: #use mapping to recreate pointer connections
+        while cur:
             copy = oldToCopy[cur]
             copy.next = oldToCopy[cur.next]
             copy.random = oldToCopy[cur.random]
             cur = cur.next
         return oldToCopy[head]
+```
 
+**Without hashmap (constant space solution):**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(1)**
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+"""
+
+class Solution:
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        if head is None:
+            return None
+        
+        l1 = head
+        while l1 is not None:
+            l2 = Node(l1.val)
+            l2.next = l1.next
+            l1.next = l2
+            l1 = l2.next
+            
+        newHead = head.next
+        
+        l1 = head
+        while l1 is not None:
+            if l1.random is not None:
+                l1.next.random = l1.random.next
+            l1 = l1.next.next
+            
+        l1 = head
+        while l1 is not None:
+            l2 = l1.next
+            l1.next = l2.next
+            if l2.next is not None:
+                l2.next = l2.next.next
+            l1 = l1.next
+            
+        return newHead
+```
+
+### **🚀 Understanding the Copy List with Random Pointer Algorithm**
+
+This code **efficiently copies a linked list** where each node has two pointers:
+
+1. **`next` pointer** → Points to the next node in the list.
+2. **`random` pointer** → Points to **any node** (or `None`) in the list.
+
+---
+
+## **🔍 Step-by-Step Explanation**
+
+We use a **3-pass strategy** to copy the list **without using extra space for a hashmap**.
+
+---
+
+### **📌 Step 1: Interleave Nodes (First While Loop)**
+
+💡 **Goal:** Create a **copy node** next to each original node.
+
+### **How it Works**
+
+1. **Iterate through the list**, creating a **copy of each node** (`l2`).
+2. **Insert each copy (`l2`) right after the original node (`l1`)**.
+3. **Adjust pointers** to interleave original and copied nodes.
+
+### **Example**
+
+```
+Original List:   A → B → C → D
+                 ↘   ↘   ↘   ↘
+                 X    Y    Z   None  (Random Pointers)
+
+After Interleaving:
+                 A → A' → B → B' → C → C' → D → D'
+                 ↘   ↘   ↘   ↘   ↘   ↘   ↘   ↘
+                 X    Y    Z   None  (Random Pointers Unset)
+
+```
+
+### **Code**
+
+```python
+l1 = head
+while l1 is not None:
+    l2 = Node(l1.val)  # Create a copy of l1
+    l2.next = l1.next  # Point new node to next original node
+    l1.next = l2       # Insert the new node after the original
+    l1 = l2.next       # Move to the next original node
+
+```
+
+---
+
+### **📌 Step 2: Copy Random Pointers (Second While Loop)**
+
+💡 **Goal:** Set the **`random` pointer** for the copied nodes.
+
+### **How it Works**
+
+- Each original node **already has a copy next to it**.
+- If an original node has a `random` pointer:
+    - **Copy its `random` pointer** to its corresponding copied node.
+
+### **Example**
+
+```
+Original:   A → A' → B → B' → C → C' → D → D'
+            ↘          ↘          ↘
+            X'         Y'         Z'     (Copied Random Pointers)
+
+```
+
+### **Code**
+
+```python
+l1 = head
+while l1 is not None:
+    if l1.random is not None:
+        l1.next.random = l1.random.next  # Copy random pointer
+    l1 = l1.next.next  # Move to next original node
+
+```
+
+---
+
+### **📌 Step 3: Separate the Copied List (Third While Loop)**
+
+💡 **Goal:** Separate the copied list from the original.
+
+### **How it Works**
+
+1. **Extract all copied nodes** (`A' → B' → C' → D'`).
+2. **Restore the original list structure** (`A → B → C → D`).
+
+### **Example**
+
+```
+Before Separating:
+A → A' → B → B' → C → C' → D → D'
+
+After Separating:
+Copied List:    A' → B' → C' → D'
+Original List:  A → B → C → D
+
+```
+
+### **Code**
+
+```python
+l1 = head
+while l1 is not None:
+    l2 = l1.next  # Copied node
+    l1.next = l2.next  # Restore original list
+    if l2.next is not None:
+        l2.next = l2.next.next  # Connect copied nodes
+    l1 = l1.next  # Move forward
+
+```
+
+---
+
+## **✅ Final Output**
+
+- A **fully copied linked list** with `next` and `random` pointers correctly set.
+- The **original list is unchanged**.
+
+---
+
+## **⏳ Time and Space Complexity**
+
+| Complexity | Explanation |
+| --- | --- |
+| **Time Complexity:** **O(n)** | We traverse the list **three times** (O(n) per traversal). |
+| **Space Complexity:** **O(1)** | No extra space (only modifies pointers in-place). |
+
+🚀 **This approach is optimal because it avoids using extra memory (hashmap) while still copying `random` pointers correctly!**
+
+Would you like a **visual diagram** to see how the nodes connect? 😊
+
+### **📌 Simple Explanation of the While Loop**
+
+This loop **copies the random pointers** from the original nodes to their corresponding copied nodes.
+
+---
+
+### **💡 What’s Happening?**
+
+- Each original node (`l1`) has a **copy (`l1.next`) right next to it**.
+- If an original node **has a `random` pointer**, we copy it to the **corresponding copied node**.
+- The copied node’s `random` pointer should point to **the copy** of wherever the original’s `random` points.
+
+---
+
+### **🔍 Step-by-Step Breakdown**
+
+### **Before Running the Loop (Interleaved List)**
+
+```
+Original List:   A → B → C → D
+                 ↘   ↘   ↘   ↘
+                 X    Y    Z   None  (Random Pointers)
+
+Interleaved:     A → A' → B → B' → C → C' → D → D'
+                 ↘         ↘         ↘
+                 X'        Y'        Z'     (Copied Randoms Not Set Yet)
+
+```
+
+### **How the Loop Works**
+
+1. Start at the **original node** (`l1 = head`).
+2. If `l1` has a **random pointer**, set `l1.next.random` to **`l1.random.next`** (copy of the random node).
+3. Move to the **next original node** (`l1 = l1.next.next`).
+
+---
+
+### **📝 Code Walkthrough**
+
+```python
+l1 = head
+while l1 is not None:
+    if l1.random is not None:
+        l1.next.random = l1.random.next  # Copy random pointer
+    l1 = l1.next.next  # Move to the next original node
+
+```
+
+---
+
+### **✅ Example**
+
+### **Given List**
+
+```
+Original List:
+A → B → C → D
+A.random → C
+B.random → A
+C.random → D
+D.random → B
+
+```
+
+### **Step-by-Step Execution**
+
+| **`l1` (Original Node)** | **`l1.random` (Original Random)** | **Copied Node (`l1.next`)** | **Copied Random (`l1.next.random`)** |
+| --- | --- | --- | --- |
+| `A` | `C` | `A'` | `C'` (Copied) |
+| `B` | `A` | `B'` | `A'` (Copied) |
+| `C` | `D` | `C'` | `D'` (Copied) |
+| `D` | `B` | `D'` | `B'` (Copied) |
+
+Now, all copied nodes have the **correct random pointers**.
+
+---
+
+### **🔹 Final Takeaway**
+
+- **`l1.random`** points to an original node.
+- **`l1.random.next`** is its **copied version**.
+- We set **`l1.next.random = l1.random.next`** to copy the random link.
+- **Move to the next original node using `l1 = l1.next.next`**.
+
+Would you like a **visual diagram** to clarify? 🚀
