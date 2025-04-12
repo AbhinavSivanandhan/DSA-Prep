@@ -17,6 +17,11 @@ The time and space complexity for the `LRUCache` class is as follows:
 2. **Space Complexity**:
    - O(capacity) — The cache stores up to `capacity` key-value pairs and corresponding nodes, and space is proportional to the cache's capacity.
 
+or
+**Time complexity: O(1) for each put() and get() operation.**
+
+**Space complexity: O(n)**
+
 Code:
 class Node:
     def __init__(self, key, val):
