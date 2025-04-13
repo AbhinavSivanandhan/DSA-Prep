@@ -1,3 +1,16 @@
+Notes:
+should find closest time stamp closest( less than or equal to) the value in get request
+
+insertion sort the values array by timestamp, then binary search for get(so worst case TC is logn). although problem constraint assures the sorting is not necessary due to leetcode constraint (problem specific assumption!)
+
+**Binary Search (Array)**
+
+**Time complexity: O(1) for set() and O(log⁡n) for get().**
+
+**Space complexity: O(m∗n)**
+
+Where n is the total number of values associated with a key and m is the total number of keys.
+
 class TimeMap:
 
     def __init__(self):
