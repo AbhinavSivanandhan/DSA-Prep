@@ -1,0 +1,54 @@
+Hint: Similar to Longest Common Subsequence
+
+basically same as lcs, keep matching s1 and s2 at i and j, and move on to the nextchar(making overall remaining parts of the two strings as the subproblems solved recursively
+
+Full explanation in image below, entirely sufficient:
+
+![image.png](attachment:b7c22a14-16ad-42e9-8e73-2fc0fd345384:image.png)
+
+note that if we use else clause, edit distance will increase by one (cost is 1). then we choose one of the three operations and move on to next. if clause is similar but 0 cost.
+
+Edge case: note that if one string is empty, another is of length n, easily we can say edit distance in n, no need to do any computation
+
+start filling 2D DP table based on that edge case
+
+![image.png](attachment:fd460a13-2580-4937-a25f-68c0340f2f53:image.png)
+
+but if values are equal(no edit cost added), we just check minimum value in next cell and assign it to ourselves, otherwise we pick that minimum value + cost of current operation to make values equal
+
+Bottom up DP is better (the picture below is top-down, WHICH WE ARE NOT USING, it is just to show the 3 directions)
+
+![image.png](attachment:78a483f4-97ac-4af8-800c-555ef1513d9e:image.png)
+
+Bottom up approach
+
+always take minimum from those adjacent 3 positions
+
+![image.png](attachment:d8dc50e5-01d6-411d-b8e5-2b3affcba94a:image.png)
+
+**Dynamic Programming (Bottom - up):**
+
+**Time complexity: O(m∗n)**
+
+**Space complexity: O(m∗n)**
+
+Where m is the length of the string s1 and n is the length of the string s2.
+
+```python
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        dp = [[float("inf")] * (len(word2) + 1) for i in range(len(word1) + 1)]
+
+        for j in range(len(word2) + 1):
+            dp[len(word1)][j] = len(word2) - j
+        for i in range(len(word1) + 1):
+            dp[i][len(word2)] = len(word1) - i
+
+        for i in range(len(word1) - 1, -1, -1):
+            for j in range(len(word2) - 1, -1, -1):
+                if word1[i] == word2[j]:
+                    dp[i][j] = dp[i + 1][j + 1]
+                else:
+                    dp[i][j] = 1 + min(dp[i + 1][j], dp[i][j + 1], dp[i + 1][j + 1])
+        return dp[0][0]
+```
