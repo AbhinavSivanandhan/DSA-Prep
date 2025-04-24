@@ -1,0 +1,45 @@
+Unique  - so remember - can be difficult
+
+Greedy intuition:
+
+“”” Actually, the reason why it works is simple, and it happens because of two factors.
+First, if you moved to some value, and your total sum is greater than zero, then it means, that previous values did bring some value to the outcome. For example, we have gas = [2,3,0] and cost = [0,0,5]. If we take just solely value 3 without 2, it wouldn't be enough to pass the last station, but previous values definitely bring some value to the outcome.
+Second, if we know, that there's definitely has to be a solution. Then, we may assume, that it has to be the smallest possible value, as I said before it may bring the most value to the result “””
+
+
+
+![image.png](attachment:5cf644da-ece3-4f66-a54c-98eec86f46a9:image.png)
+
+try every starting position,
+
+if it goes to negative then it won’t work, cross it out as potential starting position, reset to 0, then try with next one till we find greedy one
+
+if we reach end of array, then we know it’s a possible unique solution
+
+edge case easy: if sum(gas)<sum(cost), then no need to even check, can easily just say solution doesn’t exist
+
+if we didn’t hit edge case, we’re guaranteed to get a unique solution, so keep checking till we do, keep incrementing starting index (res variable)
+
+**Greedy Solution**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(1)**
+
+```python
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        if sum(gas) < sum(cost):
+            return -1
+
+        total = 0
+        res = 0
+        for i in range(len(gas)):
+            total += (gas[i] - cost[i])
+
+            if total < 0:
+                total = 0
+                res = i + 1
+
+        return res
+```
