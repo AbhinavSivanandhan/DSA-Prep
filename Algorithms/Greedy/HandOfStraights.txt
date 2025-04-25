@@ -1,0 +1,55 @@
+Greedy solution
+
+Find minimum value, and from that value, use a hashmap to count frequency of all elements
+
+![image.png](attachment:a6e6b3d2-5e65-4bac-8bec-86ddd83ede38:image.png)
+
+from minimum value, try to make a group as large as possible. decrement count as you pick an element
+
+group sizes should be divisible by given value for variable-input groupSize
+
+note: add hashmap keys into minheap so that we can retrieve minimum value in constant time instead of directly going through all keys in linear time
+
+time complexity is logn * n to go through n given elements with each operation and to find min (operation time being logn)
+
+![image.png](attachment:79b0b3ab-960d-4316-83e4-90044815fffb:image.png)
+
+Edge cases for false:
+
+1. if not able to get group of 3. eg: above group is 6,7,9 then we can’t use it so we return false
+2. in below example
+
+![image.png](attachment:12030d6a-4912-4468-a8ae-b0e825c47d4d:image.png)
+
+as you can see, we ran out of 2s even though a minimum 1 exists. as we know, we pop out elements of 0 occurence, but here we can’t do that from the minheap since minimum is still 1. so we know that we have reached a false scenario and so return false.  as we can’t form group due to missing element
+
+**Greedy solution using hashmap + minheap**
+
+**Time complexity: O(nlog⁡n)**
+
+**Space complexity: O(n)**
+
+```python
+class Solution:
+    def isNStraightHand(self, hand: List[int], groupSize: int) -> bool:
+        if len(hand) % groupSize:
+            return False
+
+        count = {}
+        for n in hand:
+            count[n] = 1 + count.get(n, 0)
+
+        minH = list(count.keys())
+        heapq.heapify(minH)
+        while minH:
+            first = minH[0]
+            for i in range(first, first + groupSize):
+                if i not in count:
+                    return False
+                count[i] -= 1
+                if count[i] == 0:
+                    if i != minH[0]:
+                        return False
+                    heapq.heappop(minH)
+        return True
+```

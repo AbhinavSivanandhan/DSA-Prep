@@ -1,0 +1,25 @@
+Hint: 1 key observation is that any triplet with a value at a index greater than corresponding target triplet value is useless and should be excluded from list.
+
+Use remaining triplets and instead of brute force going through each triplet using backtracking or recursion using the max operation they suggest, we can simply identify triplets that have the value (equal to) that we are looking for wrt target triplet. if such triplets exist, easily we can say that answer exists, no need to do operations
+
+O(n) time solution
+
+**Greedy**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(1)**
+
+```python
+class Solution:
+    def mergeTriplets(self, triplets: List[List[int]], target: List[int]) -> bool:
+        good = set()
+
+        for t in triplets:
+            if t[0] > target[0] or t[1] > target[1] or t[2] > target[2]:
+                continue
+            for i, v in enumerate(t):
+                if v == target[i]:
+                    good.add(i) #basically like marking the index as found
+        return len(good) == 3 #all 3 indices found, note that set tolerates duplicates
+```
