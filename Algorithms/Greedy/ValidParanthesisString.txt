@@ -1,0 +1,40 @@
+Hint: We can never allow count of left paranthesis to be less than right paranthesis
+
+for the given string, draw a tree, use 3 branches whenever you get to wildcard to denote the 3 possible options/characters it could be
+
+![image.png](attachment:8a3d7c18-bcbb-4da9-8204-402e40bc1555:image.png)
+
+tree gets bigger the more we use wildcards. evaluate all paths till we identify a valid one
+
+DP memoization makes it easier. TC becomes n^3 instead of 3^n . n^3 since we make a cache of n^2 and to calculate each cell takes n time.
+
+Greedy solution is very difficult to intuitively think. to figure it out in n time.
+
+use 2 variables to represent possible counts of left/open paranthesis that are pending or unresolved(which determine validity) (range of possibilites based on what we choose for wild card. make sure it is valid, pointers of range should never become negative, if it does handle it )
+
+eg: in code below leftMin - 1 means we closed/resolved an open paranthesis using wildcard as closed/right paranthesis. leftMin + 1 means we decided wilcard to be a open paranthesis
+
+**Greedy Solution:**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(1)**
+
+```python
+class Solution:
+    def checkValidString(self, s: str) -> bool:
+        leftMin, leftMax = 0, 0
+
+        for c in s:
+            if c == "(":
+                leftMin, leftMax = leftMin + 1, leftMax + 1
+            elif c == ")":
+                leftMin, leftMax = leftMin - 1, leftMax - 1
+            else:
+                leftMin, leftMax = leftMin - 1, leftMax + 1
+            if leftMax < 0: #handles some edge invalid cases
+                return False
+            if leftMin < 0: #handle edge cases
+                leftMin = 0
+        return leftMin == 0 #handles other invalid cases
+```
