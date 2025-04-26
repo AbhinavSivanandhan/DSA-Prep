@@ -1,0 +1,67 @@
+Quick question read: partition as many times as possible with given one char constraint
+
+Hint: use hashmap to store last occuring index of characters. Greedy solution, common pattern similar to ‘maximum subarray problem’
+
+![image.png](attachment:81ee11ac-fe30-4ef9-b72a-17513ab1c979:image.png)
+
+start like this to check for partitions
+
+![image.png](attachment:f3073289-c248-4481-8686-a079fd28079c:image.png)
+
+at below point we notice a new character c get added, but we can continue with flow since end position (8) is still greater than position of c (7)
+
+![image.png](attachment:a449cb0e-a2f6-41b6-a0cc-f12cd4e92d58:image.png)
+
+key point in our iteration is when we reach index 8(note that size is 1 based, index is 0 indexed, so don’t get confused below)
+
+![image.png](attachment:37d92ac9-1455-4860-9f8b-66a31b9c60bb:image.png)
+
+when we reach index 8,  (condition: last index of current character is greater than end pointer),  we have reached end of our partition and only one partition holds our characters so far. as our goal is to partition as much as possible, this is our first possibility to partition, and hence we create the partition
+
+so update like this: (note that it is fine to have end pointer remain the same, because anyways it’ll get updated when the next character comes in, so it won’t affect our code (eg: d comes before next partition check,so it will update end pointer))
+
+![image.png](attachment:621789f9-c0d0-411f-b67e-2f74ca0ad56c:image.png)
+
+![image.png](attachment:3e647d8f-5d5e-4775-82b9-3d352e0c510d:image.png)
+
+(it is in hashmap also btw, above picture may confuse)
+
+similarly, for other partitions:
+
+![image.png](attachment:f294b647-2371-4b69-bce1-898f770eeeb7:image.png)
+
+**Greedy Solution:**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(m)**
+
+- Time complexity: *O*(*n*)
+
+    **O(n)**
+
+- Space complexity: *O*(*m*)
+
+    **O(m)**
+
+
+Where n is the length of the string s and m is the number of unique characters in the string s.
+
+```python
+class Solution:
+    def partitionLabels(self, s: str) -> List[int]:
+        lastIndex = {}
+        for i, c in enumerate(s):
+            lastIndex[c] = i
+
+        res = []
+        size = end = 0
+        for i, c in enumerate(s):
+            size += 1
+            end = max(end, lastIndex[c])
+
+            if i == end:
+                res.append(size)
+                size = 0
+        return res
+```
