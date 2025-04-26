@@ -1,0 +1,47 @@
+Not easy problem
+
+Hints:
+
+Hashmaps to handle duplocate occurences of same point
+
+Brute force is n^3, we run through all possible combination of remaining 3 points for this query point (added point). not efficient or easy to code to run all these combinations
+
+easier way to determine if query point forms square, use mathematical property
+
+instead of 3 for loops, use 1 loop to determine diagonal point based on height. we can use hashmap to find this point in constant time O(1)
+
+now check top left point(x coordinate of one diagonal point and y coordinate of other diagonal point)
+
+note: list can’t be key to hashmap in python, so use tuple (basically immutable objects for hashkeys i guess)
+
+also note: multiple duplicate points don’t make it a square according to problem constraint
+
+now that we know points are diagonal, we see if we can create square (find left and right point to diagonal which are (x,py) and (px, y). so we know square exists. we do res = self.ptsCount (left point) + self.ptsCount(right point) to bring all duplicate occurences into square counting
+
+note: don’t worry about original/query point in for lop’s duplication, that iteration takes care of it i guess
+
+**Math based solution**
+
+**Time complexity: O(1) for add(), O(n) for count().**
+
+**Space complexity: O(n)**
+
+```python
+class CountSquares:
+    def __init__(self):
+        self.ptsCount = defaultdict(int)
+        self.pts = []
+
+    def add(self, point: List[int]) -> None:
+        self.ptsCount[tuple(point)] += 1
+        self.pts.append(point)
+
+    def count(self, point: List[int]) -> int:
+        res = 0
+        px, py = point
+        for x, y in self.pts:
+            if (abs(py - y) != abs(px - x)) or x == px or y == py:
+                continue
+            res += self.ptsCount[(x, py)] * self.ptsCount[(px, y)]
+        return res
+```
