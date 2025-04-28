@@ -1,18 +1,26 @@
-Problem:
-Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+Not as Hard as regular leetcode hard
 
-k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+Drawing explanation
 
-You may not alter the values in the list's nodes, only nodes themselves may be changed.
+![image.png](attachment:fa3160c5-9839-47e1-b202-a520b4ab7eab:image.png)
 
-Code:
+edge case/part, no need to reverse if group has less than k nodes. Eg: 5
+
+**Iteration**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(1)**
+
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
+
 class Solution:
-    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
         dummy = ListNode(0, head)
         groupPrev = dummy
 
@@ -22,7 +30,6 @@ class Solution:
                 break
             groupNext = kth.next
 
-            # reverse group
             prev, curr = kth.next, groupPrev.next
             while curr != groupNext:
                 tmp = curr.next
@@ -40,3 +47,214 @@ class Solution:
             curr = curr.next
             k -= 1
         return curr
+```
+
+let’s break this solution down **super carefully**, because it's actually a "template" that gets reused a lot in advanced linked list problems.
+
+---
+
+# 🧠 Problem:
+
+Given a linked list, reverse every **k** nodes.
+
+If there are fewer than `k` nodes at the end, **leave them as-is**.
+
+Example:
+
+```
+Input:  1 → 2 → 3 → 4 → 5, k=3
+Output: 3 → 2 → 1 → 4 → 5
+
+```
+
+(First 3 nodes reversed, last 2 not reversed.)
+
+---
+
+# 🛠️ Code Walkthrough:
+
+---
+
+## Step 1: Setup dummy node
+
+```python
+dummy = ListNode(0, head)
+groupPrev = dummy
+
+```
+
+- `dummy` is a fake node before head, helps handle edge cases smoothly.
+- `groupPrev` keeps track of the **node before** the current group we're about to reverse.
+
+---
+
+## Step 2: Main While Loop
+
+```python
+while True:
+    kth = self.getKth(groupPrev, k)
+    if not kth:
+        break
+
+```
+
+- **Find the kth node** from `groupPrev` (i.e., the last node of the group).
+- If there aren't `k` nodes left (`kth == None`), **we’re done**.
+
+---
+
+## Step 3: Save next group's head
+
+```python
+groupNext = kth.next
+
+```
+
+- After reversing the current group, we will need to connect the **tail** of this group to the **head of the next group** (`groupNext`).
+
+---
+
+## Step 4: Reverse the group
+
+```python
+prev, curr = kth.next, groupPrev.next
+while curr != groupNext:
+    tmp = curr.next
+    curr.next = prev
+    prev = curr
+    curr = tmp
+
+```
+
+This is **normal linked list reversal**, but **stopping exactly at groupNext**.
+
+Visual:
+
+(Before reverse)
+
+```
+groupPrev → 1 → 2 → 3 → groupNext
+
+```
+
+After reversing **[1,2,3]**:
+
+```
+groupPrev → 3 → 2 → 1 → groupNext
+
+```
+
+Explanation:
+
+- `curr` walks forward.
+- At every step, point `curr.next` backwards to `prev`.
+- Move `curr` forward using `tmp`.
+- `prev` keeps track of the last reversed node.
+
+---
+
+## Step 5: Reconnect reversed group
+
+```python
+tmp = groupPrev.next
+groupPrev.next = kth
+groupPrev = tmp
+
+```
+
+- After reversing, **`groupPrev.next` should point to `kth`** (new head of the group).
+- Move `groupPrev` to the **end of the newly reversed group** (which used to be the start before reversal — that’s why we store `tmp`).
+    - Think: "move my anchor to the end of the reversed group."
+
+---
+
+## Step 6: Return result
+
+```python
+return dummy.next
+
+```
+
+- `dummy.next` is the real new head of the list after reversals.
+
+---
+
+# 📦 What is `getKth()` doing?
+
+```python
+def getKth(self, curr, k):
+    while curr and k > 0:
+        curr = curr.next
+        k -= 1
+    return curr
+
+```
+
+Simple helper:
+
+- Move forward `k` steps from `curr`.
+- If you can’t (because `curr` became `None`), return `None`.
+- Otherwise, return the **kth node**.
+
+**Why?**
+
+We need to know where to **stop** and **reverse exactly k nodes**.
+
+---
+
+# 📈 Visual Step-by-Step
+
+Example:
+
+Input list = `1 → 2 → 3 → 4 → 5`, `k = 3`
+
+- **First loop:**
+    - `groupPrev = dummy`
+    - `getKth(dummy, 3)` → finds node 3
+    - Reverse 1 → 2 → 3
+    - List becomes: `3 → 2 → 1 → 4 → 5`
+    - Move `groupPrev` to 1
+- **Second loop:**
+    - `groupPrev = 1`
+    - `getKth(1, 3)` → fails (only 2 nodes left)
+    - **Done**
+
+Result: `3 → 2 → 1 → 4 → 5`
+
+---
+
+# 🎯 Key Intuition:
+
+| Step | Why Important |
+| --- | --- |
+| `dummy` | Handle the head reversal cleanly |
+| `getKth()` | Know the boundaries of groups |
+| `prev, curr reversal` | Standard linked list reversal |
+| Reconnect group | Stitch reversed parts correctly |
+
+---
+
+# ⚡ Memory Trick:
+
+**Think in groups of `k`:**
+
+- Find group
+- Reverse group
+- Reconnect group
+- Move anchor (`groupPrev`) to next
+
+---
+
+# 🧠 Quick Final Thought:
+
+This **template** (dummy → find group → reverse → reconnect) will appear again and again in **Linked List segment problems**, like:
+
+- Reverse between positions m and n
+- Swap nodes in pairs
+- Rotate list
+
+---
+
+Would you like me to also show you a slightly faster **"in-place no extra dummy" version** (but a little trickier)?
+
+(Useful for super clean interviews!) 🎯🚀

@@ -1,0 +1,411 @@
+Hint: Monotonic Decreasing Queue
+
+![image.png](attachment:fa59fbd2-a792-4125-a0cb-638da7b54bde:image.png)
+
+window of size k, total number of windows as we move like above is n-k, so TC is O(k * ( n - k ) )
+
+Can we reduce it to O(n) time instead? yes. by avoiding repeated work. As you can see, we compare with every number even though we know our current maximum number is greater.
+
+eg: we don’t have to compare every number in the window everytime. especially if window has 1 2 3 4, we check 1,2,3 in window 1, and then 2,3,4 in window 2. unnecessarily checking 2 even though it will never be the maximum, we coul have just checked from 3 directly. basically eliminate all previous max values
+
+![image.png](attachment:8fd076a3-1323-4cf7-8caa-fa64a671309c:image.png)
+
+Use a deque to do this such that the elements in it are in decreasing order always. store all elements from window to the deque and when a number is greater than top, while it is greater, keep popping the top
+
+![image.png](attachment:96756c4e-d6a3-4b20-aa16-8170a198a7b2:image.png)
+
+finally just add the max value at the top to output for that window
+
+![image.png](attachment:af9b55be-21ae-42e9-a539-fe3cef031685:image.png)
+
+similarly repeat, now it’s easier as we only check 4,5 as rest have been eliminated. now just keep 5, add that to output
+
+![image.png](attachment:4ccd8c98-0ae8-44bf-b98e-adcb35535929:image.png)
+
+adding and removing is O(1), we do it for n potential values so TC is O(n) overall
+
+for O(1) addition/ removal as we check or move window is why we need queue/deque. queue also keeps track of order
+
+handle edge case of l=r=0 with if (r+1)≥k condition(condition that ensures window size is k) to check before adding to output
+
+**Deque**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(n)**
+
+```python
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        output = []
+        q = deque()  # index
+        l = r = 0
+
+        while r < len(nums):
+            while q and nums[q[-1]] < nums[r]:
+                q.pop()
+            q.append(r)
+
+            if l > q[0]:
+                q.popleft()
+
+            if (r + 1) >= k:
+                output.append(nums[q[0]])
+                l += 1
+            r += 1
+
+        return output
+```
+
+Good — this is one of the most famous **Sliding Window + Monotonic Queue** problems:
+
+**"Maximum in Sliding Window"**
+
+Let's walk through your code **slowly and intuitively**, line-by-line.
+
+---
+
+# 🧠 Problem:
+
+Given an array `nums` and a window size `k`, you need to find the **maximum value** inside **each sliding window** of size `k`.
+
+---
+
+## 🛠️ Full Code Walkthrough:
+
+```python
+output = []
+q = deque()  # we store **indexes** here
+l = r = 0    # left and right pointers
+
+```
+
+- `output` → stores final results (maximums)
+- `q` → **Monotonic Decreasing Queue** (stores **indexes**, not values!)
+- `l` and `r` are **window boundaries** (left, right)
+
+---
+
+### 🔁 While `r < len(nums)`
+
+Means: Expand the window to the right, one element at a time.
+
+---
+
+```python
+while q and nums[q[-1]] < nums[r]:
+    q.pop()
+
+```
+
+- While the queue is **non-empty** and the **last element in the queue is smaller than the current number**...
+- **Pop it out**.
+
+✅ **Why?**
+
+- You only care about the **biggest elements** staying in the deque.
+- If a new number is bigger, the smaller numbers are **useless** — they can never be the maximum for any window including `r`.
+
+This ensures that:
+
+- The deque **always** stores indexes of numbers **in decreasing order**.
+- **Front** of deque = index of **maximum** element for the current window.
+
+---
+
+```python
+q.append(r)
+
+```
+
+- After popping smaller elements, push the **current index** into the queue.
+
+✅ **Why indexes?**
+
+- Because we need to later check if an index is **outside** the current window.
+
+---
+
+```python
+if l > q[0]:
+    q.popleft()
+
+```
+
+- If the **left boundary** `l` passes the **index at the front of the queue**, remove it.
+
+✅ **Why?**
+
+- Because that index is **no longer inside** the current window.
+- We only want valid candidates (those inside the window).
+
+---
+
+```python
+if (r + 1) >= k:
+    output.append(nums[q[0]])
+    l += 1
+
+```
+
+- If the window size is now **at least `k`**:
+    - Append the **maximum value** in the window (the value at `nums[q[0]]`) to output.
+    - Move left boundary `l` one step right to maintain window size.
+
+✅ **Why `r+1 >= k`?**
+
+- Because when `r` starts at 0, window size is `(r - l + 1)`.
+- So when `r+1` equals `k`, the window is fully "filled".
+
+---
+
+```python
+r += 1
+
+```
+
+- Always move right pointer to expand window.
+
+---
+
+# 📈 Visual Example
+
+Let's say:
+
+```python
+nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+
+```
+
+Steps:
+
+| l | r | Current Window | Deque Content (indexes) | Max (`nums[q[0]]`) | Output |
+| --- | --- | --- | --- | --- | --- |
+| 0 | 0 | [1] | [0] |  |  |
+| 0 | 1 | [1, 3] | [1] |  |  |
+| 0 | 2 | [1, 3, -1] | [1, 2] | 3 | [3] |
+| 1 | 3 | [3, -1, -3] | [1, 2, 3] | 3 | [3, 3] |
+| 2 | 4 | [-1, -3, 5] | [4] | 5 | [3, 3, 5] |
+| 3 | 5 | [-3, 5, 3] | [4, 5] | 5 | [3, 3, 5, 5] |
+| 4 | 6 | [5, 3, 6] | [6] | 6 | [3, 3, 5, 5, 6] |
+| 5 | 7 | [3, 6, 7] | [7] | 7 | [3, 3, 5, 5, 6, 7] |
+
+Notice:
+
+- Deque always holds indexes of decreasing numbers.
+- Front of deque always represents the maximum for the current window.
+
+---
+
+# 🎯 Intuition Key:
+
+| Code Piece | Meaning |
+| --- | --- |
+| Pop smaller elements | Because a bigger number makes them useless |
+| Append current index | So we can track it later |
+| Pop front if out of window | Clean up old indexes |
+| `nums[q[0]]` | Always the maximum of the current window |
+
+---
+
+# ✅ Final
+
+At the end, `output` holds the **maximum values for each window**.
+
+---
+
+# 🔥 Would you also want me to show you a very similar but even cleaner version using a **simpler deque template** that's good for interviews?
+
+(It's a one-pattern trick for sliding window maximum!) 🚀
+
+Let me know!
+
+Awesome — let’s build a **clean, standard interview template** version of **Sliding Window Maximum**.
+
+It's **shorter**, **easier to memorize**, and **works for all sliding window maximum/minimum** questions.
+
+---
+
+# ✨ Clean Version: Deque-Based Sliding Window Maximum
+
+```python
+from collections import deque
+
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        q = deque()  # store indices
+        res = []
+
+        for i in range(len(nums)):
+            # Remove indexes that are out of window
+            if q and q[0] == i - k:
+                q.popleft()
+
+            # Remove smaller numbers from the back
+            while q and nums[i] > nums[q[-1]]:
+                q.pop()
+
+            q.append(i)
+
+            # Add to results when the first window is complete
+            if i >= k - 1:
+                res.append(nums[q[0]])
+
+        return res
+
+```
+
+---
+
+## 🧠 Breakdown of This Clean Template
+
+| Step | Meaning |
+| --- | --- |
+| `if q[0] == i - k:` | Remove elements **outside** the current window |
+| `while nums[i] > nums[q[-1]]:` | Remove elements **smaller** than the current one (they are useless) |
+| `q.append(i)` | Add current index to deque |
+| `if i >= k - 1:` | Start adding results after window is fully formed |
+
+---
+
+# 📈 How It Flows Visually
+
+Imagine window size `k = 3`:
+
+- As `i` moves, maintain:
+    - Deque **only stores candidates** for max inside current window.
+    - **First element** of deque is always **maximum for current window**.
+
+---
+
+# 🎯 Summary of Deque Rules:
+
+- **Pop from front** if index is **out of window**.
+- **Pop from back** while current value is **greater** than values at back — because those values can never be the maximum anymore.
+- **Append index**.
+- Once `i >= k - 1`, **record maximum** (front of deque).
+
+---
+
+# 🧪 Example Quickly:
+
+```python
+nums = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+
+```
+
+Trace:
+
+| i | nums[i] | Deque (indexes) | Deque (values) | Output |
+| --- | --- | --- | --- | --- |
+| 0 | 1 | [0] | [1] |  |
+| 1 | 3 | [1] | [3] |  |
+| 2 | -1 | [1, 2] | [3, -1] | 3 |
+| 3 | -3 | [1, 2, 3] | [3, -1, -3] | 3 |
+| 4 | 5 | [4] | [5] | 5 |
+| 5 | 3 | [4, 5] | [5, 3] | 5 |
+| 6 | 6 | [6] | [6] | 6 |
+| 7 | 7 | [7] | [7] | 7 |
+
+---
+
+# ⚡ Why This Template Is Powerful:
+
+- Can adapt to **Minimum Sliding Window** too (just change comparison `>` to `<`)
+- Works for **Kth Largest in Window**type problems too
+- **Predictable** and **easy to debug** if you get stuck
+
+---
+
+# 🚀 Would you like me to also give you a super quick **pattern checklist** for when you see a "Sliding Window + Monotonic Deque" problem, so you can recognize it instantly? (just a few signs to watch for)
+
+I can send that if you want — it speeds up your thinking! 🎯
+
+Awesome — here’s the **Sliding Window + Monotonic Deque Quick Checklist** you can memorize and instantly recognize when to use it:
+
+---
+
+# 🧠 **Sliding Window + Monotonic Deque Recognition Checklist**
+
+Whenever you see a problem with:
+
+| Clue | What it tells you |
+|---|---|
+| ❗ "Fixed window size" (`k`)  | You're managing a sliding window across the array |
+| ❗ "Maximum" (or "Minimum") inside a moving window | Monotonic Deque is perfect (store candidates smartly) |
+| ❗ "Output one value per window shift" | Track best value dynamically (don't recompute full window) |
+| ❗ Array can be **huge** (`10^4`, `10^5`) | O(N) solution needed (simple brute force will TLE) |
+
+If you spot 2 or more of these clues → **think "Sliding Window + Deque" immediately**.
+
+---
+
+# 🛠️ **Template to Plug Into Your Head**
+
+When solving:
+```python
+from collections import deque
+
+def slidingWindow(nums, k):
+    q = deque()
+    res = []
+
+    for i in range(len(nums)):
+        # Step 1: Remove out of window indexes
+        if q and q[0] == i - k:
+            q.popleft()
+
+        # Step 2: Maintain Monotonicity
+        while q and compare(nums[i], nums[q[-1]]):
+            q.pop()
+
+        # Step 3: Push current element
+        q.append(i)
+
+        # Step 4: Save result when window valid
+        if i >= k - 1:
+            res.append(nums[q[0]])
+
+    return res
+```
+
+- For **Maximums**, `compare(nums[i], nums[q[-1]])` is `nums[i] > nums[q[-1]]`
+- For **Minimums**, `compare(nums[i], nums[q[-1]])` is `nums[i] < nums[q[-1]]`
+
+---
+
+# 🎯 Super Quick Rule of Thumb:
+
+| Problem says... | Think... |
+|---|---|
+| Fixed size window + max/min per window | Monotonic Deque |
+| Need fast O(N) processing | Monotonic Deque |
+| Track window contents efficiently | Deque store **indexes** |
+
+---
+
+# 🧪 Tiny Example to Burn It In
+
+**Maximum Sliding Window Example**
+
+```
+nums = [1, 3, 2, 5, 4], k = 3
+```
+
+Windows:
+
+- [1, 3, 2] → Max = 3
+- [3, 2, 5] → Max = 5
+- [2, 5, 4] → Max = 5
+
+Output: `[3, 5, 5]`
+
+Monotonic Deque helps you **always know the maximum** without rechecking every element.
+
+---
+
+# 🚀 **If you remember this checklist + template, you'll solve almost any sliding window maximum/minimum problem in interviews confidently!**
+
+Would you also like a **"mini cheat sheet"** with like 3 ultra-common mistakes (small things people miss in sliding window problems)? It’ll save you from dumb errors. 🎯
+Want it?
