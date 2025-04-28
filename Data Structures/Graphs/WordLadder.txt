@@ -30,17 +30,74 @@ class Solution:
 
         while queue:
             word, length = queue.popleft()
-            
+
             if word == end:
                 return length
-            
+
             # Try all possible one-letter transformations
             for i in range(len(word)):
                 for c in 'abcdefghijklmnopqrstuvwxyz':#set of characters possible in wordlist
                     new_word = word[:i] + c + word[i+1:]
-                    
+
                     if new_word in wordList:
                         wordList.remove(new_word)  # Remove to prevent re-visiting the same word
                         queue.append((new_word, length + 1))
 
         return 0  # If no transformation is found
+
+
+
+vs
+
+![image.png](attachment:9f0af6d8-61cd-4a7e-b504-3d499ff8181f:image.png)
+
+Problem wants efficinet time complexity based on constraints instead of bruteforce bfs on dictionary
+
+we generate wildcard patterns for each word and identify words with same pattern. eg: hot and lot have same *ot patern so just one letter distance. build adjacency list using hashmap like below.
+
+![image.png](attachment:5e02107d-2ad3-48bd-adbd-bb4b7f8e59ee:image.png)
+
+TC is n * m^2 as we go through n words, remove one character at a time for m times and another m times we add each word to list(keys count)
+
+use adjacency list to build graph
+
+![image.png](attachment:237b90c3-898b-4815-a334-59b8ba7a5579:image.png)
+
+**Breadth First Search - III**
+
+**Time complexity: O(m^2∗n)**
+
+**Space complexity: O(m^2∗n)**
+
+Where n is the number of words and m is the length of the word.
+
+```python
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        if endWord not in wordList:
+            return 0
+
+        nei = collections.defaultdict(list)
+        wordList.append(beginWord)
+        for word in wordList:
+            for j in range(len(word)):
+                pattern = word[:j] + "*" + word[j + 1 :]
+                nei[pattern].append(word)
+
+        visit = set([beginWord])
+        q = deque([beginWord])
+        res = 1
+        while q:
+            for i in range(len(q)):
+                word = q.popleft()
+                if word == endWord:
+                    return res
+                for j in range(len(word)):
+                    pattern = word[:j] + "*" + word[j + 1 :]
+                    for neiWord in nei[pattern]:
+                        if neiWord not in visit:
+                            visit.add(neiWord)
+                            q.append(neiWord)
+            res += 1
+        return 0
+```
