@@ -1,0 +1,44 @@
+Hint:
+
+1. Remember how to manually multiply two numbers by hand.
+2. Write that as code for our solution
+
+![image.png](attachment:08e293e1-5965-435a-9c48-5c5dcc6ff254:a1a67d07-63bf-49b5-b110-d5e9225e2647.png)
+
+do it as an array instead of string. onvert result to string at the end
+
+result array is 0’s at all indexes 0 to n-1 so we actually built output array in reverse, we iterate through numbers also in reverse order while keeping track of indices
+
+simple way to comprehend code like res[i1+i2] intuitively is to try multiplying or thinking of it as order of 10^(i1+i2)’s place or something
+
+use two for loops for multiplication(careful with order of the 3 lines in it). then another section of code to remove leading 0s + code to convert string to int
+
+**Multiplication**
+
+**Time complexity: O(m∗n)**
+
+**Space complexity: O(m+n)**
+
+Where m is the length of the string num1 and n is the length of the string num2.
+
+```python
+class Solution:
+    def multiply(self, num1: str, num2: str) -> str:
+        if "0" in [num1, num2]:
+            return "0"
+
+        res = [0] * (len(num1) + len(num2))
+        num1, num2 = num1[::-1], num2[::-1]
+        for i1 in range(len(num1)):
+            for i2 in range(len(num2)):
+                digit = int(num1[i1]) * int(num2[i2])
+                res[i1 + i2] += digit
+                res[i1 + i2 + 1] += res[i1 + i2] // 10
+                res[i1 + i2] = res[i1 + i2] % 10
+
+        res, beg = res[::-1], 0
+        while beg < len(res) and res[beg] == 0:
+            beg += 1
+        res = map(str, res[beg:])
+        return "".join(res)
+```
