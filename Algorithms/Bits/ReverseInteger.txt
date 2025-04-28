@@ -1,0 +1,47 @@
+Bit manipulation
+
+modding a number by 10 chops off the unit’s place and gets the value
+
+opposite is to multiply by 10 to shift digit to ten’s place
+
+![image.png](attachment:3475a125-4ae4-4b73-b887-9f3452441eb1:image.png)
+
+How to cover digit overflow scenario, outside the range basically? example is outside given range:
+
+![image.png](attachment:a370e2df-595b-4ebd-b24f-4f770690eecd:image.png)
+
+we can’t store this number in 32 bits, so how to check whether it is out of bounds and return 0?
+
+The trick to handle it is to reverse everything except last digit. last digit we check if it’s greater(if positive number) or lesser(if negative number. then based on that we decide. basically if res//10 is greater. or if it is equal and just last digit is greater(like above example)
+
+Careful about 2 python code natures:
+
+fmod is to get the digit(python is different from other languages)
+
+python is different when rounding negative numbers. so int ( digit / 10) ensures it rounds towards 0. most other languages don’t need this
+
+**Iteration - Bit manipulation**
+
+**Time complexity: O(1)**
+
+**Space complexity: O(1)**
+
+```python
+class Solution:
+    def reverse(self, x: int) -> int:
+        MIN = -2147483648  # -2^31,
+        MAX = 2147483647  #  2^31 - 1
+
+        res = 0
+        while x:
+            digit = int(math.fmod(x, 10))
+            x = int(x / 10)
+
+            if res > MAX // 10 or (res == MAX // 10 and digit > MAX % 10):
+                return 0
+            if res < MIN // 10 or (res == MIN // 10 and digit < MIN % 10):
+                return 0
+            res = (res * 10) + digit
+
+        return res
+```
