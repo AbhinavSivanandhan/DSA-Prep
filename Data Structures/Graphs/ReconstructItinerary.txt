@@ -1,0 +1,305 @@
+Constraints:
+
+use smallest lexicographically possible itinerary. assume itinerary is always possible. each ticket only once
+
+![image.png](attachment:8143dc71-2a83-4e7d-9cb9-94bb6e35210f:image.png)
+
+Use list of edges to create adjacency list (using a hashmap) to be able to traverse over the graph
+
+we map every source to every destination pair it can take based on the edges.
+
+![image.png](attachment:348036b0-f270-4f8c-92d2-537f62aee785:image.png)
+
+we want that adjacency list to be in sorted order for lexicographic constraint reasons. eg: atl < sfo
+
+tickets.sort() will simply sort the edge pairs in python, no need to write logic(but learn how)
+
+when you visit ad edge, remove that from the adjacency list’s list entry atleast temporarily. like this:
+
+![image.png](attachment:6d820718-a9ca-456b-87d6-b2a3b00d9890:image.png)
+
+do that till we get result, return output
+
+![image.png](attachment:e09e910c-9b2b-4ef8-baa9-889f045eb027:image.png)
+
+make sure you reach the length expected of the output. otherwise undo all deletes and try another order
+
+![image.png](attachment:11acd4f7-d92d-4e8e-a44a-322263e118dd:image.png)
+
+Time complexity is V+E (size of graph) usually but since we do backtracking it is (V+E)^2 and since we know E ~ V for this problem, TC is approximated to order of O(E^2)
+
+Space complexity is also same
+
+**Depth First Search**
+
+**Time complexity: O(E∗V)**
+
+**Space complexity: O(E∗V)**
+
+```python
+class Solution:
+    def findItinerary(self, tickets: List[List[str]]) -> List[str]:
+        adj = {src: [] for src, dst in tickets}
+        tickets.sort()
+        for src, dst in tickets:
+            adj[src].append(dst)
+
+        res = ["JFK"]
+        def dfs(src):
+            if len(res) == len(tickets) + 1:
+                return True
+            if src not in adj:
+                return False
+
+            temp = list(adj[src])
+            for i, v in enumerate(temp):
+                adj[src].pop(i)
+                res.append(v)
+                if dfs(v): return True
+                adj[src].insert(i, v)
+                res.pop()
+            return False
+
+        dfs("JFK")
+        return res
+```
+
+[gpt explanation](https://www.notion.so/gpt-explanation-1e31eb3b8f2c80b9a5cbd72d1f6d7e9a?pvs=21)
+
+**Hierholzer's Algorithm (Recursion)**
+
+**Time complexity: O(Elog⁡E)**
+
+**Space complexity: O(E)**
+
+Where E is the number of tickets (edges) and V is the number of airports (vertices).
+
+```python
+class Solution:
+    def findItinerary(self, tickets: List[List[str]]) -> List[str]:
+        adj = defaultdict(list)
+        for src, dst in sorted(tickets)[::-1]:
+            adj[src].append(dst)
+
+        res = []
+        def dfs(src):
+            while adj[src]:
+                dst = adj[src].pop()
+                dfs(dst)
+            res.append(src)
+
+        dfs('JFK')
+        return res[::-1]
+```
+
+This is faster, doesn’t use backtracking
+
+Excellent — this is the **faster** and **cleaner** version I hinted at before.
+
+You're now seeing the **Eulerian Path style** solution using **Hierholzer’s Algorithm**!
+
+Let's break this clearly and deeply — it's beautiful once you see the flow.
+
+---
+
+# 🧠 Problem (Reminder)
+
+Given tickets (`[from, to]`), you need to build an itinerary starting from "JFK" such that:
+
+- You use all tickets exactly once
+- It’s **lexicographically smallest** if multiple itineraries exist
+
+---
+
+# Intuitive example
+
+- You start at `"JFK"`.
+- You walk **forward** from `"JFK"` following tickets (edges).
+- You **don't add** `"JFK"` to your final result yet.
+- You keep walking forward: `"JFK" → ATL → SFO → XYZ"`.
+
+✅ **Keep walking**, using up tickets.
+
+---
+
+✋ What happens when you can't move anymore?
+
+- You reach a city (node) that has **no outgoing tickets left**.
+- You are **stuck** — no flights left from here.
+- **NOW**, you know for sure:
+    - This city must come **at the very end** of the itinerary.
+
+So you **add that city to your result list** *right now*.
+
+# 🛠️ Code Walkthrough
+
+---
+
+```python
+adj = defaultdict(list)
+for src, dst in sorted(tickets)[::-1]:
+    adj[src].append(dst)
+
+```
+
+**Build the graph:**
+
+- `adj[src]` → list of destinations from `src`
+- **Sort tickets first**, **reverse** (`[::-1]`) while building, because:
+    - We want **smallest destinations first** when popping from **the back** of the list
+    - Popping from the back (`.pop()`) is **O(1)** — fast
+
+✅ **Why reverse sort?**
+
+- If you want smallest destination next, normally you pick `min()`.
+- But if you sort descending (`[::-1]`), then `.pop()` gives smallest without expensive searching.
+
+---
+
+```python
+res = []
+
+```
+
+- Will store the final path (but **in reverse** first — you’ll see why).
+
+---
+
+```python
+def dfs(src):
+    while adj[src]:
+        dst = adj[src].pop()
+        dfs(dst)
+    res.append(src)
+
+```
+
+**DFS (Hierholzer's Algorithm idea):**
+
+- While there are destinations from `src`, do:
+    1. Pick a destination (`dst`) by popping
+    2. Recursively DFS to `dst`
+- Once you **cannot move further** from a city (no more tickets from that city), **add it to the result list**.
+
+✅ **Why append only when stuck?**
+
+- In Eulerian Path construction, you add nodes **after you exhaust all their outgoing edges**.
+- It’s "post-order": process deeper nodes first, then back up.
+
+---
+
+```python
+dfs('JFK')
+return res[::-1]
+
+```
+
+- Start from "JFK"
+- After traversal, reverse `res`, because we built the path **backwards**.
+
+---
+
+# 📈 Visual Step-by-Step
+
+Suppose:
+
+```python
+tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+
+```
+
+After sort and reverse:
+
+```python
+[
+  ["SFO", "ATL"],
+  ["JFK", "SFO"],
+  ["JFK", "ATL"],
+  ["ATL", "SFO"],
+  ["ATL", "JFK"]
+]
+
+```
+
+Adjacency list:
+
+```python
+{
+  "ATL": ["SFO", "JFK"],
+  "JFK": ["SFO", "ATL"],
+  "SFO": ["ATL"]
+}
+
+```
+
+---
+
+**DFS Traversal:**
+
+- Start at `JFK`
+    - `JFK` → `ATL`
+- At `ATL`
+    - `ATL` → `JFK`
+- At `JFK`
+    - `JFK` → `SFO`
+- At `SFO`
+    - `SFO` → `ATL`
+- At `ATL`
+    - `ATL` → `SFO`
+- `SFO` has no more outgoing → add `SFO`
+- Back to `ATL` → no more outgoing → add `ATL`
+- Back to `SFO` → no more outgoing → add `SFO`
+- Back to `JFK` → no more outgoing → add `JFK`
+- Back to `ATL` → no more outgoing → add `ATL`
+- Done.
+
+**res (reverse order):**
+
+```
+['SFO', 'ATL', 'SFO', 'JFK', 'ATL', 'JFK']
+
+```
+
+After `res[::-1]`:
+
+```
+['JFK', 'ATL', 'JFK', 'SFO', 'ATL', 'SFO']
+
+```
+
+✅ Correct itinerary!
+
+---
+
+# 🧠 Key Differences from Backtracking Version
+
+| Backtracking | Hierholzer (this code) |
+| --- | --- |
+| Try all paths carefully | Always trust the graph has a path |
+| Prune wrong paths if needed | Build path as you go |
+| More recursive calls + undo | Simple, no undo |
+| Can be slower | Very fast |
+
+---
+
+# 🎯 Quick Summary:
+
+| Concept | In Code |
+| --- | --- |
+| Reverse sorted tickets | So popping gives lex smallest |
+| DFS deep first | Keep moving until no more outgoing flights |
+| Add to result after stuck | Post-order traversal |
+| Reverse result at the end | To get correct order |
+
+---
+
+# 🧪 Mental Model:
+
+Think like a **mailman** delivering letters:
+
+- You keep walking until you can't deliver further
+- Then you backtrack and mark that street as "done"
+
+---
+
+#
