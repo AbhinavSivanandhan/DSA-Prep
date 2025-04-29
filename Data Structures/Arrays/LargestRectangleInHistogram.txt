@@ -1,0 +1,78 @@
+Intuition is that rectangle can’t be extended only if there’s a drop. if there’s a drop, we only pop recent/increasing heights from stack till previous height is equal to the current/;drop-causing’ value. so that’s telling us a stack can be used here. pop the heights off when we’re no longer considering them. the stack holds (index, height) tuple
+
+![image.png](attachment:15b891c1-09fd-4df8-bc0e-18fbb1f4176a:image.png)
+
+so first we add 2, then 1 in below example, calculate. then after what we see below is calculated, we pop the 2
+
+![image.png](attachment:15f52a58-47d9-403e-9863-c65a4c1feba0:image.png)
+
+![image.png](attachment:b9a2954f-bd2a-4d70-ad6b-de4c437f23ae:image.png)
+
+index of 1 is 0, as we’re going to extend previous popped one(2’s index)
+
+![image.png](attachment:95c3910b-e286-4e40-9942-a072e83e4ebe:image.png)
+
+now again keep adding to stack until another drop(at 2) is reached
+
+![image.png](attachment:02051629-ec40-412a-a4df-dbad6cfd2e3c:image.png)
+
+so let’s calculate max height it could have reached before popping of 6, which is greater than 2.
+
+![image.png](attachment:5f15a135-4c97-4ebc-89f3-266dec6ea546:image.png)
+
+after popping 6, we have 5 which also needs to be popped as 5>2, so let’s calculate again
+
+![image.png](attachment:1ab17975-9564-4920-a2de-bbc876265e4f:image.png)
+
+![image.png](attachment:9cd5c15c-cc4b-4b22-a582-9f2ef7a6dc12:image.png)
+
+max area is 10. now we’re at 1, which need not be popped as 1<2, so just continue
+
+we keep doing similarly till we reach the end
+
+![image.png](attachment:5bef812f-d897-478d-ba3b-626c6a8d18b9:image.png)
+
+these 3 are still in stack at the end of the histogram, so we know we can extend from each of these and reach the end.
+
+so we still need to calculate the area on them. calculate width(’length of histogram’ minus ’index of that entry‘)*height
+
+so first we check for 5,3
+
+![image.png](attachment:02f039e4-9591-4eee-8a8f-4f84c4370808:image.png)
+
+area is 3, not greater than maxarea 10, so no action
+
+![image.png](attachment:bb7b793e-5dd8-40a0-8b39-e16612d32e8c:image.png)
+
+area is 8, not greater than maxarea 10, so no action
+
+![image.png](attachment:b0904f2d-47cc-4632-8623-bc5099a3574c:image.png)
+
+area is 6, not greater than maxarea 10, so no action
+
+Hence, result is 10
+
+**Stack (One Pass)**
+
+TC is O(n) as we only add and pop each element once
+
+SC is also O(n) as it may hold n elements in stack
+
+```python
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        maxArea = 0
+        stack = []  # pair: (index, height)
+
+        for i, h in enumerate(heights):
+            start = i
+            while stack and stack[-1][1] > h:
+                index, height = stack.pop()
+                maxArea = max(maxArea, height * (i - index))
+                start = index
+            stack.append((start, h))
+
+        for i, h in stack:
+            maxArea = max(maxArea, h * (len(heights) - i))
+        return maxArea
+```
