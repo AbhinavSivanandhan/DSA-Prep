@@ -1,0 +1,83 @@
+Coming up with solution isn’t too hard, but implementation kind of it. Backtracking + brute force is most intuitive. placing one queen at a time, make sure no 2 queens are in same row, column, positive diagonal(our term for diagonals pointing right/upwards like in left diagram), negative diagonal. checking diagonals may be tricky/complex.
+
+First simple optimisation is, no need to check every position in board for every queen. we know each queen takes one row or column, so just pick out of 4 position in first row for queen one, and so on for the rest like in below example.
+
+![image.png](attachment:c3eec78b-aaa0-4eba-8f30-e0bfd58e6a15:image.png)
+
+![image.png](attachment:7d3707ab-a452-496b-ae91-a1136889ba14:image.png)
+
+so we just track positions/indices
+
+![image.png](attachment:86c4b39d-6859-4199-86e1-a5bcb6820b0d:image.png)
+
+but since there are no indices for diagonals we need an alternate easy way to do it
+
+so we’re noting that each diagonal cell changes with a constant value like below negative one has 0,0  1,1  2,2 etc. r-c=0 , so we call it the 0 negative diagonal
+
+![image.png](attachment:3f8b15c5-6e32-4f34-a8de-e2547296901e:image.png)
+
+and similarly, the -2 negative diagonal
+
+![image.png](attachment:f990be6c-5b8d-4b28-9f19-9a137758ae3d:image.png)
+
+and for positive diagonals, use this: (r+c) as that remains constant
+
+![image.png](attachment:b07b51af-dcc2-497e-8af4-9c4a4c562b1f:image.png)
+
+![image.png](attachment:e8e93f9b-193a-45fd-a899-99a951a11f2a:image.png)
+
+reaching row n is the basecase, if we reach it then we have found the n-queens board
+
+**Backtracking (Hash Set) (Best TC & SC possible)**
+
+**Time complexity: O(n!)**
+
+**Space complexity: O(n^2)**
+
+# **Time Complexity: O(n!)**
+
+Think about how many decisions we have:
+
+- Row 0: `n` choices
+- Row 1: Up to `n-1` choices (one column is blocked)
+- Row 2: Up to `n-2` choices (more blocks)
+- ...
+- Row n-1: 1 choice
+
+In the worst case, the decision tree has:
+
+```python
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        col = set()
+        posDiag = set()
+        negDiag = set()
+
+        res = []
+        board = [["."] * n for i in range(n)]
+
+        def backtrack(r):
+            if r == n:
+                copy = ["".join(row) for row in board]
+                res.append(copy)
+                return
+
+            for c in range(n):
+                if c in col or (r + c) in posDiag or (r - c) in negDiag:
+                    continue
+
+                col.add(c)
+                posDiag.add(r + c)
+                negDiag.add(r - c)
+                board[r][c] = "Q"
+
+                backtrack(r + 1)
+
+                col.remove(c)
+                posDiag.remove(r + c)
+                negDiag.remove(r - c)
+                board[r][c] = "."
+
+        backtrack(0)
+        return res
+```
