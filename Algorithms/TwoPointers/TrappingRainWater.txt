@@ -1,0 +1,460 @@
+Hint: Similar to container with most water(same two pointer pattern)
+
+Absolutely — let’s go step by step to understand the famous **“Trapping Rain Water”** problem.
+
+---
+
+## 🧠 Problem Intuition
+
+You're given an array of elevations — each value is a vertical bar.
+
+Think of it like a histogram, and **rain falls on it**.
+
+You must compute **how much water is trapped** between the bars after raining.
+
+---
+
+### 💡 Visual
+
+For this input:
+
+```python
+height = [0,1,0,2,1,0,1,3,2,1,2,1]
+
+```
+
+It looks like this:
+
+```
+          _
+      _  | |
+_   | |  | |
+| | | |__| |
+
+```
+
+Water gets trapped in **valleys** between higher bars.
+
+---
+
+## 🔎 Observation
+
+At each index `i`, the **water that can be trapped** is:
+
+```
+water_at_i = min(left_max, right_max) - height[i]
+
+```
+
+Where:
+
+- `left_max` = tallest bar to the **left** of `i`
+- `right_max` = tallest bar to the **right** of `i`
+
+Only when both sides are taller can water stay above `height[i]`.
+
+---
+
+## ✅ Two-Pointer Optimal Solution (O(n) time, O(1) space)
+
+We'll move **two pointers**: one from the left and one from the right.
+
+### 🧠 Key Idea:
+
+- At any point, the **side with the smaller height controls** how much water can be trapped.
+- So we move that pointer inward and update `left_max` or `right_max` accordingly.
+
+---
+
+## 🔧 Code (with explanation)
+
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        if not height:
+            return 0
+
+        l, r = 0, len(height) - 1
+        left_max, right_max = height[l], height[r]
+        res = 0
+
+        while l < r:
+            if left_max < right_max:
+                l += 1
+                left_max = max(left_max, height[l])
+                res += left_max - height[l]
+            else:
+                r -= 1
+                right_max = max(right_max, height[r])
+                res += right_max - height[r]
+
+        return res
+
+```
+
+---
+
+## 🔄 Step-by-Step Example:
+
+For:
+
+```python
+height = [0,1,0,2,1,0,1,3,2,1,2,1]
+
+```
+
+We’ll track:
+
+- `l = 0`, `r = 11`
+- `left_max = height[0] = 0`
+- `right_max = height[11] = 1`
+
+Start comparing `left_max` and `right_max`:
+
+- Since `left_max < right_max`, move left pointer in
+- Update `left_max`
+- Compute how much water can be trapped at that position
+- Repeat until `l >= r`
+
+Eventually, the total trapped water is **6**.
+
+---
+
+## 🧠 Why Does It Work?
+
+- We're always moving the **side with smaller wall height**, because **that side limits the water level**.
+- We only add water where `height[i] < current_max`
+- By keeping track of current `left_max` and `right_max`, we avoid rescanning the array.
+
+---
+
+## ⏱️ Time and Space
+
+| Complexity | Value |
+| --- | --- |
+| Time | O(n) — one pass |
+| Space | O(1) — just pointers and counters |
+
+---
+
+## ✅ Final Thoughts
+
+This is one of the most elegant two-pointer problems because:
+
+- It’s **pure logic** — no need to use stacks or arrays
+- It models the physical intuition of "how water stays trapped"
+
+---
+
+Would you like me to also show the **stack-based approach**, which is often how people solve it first before optimizing to this two-pointer version?
+
+Great — let’s start with the **stack-based approach first**, because it's often easier to **visualize** at first, especially when understanding how rainwater gets trapped between bars.
+
+---
+
+# 💦 Trapping Rain Water – Stack-Based Approach (Intuitive First)
+
+## ✅ Idea:
+
+- You use a **stack** to keep track of the **indices** of bars that might trap water.
+- When you find a bar that’s taller than the bar at the top of the stack, it means a **container is formed**, and you can now compute water trapped over the bar at the top.
+
+---
+
+## 🔧 Stack-Based Code:
+
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        stack = []
+        res = 0
+        i = 0
+
+        while i < len(height):
+            # If current bar is taller than top of stack
+            while stack and height[i] > height[stack[-1]]:
+                top = stack.pop()
+
+                if not stack:
+                    break
+
+                distance = i - stack[-1] - 1
+                bounded_height = min(height[i], height[stack[-1]]) - height[top]
+                res += distance * bounded_height
+
+            stack.append(i)
+            i += 1
+
+        return res
+
+```
+
+---
+
+## 🧠 Step-by-Step Explanation:
+
+| Line | What It Does |
+| --- | --- |
+| `stack = []` | Stack holds indices of bars. We use it to find left and right boundaries. |
+| `res = 0` | Total water trapped. |
+| `i = 0` | Index as we iterate over height array. |
+
+---
+
+### Main loop:
+
+```python
+while i < len(height):
+
+```
+
+Walk through the entire height array.
+
+---
+
+### Inner loop:
+
+```python
+while stack and height[i] > height[stack[-1]]:
+
+```
+
+We’ve found a **right boundary** taller than the current top of the stack → this means we can now trap water.
+
+---
+
+```python
+top = stack.pop()
+
+```
+
+This is the "bottom" bar of the trapped region.
+
+---
+
+```python
+if not stack: break
+
+```
+
+No left boundary left → can't trap water.
+
+---
+
+```python
+distance = i - stack[-1] - 1
+bounded_height = min(height[i], height[stack[-1]]) - height[top]
+res += distance * bounded_height
+
+```
+
+- **distance** = width between left and right walls
+- **bounded_height** = how much water can sit above `top`
+- Add area of trapped water.
+
+---
+
+### Final:
+
+```python
+stack.append(i)
+i += 1
+
+```
+
+Push current bar’s index to stack and move forward.
+
+---
+
+## 🧠 Visual Example (Partial):
+
+```python
+height = [0,1,0,2]
+
+```
+
+- At `i = 3`, height is `2`, stack has index `[1, 2]`
+- Pop 2 → top = 0
+- Water trapped = width(1) * height(1) = 1 unit
+
+---
+
+# 🧠 Time & Space:
+
+| Complexity | Value |
+| --- | --- |
+| Time | O(n) |
+| Space | O(n) for stack |
+
+---
+
+# ✅ Now the Two-Pointer Code (Efficient Version)
+
+You asked to explain **this code line-by-line**:
+
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        if not height:
+            return 0
+
+```
+
+- If the input list is empty, return 0 — no bars, no water.
+
+---
+
+```python
+        l, r = 0, len(height) - 1
+
+```
+
+- Initialize **two pointers** at both ends of the array.
+- `l` = left index
+- `r` = right index
+
+---
+
+```python
+        left_max, right_max = height[l], height[r]
+
+```
+
+- Track the **tallest bar seen so far** from the left and right
+- Why? Because water depends on the **shorter wall** between left and right
+
+---
+
+```python
+        res = 0
+
+```
+
+- Accumulates total water trapped
+
+---
+
+### Main Loop
+
+```python
+        while l < r:
+
+```
+
+- Move inward until both pointers meet
+
+---
+
+```python
+            if left_max < right_max:
+
+```
+
+- This means: the **left side is the limiting factor**
+- So we **process left pointer**
+
+---
+
+```python
+                l += 1
+                left_max = max(left_max, height[l])
+
+```
+
+- Move left inward
+- Update the tallest bar we've seen from the left
+
+---
+
+```python
+                res += left_max - height[l]
+
+```
+
+- If `left_max > height[l]`, we can trap water
+- Water = difference between current left wall and bar height
+
+---
+
+```python
+            else:
+                r -= 1
+                right_max = max(right_max, height[r])
+                res += right_max - height[r]
+
+```
+
+- Otherwise, process the **right** side (when right is smaller)
+- Same logic: trap water only if right wall is taller than current bar
+
+---
+
+```python
+        return res
+
+```
+
+- Return the total trapped water
+
+---
+
+## 🧪 Example Trace: `height = [0,1,0,2,1,0,1,3,2,1,2,1]`
+
+- Start:
+    - `l = 0`, `r = 11`
+    - `left_max = 0`, `right_max = 1`
+- First iteration:
+    - left_max < right_max → move left
+    - new l = 1 → height = 1
+    - left_max = max(0, 1) = 1
+    - trapped = 0
+- Continue moving inward, computing trapped water at each index
+
+→ Total trapped = **6**
+
+---
+
+## ⏱️ Time and Space:
+
+| Type | Value |
+| --- | --- |
+| Time | O(n) — one pass |
+| Space | O(1) — only variables |
+
+---
+
+### ✅ Final Recommendation:
+
+- Use the **stack-based** version to understand the concept.
+- Use the **two-pointer version** for interviews — it’s cleaner, faster, and more space-efficient.
+
+---
+
+Would you like me to walk through the full pointer-based solution on the full `height = [0,1,0,2,1,0,1,3,2,1,2,1]` example step by step?
+
+**Two Pointers**
+
+**Time complexity: O(n)**
+
+**Space complexity: O(1)**
+
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        if not height:
+            return 0
+
+        l, r = 0, len(height) - 1
+        leftMax, rightMax = height[l], height[r]
+        res = 0
+        while l < r:
+            if leftMax < rightMax:
+                l += 1
+                leftMax = max(leftMax, height[l])
+                res += leftMax - height[l]
+            else:
+                r -= 1
+                rightMax = max(rightMax, height[r])
+                res += rightMax - height[r]
+        return res
+```
