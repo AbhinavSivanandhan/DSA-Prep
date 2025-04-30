@@ -1,0 +1,552 @@
+Median of Two Sorted Arrays (VERY HARD)
+Use GPT, don’t see the 2021 Neetcode old video. not clear
+
+Hint: TC should be log (m+n), m,n are lengths of 2 arrays. log is a hint that we need to see binary search somehow to have such a TC
+
+median means middle element in array of odd length. it is average of middle two elements in array of even length
+
+[neetcode explanation which i don’t understand](https://www.notion.so/neetcode-explanation-which-i-don-t-understand-1e51eb3b8f2c8087b4e8c35e68e68de2?pvs=21)
+
+**Binary Search (Optimal)**
+
+**Time complexity: O(log⁡(min(n,m)))**
+
+**Space complexity: O(1)**
+
+Where n is the length of nums1 and m is the length of nums2.
+
+```python
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        A, B = nums1, nums2
+        total = len(nums1) + len(nums2)
+        half = total // 2
+
+        if len(B) < len(A):
+            A, B = B, A
+
+        l, r = 0, len(A) - 1
+        while True:
+            i = (l + r) // 2
+            j = half - i - 2
+
+            Aleft = A[i] if i >= 0 else float("-infinity")
+            Aright = A[i + 1] if (i + 1) < len(A) else float("infinity")
+            Bleft = B[j] if j >= 0 else float("-infinity")
+            Bright = B[j + 1] if (j + 1) < len(B) else float("infinity")
+
+            if Aleft <= Bright and Bleft <= Aright:
+                if total % 2:
+                    return min(Aright, Bright)
+                return (max(Aleft, Bleft) + min(Aright, Bright)) / 2
+            elif Aleft > Bright:
+                r = i - 1
+            else:
+                l = i + 1
+```
+
+Let’s go **intuition first**, **visual second**, **code explanation last** — the way it should be. This problem is conceptually tough but once it clicks, it’s beautiful.
+
+---
+
+## 🧠 What’s the Goal?
+
+You’re given two **sorted arrays** `nums1` and `nums2`. You need to find the **median** of the combined array — as if you merged and sorted them.
+
+BUT you must do it in **O(log(min(m, n))) time**, not O(m + n).
+
+You **can’t** merge the arrays and then pick the median. You need a **smarter way**.
+
+---
+
+## 🧠 Key Insight
+
+> Instead of merging the arrays, we can partition them.
+>
+
+If you could split both arrays into two halves — **left and right**, such that:
+
+- Everything in **left** is ≤ everything in **right**
+- And the total number of elements on both sides is equal (or off by 1 if total is odd)
+
+…then you can compute the median **directly** from the edges.
+
+---
+
+## 🧪 Visual Example 1
+
+Let’s say:
+
+```python
+nums1 = [1, 3]
+nums2 = [2]
+
+```
+
+Combined sorted would be:
+
+```
+[1, 2, 3] → median = 2
+
+```
+
+But we won’t combine them.
+
+---
+
+### 🔪 Partitioning
+
+Let’s imagine cutting `nums1` and `nums2` like this:
+
+- nums1: `|1|3|`
+- nums2: `|2|`
+
+Let’s say:
+
+- Left of nums1: `[1]`
+- Right of nums1: `[3]`
+- Left of nums2: `[2]`
+- Right of nums2: `[]`
+
+**Left Half:** `[1, 2]`
+
+**Right Half:** `[3]`
+
+Now, check:
+
+- `max(left) = max(1, 2) = 2`
+- `min(right) = 3`
+
+✅ All good → left is smaller than right
+
+➡️ **Odd total** → median is just `max(left)` = `2`
+
+---
+
+## 🧪 Visual Example 2
+
+```python
+nums1 = [1, 2]
+nums2 = [3, 4]
+
+```
+
+Combined sorted: `[1, 2, 3, 4]` → even → median = (2 + 3) / 2 = `2.5`
+
+---
+
+### Try partition:
+
+- nums1: `[1, 2]` → Try splitting at index 2 → left: `[1,2]` right: `[]`
+- nums2: `[3, 4]` → Must split at index 0 → left: `[]` right: `[3,4]`
+
+Left half: `[1, 2]`
+
+Right half: `[3, 4]`
+
+- `max(left) = 2`
+- `min(right) = 3`
+
+Perfect!
+
+Even total → median = (2 + 3)/2 = `2.5`
+
+---
+
+## 🔄 Why Binary Search?
+
+Instead of trying every possible cut manually, we:
+
+1. **Pick a cut** in the **smaller array**
+2. Derive the matching cut in the second array (so left total = right total)
+3. Check if `max(left) ≤ min(right)` — if so, you’re done.
+4. If not:
+    - If `maxLeft1 > minRight2` → you cut too far right → move **left**
+    - If `maxLeft2 > minRight1` → you cut too far left → move **right**
+
+You **binary search** for the correct partition.
+
+---
+
+## 💡 Analogy
+
+Imagine a **see-saw**:
+
+You need to place two stacks of numbers on either side so that:
+
+- They’re **balanced** in size (or one off)
+- The **heaviest on the left ≤ lightest on the right**
+
+When you find this configuration → the pivot (median) is obvious.
+
+---
+
+## 🧪 One More Example (Uneven Arrays)
+
+```python
+nums1 = [1, 3, 8, 9, 15]
+nums2 = [7, 11, 18, 19, 21, 25]
+
+```
+
+Total length = 11 → odd → median is the **middle number** (#6)
+
+---
+
+We want left half = 5 elements
+
+Try:
+
+- `nums1`: split at 3 → `[1,3,8]` left, `[9,15]` right
+- Then `nums2` must split at 2 → `[7,11]` left, `[18,19,21,25]` right
+
+Left = `[1,3,8,7,11]`
+
+Right = `[9,15,18,19,21,25]`
+
+- maxLeft = `11`
+- minRight = `9`
+
+Oops! `11 > 9` ❌ — Invalid. We need to shift `nums1` left (smaller partition).
+
+Try again:
+
+- Split `nums1` at 2 → `[1,3]` left, `[8,9,15]` right
+- `nums2` at 3 → `[7,11,18]` left, `[19,21,25]` right
+
+Left = `[1,3,7,11,18]`
+
+Right = `[8,9,15,19,21,25]`
+
+✅ maxLeft = 18
+
+✅ minRight = 8
+
+Still invalid → shift more.
+
+Eventually:
+
+- Split `nums1` at 1 → `[1]` left, `[3,8,9,15]` right
+- Split `nums2` at 4 → `[7,11,18,19]` left, `[21,25]` right
+
+Left = `[1,7,11,18,19]`
+
+Right = `[3,8,9,15,21,25]`
+
+✅ maxLeft = 19
+
+✅ minRight = 3
+
+Still no.
+
+Eventually, you'll find correct partition with:
+
+- maxLeft = 11
+- minRight = 15
+→ Median = 11 (odd length = just maxLeft)
+
+---
+
+## 🎯 When You’re Ready for Code:
+
+Now that you **understand**:
+
+- Partitioning two arrays
+- Balance in total length
+- Validity of partition (left ≤ right)
+
+You're ready to implement the binary search logic with confidence.
+
+Want me to now walk through the **code line by line with comments** using one of the examples above?
+
+Great — let’s move into **Part 2: Binary Search Loop and Partitioning Logic** — this is the **heart of the algorithm**, so we’ll go slow and deep.
+
+---
+
+## 🔹 Code for Part 2
+
+```python
+        while low <= high:
+            partitionX = (low + high) // 2
+            partitionY = (x + y + 1) // 2 - partitionX
+
+```
+
+### 🧠 What is happening here?
+
+- We’re doing a **binary search** to find the right place to partition `nums1`.
+
+### `partitionX`
+
+- This is our current **guess** for how many elements to take from `nums1` (left side of `nums1`).
+- We're trying to cut `nums1` at index `partitionX`.
+
+### `partitionY`
+
+- Based on how many we took from `nums1`, we compute how many we **must** take from `nums2` to keep the **left side balanced**.
+- The formula `(x + y + 1) // 2` gives us the **total number of elements** we want on the **left side** of the partition (either equal to right side or 1 more if total is odd).
+
+> Example: Total length is 5 → left should have 3, right should have 2
+>
+>
+> If we take 1 from `nums1`, we must take 2 from `nums2` → `partitionY = 3 - 1 = 2`
+>
+
+We use `(x + y + 1) // 2` to ensure the **left half** has one more element than the right **when the total is odd**.
+
+This helps consistently handle both even and odd total lengths with the same logic.
+
+The `+1` ensures the **extra element** (if any) goes to the left, which is where the median comes from in an odd-length case.
+
+Using integer division (`//`) keeps the result clean and avoids floating point issues.
+
+---
+
+### Next block:
+
+```python
+        maxLeftX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]
+        minRightX = float('inf') if partitionX == x else nums1[partitionX]
+        maxLeftY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]
+        minRightY = float('inf') if partitionY == y else nums2[partitionY]
+
+```
+
+### 🧠 Why these variables?
+
+These are the **edges** around the cut:
+
+- `maxLeftX`: last element on the left of `nums1`
+- `minRightX`: first element on the right of `nums1`
+- `maxLeftY`: last element on the left of `nums2`
+- `minRightY`: first element on the right of `nums2`
+
+### 🔒 What if the cut is at the boundary?
+
+- If the cut is at `0`, the left part is empty → use `∞` so it doesn’t block anything
+- If the cut is at the end of the array, the right part is empty → use `+∞` so it doesn’t limit anything
+
+This way, we avoid out-of-bounds errors and keep comparisons clean.
+
+---
+
+### 🔍 Now the critical condition:
+
+```python
+            if maxLeftX <= minRightY and maxLeftY <= minRightX:
+
+```
+
+### 🧠 What does this mean?
+
+✅ It checks if the **left half is fully less than or equal to the right half**:
+
+- Everything on the **left side** of the cut is ≤ everything on the **right side**
+
+If this is true:
+
+- We found a **valid partition**
+- We're ready to compute the median (which we’ll do in Part 3)
+
+---
+
+### ❌ If not, adjust binary search:
+
+```python
+            elif maxLeftX > minRightY:
+                high = partitionX - 1
+
+```
+
+- You took **too many** from `nums1`, cut is too far **right**
+- Need to shift **left** in `nums1`
+
+```python
+            else:
+                low = partitionX + 1
+
+```
+
+- You took **too few** from `nums1`, cut is too far **left**
+- Need to shift **right** in `nums1`
+
+---
+
+## 💡 Visualization:
+
+For `nums1 = [1, 3]`, `nums2 = [2]`
+
+Total length = 3
+
+Left side needs = `(3 + 1) // 2 = 2` elements
+
+Try:
+
+```python
+partitionX = 1
+partitionY = 1
+
+```
+
+Split:
+
+- `nums1`: [1] | [3]
+- `nums2`: [2] | []
+
+Edges:
+
+- maxLeftX = 1
+- minRightX = 3
+- maxLeftY = 2
+- minRightY = ∞
+
+Check:
+
+```python
+maxLeftX <= minRightY → 1 ≤ ∞ ✅
+maxLeftY <= minRightX → 2 ≤ 3 ✅
+
+```
+
+✅ Valid partition — ready to compute median!
+
+---
+
+## ✅ Summary of Part 2:
+
+| Line | Purpose |
+| --- | --- |
+| `while low <= high` | Binary search loop |
+| `partitionX = ...` | Try a split in nums1 |
+| `partitionY = ...` | Compute matching split in nums2 |
+| `maxLeftX`, etc. | Get values around the cuts |
+| Valid partition? | Check: all left ≤ all right |
+| Invalid partition? | Shift left or right to fix it |
+
+---
+
+Would you like to now move to **Part 3: computing the median** once we find a valid partition?
+
+Great — now let’s finish with **Part 3: Compute the Median** once we’ve found the **correct partition**.
+
+This is the final block inside the binary search loop, and it uses the edge values we prepared earlier:
+
+---
+
+```python
+if maxLeftX <= minRightY and maxLeftY <= minRightX:
+    if (x + y) % 2 == 1:
+        return max(maxLeftX, maxLeftY)
+    else:
+        return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2
+
+```
+
+---
+
+## 🔍 What’s happening here?
+
+We already know:
+
+- We’ve found a **valid partition** where:
+    - All elements in the left half ≤ all in the right half
+- Now we just compute the **median** depending on whether the total number of elements is odd or even.
+
+---
+
+### ✅ Case 1: Odd total length
+
+```python
+if (x + y) % 2 == 1:
+    return max(maxLeftX, maxLeftY)
+
+```
+
+- If total number of elements is **odd**, the left side has **1 extra element**
+- So the median is simply the **largest element on the left side**
+- Why? Because median is the "middle" element, and it falls at the end of the left half
+
+---
+
+### ✅ Case 2: Even total length
+
+```python
+else:
+    return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2
+
+```
+
+- If total is even, the median is the **average of the two middle elements**
+- One comes from the **end of the left half** (`max of lefts`)
+- One comes from the **start of the right half** (`min of rights`)
+
+---
+
+### 🧪 Example:
+
+```python
+nums1 = [1, 3]
+nums2 = [2]
+
+```
+
+Valid partition found:
+
+- `maxLeftX = 1`
+- `minRightX = 3`
+- `maxLeftY = 2`
+- `minRightY = ∞`
+
+Total = 3 (odd)
+
+→ Median = `max(1, 2)` = `2`
+
+---
+
+### 🧪 Another Example (Even):
+
+```python
+nums1 = [1, 2]
+nums2 = [3, 4]
+
+```
+
+Partition:
+
+- `maxLeftX = 2`
+- `minRightX = ∞`
+- `maxLeftY = 3`
+- `minRightY = 4`
+
+Invalid (`2 > 3`), try new partition → find valid one:
+
+Eventually:
+
+- Left = `[1, 2]`, `[3]`
+- Right = `[4]`, `[]`
+
+→ `maxLeftX = 2`, `maxLeftY = 3`
+
+→ `minRightX = 3`, `minRightY = 4`
+
+Median = `(2 + 3) / 2 = 2.5`
+
+---
+
+## 🧠 Summary of Part 3:
+
+| Step | What it Does |
+| --- | --- |
+| Check if total is odd | Return `max of left half` |
+| If even | Return average of `max of left` and `min of right` |
+| Edge values | Already safely handled using -∞ and +∞ |
+
+---
+
+✅ That's the full algorithm:
+
+- Part 1: Setup
+- Part 2: Binary search for valid partition
+- Part 3: Compute median from partition
+
+Let me know if you’d like to test this on a new example or want a code walkthrough with inline prints!
