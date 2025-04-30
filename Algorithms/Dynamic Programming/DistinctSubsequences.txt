@@ -1,0 +1,90 @@
+Similar to other 2dp problems like LCS
+
+LCS was like this:
+
+![image.png](attachment:60e4f986-d38a-41da-b5bb-d9d1103dd4ae:image.png)
+
+but for this we need to modify the pattern. add else part so j pointer checks for exact t in s. that’s why we can’t do j+1
+
+![image.png](attachment:b8c470e5-77ce-485f-bb6a-480d56a6af60:image.png)
+
+this will only find true/existence of one subsequence. we need multiple, so modify again
+
+in order to find multiple subsequences, we need to have 2 decisions, add or skip a particular letter even if it matches. so final if else ladder looks like
+
+![image.png](attachment:6dd3b558-6244-4561-a226-6717ff607c7f:image.png)
+
+edge case example: note that choosing empty string from a string is apossible subsequence.
+
+![image.png](attachment:30d7aa4d-1205-4fab-b44c-400875f9c8df:image.png)
+
+“” does exist in s. that’s how we match and get 1
+
+edge case example 2:
+
+![image.png](attachment:3057a473-8221-4f73-bff2-8a981495b6a1:image.png)
+
+a doesn’t exist in s. so we get 0
+
+dfs. if dfs e=reaches length, it means operation is over. if j reaches len(t), match has been found so return 1 (also coverse edge case of empty string). if i reaches len(s), match hasn’t been found so return 0. note that order of above 2 if checks are important for obvious edge case reason
+
+**Dynamic Programming (Top-Down)**
+
+**Time complexity: O(m∗n)**
+
+**Space complexity: O(m∗n)**
+
+Where m is the length of the string s and n is the length of the string t.
+
+```python
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        if len(t) > len(s):
+            return 0
+
+        dp = {}
+        def dfs(i, j):
+            if j == len(t):
+                return 1
+            if i == len(s):
+                return 0
+            if (i, j) in dp:
+                return dp[(i, j)]
+
+            res = dfs(i + 1, j)
+            if s[i] == t[j]:
+                res += dfs(i + 1, j + 1)
+            dp[(i, j)] = res
+            return res
+
+        return dfs(0, 0)
+```
+
+Alternate, more readable:
+
+```python
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        cache = {}
+
+        def dfs(i, j):
+            if j == len(t):
+                return 1  # We've successfully matched all of t
+            if i == len(s):
+                return 0  # We've run out of characters in s
+
+            if (i, j) in cache:
+                return cache[(i, j)]
+
+            if s[i] == t[j]:
+                # Match: move both forward OR skip s[i]
+                cache[(i, j)] = dfs(i + 1, j + 1) + dfs(i + 1, j)
+            else:
+                # No match: skip s[i]
+                cache[(i, j)] = dfs(i + 1, j)
+
+            return cache[(i, j)]
+
+        return dfs(0, 0)
+
+```
