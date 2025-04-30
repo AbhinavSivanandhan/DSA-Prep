@@ -1,0 +1,45 @@
+2 key points: one is it is implicitly understood that path cannot repeat cells(only visit once). second key point is that from a particular value, longest increasing path will be repetitively checked during brute force, so we reduce extra work using DP/cache. reference example below
+
+longest increasing path from 1 is 4. from 2 is 3. etc. for each node. that repeated checking is cacheable
+
+![image.png](attachment:23e139a6-8f38-499e-8a8b-8a39fa59b205:image.png)
+
+eg: no need to calculate for path 4→9 as we already calculate and store during iteration in the LIP dp matrix/dict or whatever cache we want, value of 1.
+
+![image.png](attachment:13957211-ec74-4663-909f-b0fd3c735660:image.png)
+
+TC is therefore O(n*m), as each cell is visited once for checking from that cell, second time we can just return value. that’s like the informal correctness proof
+
+**Time complexity: O(m∗n)**
+
+**Space complexity: O(m∗n)**
+
+Where m is the number of rows and n is the number of columns in the given matrix.
+
+```python
+class Solution:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        ROWS, COLS = len(matrix), len(matrix[0])
+        dp = {}  # (r, c) -> LIP
+
+        def dfs(r, c, prevVal):
+            if (r < 0 or r == ROWS or c < 0 or
+                c == COLS or matrix[r][c] <= prevVal
+            ):
+                return 0
+            if (r, c) in dp:
+                return dp[(r, c)]
+
+            res = 1
+            res = max(res, 1 + dfs(r + 1, c, matrix[r][c]))
+            res = max(res, 1 + dfs(r - 1, c, matrix[r][c]))
+            res = max(res, 1 + dfs(r, c + 1, matrix[r][c]))
+            res = max(res, 1 + dfs(r, c - 1, matrix[r][c]))
+            dp[(r, c)] = res
+            return res
+
+        for r in range(ROWS):
+            for c in range(COLS):
+                dfs(r, c, -1)
+        return max(dp.values())
+```
