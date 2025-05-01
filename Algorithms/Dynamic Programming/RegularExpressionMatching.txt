@@ -1,0 +1,222 @@
+![image.png](attachment:40268b70-c7a6-4365-b5bd-db5f7b386748:image.png)
+
+.* means . is the preceding character, so we get .. where each . can have its own character, hence we can get ab
+
+Great — the solution you posted is already **correct**, **efficient**, and built using a recursive DFS + memoization approach. It's the standard way to solve this problem.
+
+Let’s go ahead and **explain it in the simplest way**, so it becomes crystal clear to you — line by line.
+
+---
+
+## 🎯 Problem Recap
+
+We're matching a string `s` (like `"aa"`) against a **pattern** `p` (like `"a*"`), where:
+
+- `.` matches **any one character**
+- means **zero or more of the preceding character**
+
+Match must be **exactly** from start to end — not partial.
+
+---
+
+## ✅ Solution Idea (Plain Words)
+
+We're going to:
+
+- Start from the first character of `s` and `p`
+- At each step, decide:
+    1. **Do the characters match** (either exact or with `.`)?
+    2. Is the **next char in `p` a** ? If so, we have two choices:
+        - Skip `char*` (zero occurrences)
+        - Or use it and move forward in `s`
+
+We explore both choices with recursion, and **memoize** results so we don’t redo work.
+
+---
+
+Absolutely — let’s explain your code in **plain, simple words**, like we're teaching it step-by-step to someone new to recursion.
+
+---
+
+## ✅ What are we trying to do?
+
+We’re checking if a string `s` matches a pattern `p` that can include:
+
+- `.` → matches **any one character**
+- → means "**zero or more** of the **previous character**"
+
+We have to match **the entire string**, not just part of it.
+
+---
+
+## 🧠 Main idea
+
+We use a **recursive function** that checks:
+
+> “Does the part of s starting at index i match the part of p starting at index j?”
+>
+
+We **try all possibilities**, but use a `cache` to **save answers** we've already found — so we don’t repeat work.
+
+---
+
+## ✅ Code (with simple explanation)
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        m, n = len(s), len(p)
+        cache = {}
+
+```
+
+- `m`, `n`: lengths of string and pattern
+- `cache`: remembers the result of matching `s[i:]` with `p[j:]`
+
+---
+
+```python
+        def dfs(i, j):
+            if j == n:
+                return i == m
+
+```
+
+- If we’re at the **end of the pattern**, the match is only good if we’re also at the **end of the string**.
+
+---
+
+```python
+            if (i, j) in cache:
+                return cache[(i, j)]
+
+```
+
+- If we’ve already checked this `(i, j)` combination before, reuse the result.
+
+---
+
+```python
+            match = i < m and (s[i] == p[j] or p[j] == ".")
+
+```
+
+- `match` is `True` if:
+    - We’re not past the end of `s`
+    - The current characters match, or `p[j]` is `.`
+
+---
+
+```python
+            if (j + 1) < n and p[j + 1] == "*":
+
+```
+
+- If the **next pattern character is** , we can:
+    - **skip** the pattern character and  (zero of that letter)
+    - **use** it (if current letters match), and stay on `p[j]` to allow more repeats
+
+---
+
+```python
+                cache[(i, j)] = (dfs(i, j + 2) or
+                                (match and dfs(i + 1, j)))
+                return cache[(i, j)]
+
+```
+
+- **Option 1:** `dfs(i, j + 2)` → skip `'char*'`
+- **Option 2:** if `match`, try using `'char*'` to match more of `s`
+
+---
+
+```python
+            if match:
+                cache[(i, j)] = dfs(i + 1, j + 1)
+                return cache[(i, j)]
+
+```
+
+- If current characters match (no  involved), just move forward one step in both `s` and `p`.
+
+---
+
+```python
+            cache[(i, j)] = False
+            return False
+
+```
+
+- If nothing works, mark it as a failed match and return `False`.
+
+---
+
+```python
+        return dfs(0, 0)
+
+```
+
+- Start matching from the beginning of `s` and `p`.
+
+---
+
+## 🔄 Example: `s = "aa"`, `p = "a*"`
+
+- First: `match = True`, next is
+- Try:
+    - skip `a*` → match "aa" with empty pattern → ❌
+    - use `a*` once → match `a` with `a`, then again → now empty string and empty pattern → ✅
+
+Answer: `True`
+
+---
+
+## 🧠 Summary in Plain Words
+
+- The function tries matching the string and pattern **from front to back**
+- When it sees , it either:
+    - Skips it (0 times)
+    - Or uses it (1 or more times, if it matches)
+- If a `.` shows up, it matches anything
+- We **remember results** to avoid rechecking the same things
+
+---
+
+Want me to walk through a harder case like `"mississippi"` vs `"mis*is*p*."` line by line?
+
+**Dynamic Programming - Top-Down Approach**
+
+**Time complexity: O(m∗n)**
+
+**Space complexity: O(m∗n)**
+
+Where m is the length of the string s and n is the length of the string p.
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        cache = {}
+
+        def dfs(i, j):
+            if (i, j) in cache:
+                return cache[(i, j)]
+
+            if j == len(p):
+                return i == len(s)
+
+            match = i < len(s) and (s[i] == p[j] or p[j] == '.')
+
+            if j + 1 < len(p) and p[j + 1] == '*':
+                cache[(i, j)] = dfs(i, j + 2) or (match and dfs(i + 1, j))
+                return cache[(i, j)]
+
+            if match:
+                cache[(i, j)] = dfs(i + 1, j + 1)
+                return cache[(i, j)]
+
+            cache[(i, j)] = False
+            return False
+
+        return dfs(0, 0)
+
+```
