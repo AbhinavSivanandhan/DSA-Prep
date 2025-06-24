@@ -24,3 +24,153 @@ class Solution:
                 if n2 not in visit:
                     heapq.heappush(minHeap, (w1 + w2, n2))
         return t if len(visit) == n else -1
+
+✅ Absolutely — let’s break this **`networkDelayTime`** solution down clearly with **detailed explanation + code comments inline**!
+
+---
+
+## 📝 **Problem recap**
+
+Given:
+
+- `times`: list of edges `(u, v, w)` → signal from node `u` reaches `v` in `w` time
+- `n`: total number of nodes
+- `k`: starting node
+
+We need to:
+
+👉 Compute **minimum time** for all nodes to receive the signal sent from node `k`.
+
+👉 Return `-1` if some node is unreachable.
+
+---
+
+## 🚀 **Code with clear comments**
+
+```python
+import collections
+import heapq
+
+class Solution:
+    def networkDelayTime(self, times: list[list[int]], n: int, k: int) -> int:
+        # Build graph as adjacency list: edges[u] = list of (v, w)
+        edges = collections.defaultdict(list)
+        for u, v, w in times:
+            edges[u].append((v, w))
+
+        # Min-heap to prioritize the next node with smallest accumulated time
+        # Each element is (current time cost to reach node, node)
+        minHeap = [(0, k)]
+
+        # Set of visited nodes to prevent reprocessing
+        visit = set()
+
+        # Tracks max time to reach any node (result)
+        t = 0
+
+        while minHeap:
+            # Pop the node with the smallest time so far
+            w1, n1 = heapq.heappop(minHeap)
+
+            # If already visited, skip
+            if n1 in visit:
+                continue
+
+            # Mark as visited
+            visit.add(n1)
+
+            # Update max time so far
+            t = w1
+
+            # Check all neighbors of current node
+            for n2, w2 in edges[n1]:
+                if n2 not in visit:
+                    # Add neighbor with updated total time
+                    heapq.heappush(minHeap, (w1 + w2, n2))
+
+        # If all nodes are visited, return time; else, some node is unreachable
+        return t if len(visit) == n else -1
+
+```
+
+---
+
+## 📌 **Explanation of key parts**
+
+### 1️⃣ **Graph build**
+
+```python
+edges[u].append((v, w))
+
+```
+
+We’re building an adjacency list where:
+
+- Key = node `u`
+- Value = list of tuples `(v, w)` meaning edge to node `v` with weight `w`.
+
+---
+
+### 2️⃣ **Min-heap**
+
+```python
+minHeap = [(0, k)]
+
+```
+
+Min-heap (priority queue) lets us always process the next node that has the shortest time so far (Dijkstra’s core idea).
+
+---
+
+### 3️⃣ **Visited set**
+
+```python
+visit = set()
+
+```
+
+We only want to process each node once — once we know the shortest time to it.
+
+---
+
+### 4️⃣ **Main loop**
+
+- Pop the node with min time
+- If already visited, skip
+- Else:
+    - Mark as visited
+    - Update max time
+    - Add its neighbors to the heap with updated times
+
+---
+
+### 5️⃣ **Final check**
+
+```python
+return t if len(visit) == n else -1
+
+```
+
+If we reached all `n` nodes → return the max delay seen.
+
+Else → some nodes unreachable → return `-1`.
+
+---
+
+## ⏱ **Time and space complexity**
+
+| Aspect | Complexity |
+| --- | --- |
+| Time | O(E * log N) → E = edges, N = nodes (each edge can cause a heap push; heap ops log N) |
+| Space | O(E + N) → for graph + heap + visited |
+
+---
+
+## ⚡ **Summary**
+
+👉 This is **Dijkstra’s algorithm** with:
+
+- min-heap to always pick the next closest node
+- visited set to process each node once
+- final time = the slowest node’s shortest delay
+
